@@ -1,7 +1,7 @@
 
 return {
 	image = "train_basic",
-	maxSpeed = 1.2,
-	accel = 0.2,
-	deccel = 0.8,
+	maxSpeed = 0.9,
+	accel = 0.3,
+	deccel = 0.9,
 }

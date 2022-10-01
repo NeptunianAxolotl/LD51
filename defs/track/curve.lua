@@ -1,6 +1,7 @@
 
 return {
 	stateImage = {"track_curved"},
+	pickupable = true,
 	paths = {
 		{
 			posFunc = function (t)
