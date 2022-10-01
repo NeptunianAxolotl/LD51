@@ -29,7 +29,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 	function self.Update(dt)
 		if not self.nextTrack then
 			local nextTrack = TerrainHandler.GetTrackAtPos(self.currentTrack.GetPos(), self.destination)
-			if nextTrack and not nextTrack.IsInUse() then
+			if nextTrack and not nextTrack.IsInUse() and nextTrack.GetPathAndNextTrack((self.destination + 2)%4) then
 				self.nextTrack = nextTrack
 				self.nextTrack.SetUsedState(true)
 			end

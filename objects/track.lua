@@ -22,6 +22,7 @@ local function NewTrack(self, terrain)
 				return path, worldSpaceDest
 			end
 		end
+		return false
 	end
 	
 	function self.GetPathDraw(path, travel)
