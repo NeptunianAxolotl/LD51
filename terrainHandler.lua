@@ -22,14 +22,21 @@ local function AddTrack(pos, trackType, rotation)
 end
 
 local function SetupWorld(width, height)
-	AddTrack({0, 0}, "straight", 0)
+	AddTrack({0, 0}, "factory", 0)
 	AddTrack({1, 0}, "straight", 0)
 	AddTrack({2, 0}, "curve", 1)
 	AddTrack({2, 1}, "straight", 1)
 	AddTrack({2, 2}, "curve", 3)
 	AddTrack({3, 2}, "straight", 0)
 	AddTrack({4, 2}, "straight", 0)
-	AddTrack({4, 2}, "curve", 1)
+	AddTrack({4, 2}, "branch", 1)
+	AddTrack({4, 3}, "curve", 3)
+	AddTrack({5, 3}, "curve", 2)
+	AddTrack({5, 2}, "straight", 1)
+	AddTrack({5, 1}, "straight", 1)
+	AddTrack({5, 0}, "curve", 1)
+	AddTrack({4, 0}, "curve", 0)
+	AddTrack({4, 1}, "straight", 1)
 end
 
 function api.GetTrackAtPos(gridPos, addDirection)
@@ -49,7 +56,8 @@ function api.GetTrackAtPos(gridPos, addDirection)
 	return IterableMap.Get(self.trackList, self.trackPos[x][y])
 end
 
-function api.Update(world)
+function api.Update(dt)
+	IterableMap.ApplySelf(self.trackList, "Update", dt)
 end
 
 function api.Draw(drawQueue)

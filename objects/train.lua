@@ -9,28 +9,29 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 	
 	self.travel = 0
 	self.speed = 0
-	local function EnterTrack(nextTrack, entry)
+	local function EnterTrack(nextTrack, entry, isSpawn)
 		if self.currentTrack then
 			self.currentTrack.SetUsedState(false)
 		end
 		
 		self.currentTrack = nextTrack
-		self.currentPath, self.destination = self.currentTrack.GetPathAndNextTrack(entry)
+		self.currentPath, self.destination = self.currentTrack.GetPathAndNextTrack(entry, isSpawn)
 		self.currentTrack.SetUsedState(true)
 		self.nextTrack = false
 	end
-	EnterTrack(TerrainHandler.GetTrackAtPos(new_gridPos), new_entry)
+	EnterTrack(TerrainHandler.GetTrackAtPos(new_gridPos), new_entry, true)
 	
 	function self.Update(dt)
 		if not self.nextTrack then
 			local nextTrack = TerrainHandler.GetTrackAtPos(self.currentTrack.GetPos(), self.destination)
 			if nextTrack and not nextTrack.IsInUse() then
 				self.nextTrack = nextTrack
+				self.nextTrack.SetUsedState(true)
 			end
 		end
 		if self.nextTrack then
 			self.speed = math.min(self.def.maxSpeed, self.speed + dt*self.def.accel)
-			self.travel = self.travel + dt*self.speed
+			self.travel = self.travel + dt*self.speed*(self.currentPath.speedMult or 1)
 		else
 			if self.speed > -0.05 then
 				self.speed = self.speed - dt*self.def.deccel
@@ -38,7 +39,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 			if self.travel < 0.5 and self.speed < 0 then
 				self.speed = 0
 			end
-			self.travel = self.travel + dt*self.speed
+			self.travel = self.travel + dt*self.speed*(self.currentPath.speedMult or 1)
 			if self.travel >= 0.9 then
 				self.speed = -0.2
 			end

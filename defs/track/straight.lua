@@ -1,6 +1,6 @@
 
 return {
-	image = "track_straight",
+	stateImage = {"track_straight"},
 	paths = {
 		{
 			posFunc = function (t)

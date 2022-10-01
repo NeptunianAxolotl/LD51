@@ -7,19 +7,22 @@ local TrackDefs = util.LoadDefDirectory("defs/track")
 local function NewTrack(self, terrain)
 	self.def = TrackDefs[self.trackType]
 	self.inUse = false
+	self.state = 1
 	
 	self.worldPos = {(self.pos[1] + 0.5) * Global.GRID_SIZE, (self.pos[2] + 0.5) * Global.GRID_SIZE}
 	self.worldRot = self.rotation*math.pi/2
 	
 	function self.Update(dt)
-	
+		if self.def.updateFunc then
+			self.def.updateFunc(self, dt)
+		end
 	end
 	
-	function self.GetPathAndNextTrack(entry)
+	function self.GetPathAndNextTrack(entry, isSpawn)
 		local trackSpaceEntry = (entry - self.rotation)%4
 		for i = 1, #self.def.paths do
 			local path = self.def.paths[i]
-			if trackSpaceEntry == path.entry then
+			if (isSpawn and path.isSpawnPath) or (trackSpaceEntry == path.entry and ((not path.requiredState) or self.state == path.requiredState)) then
 				local worldSpaceDest = (path.destination + self.rotation)%4
 				return path, worldSpaceDest
 			end
@@ -45,12 +48,13 @@ local function NewTrack(self, terrain)
 	
 	function self.Draw(drawQueue)
 		drawQueue:push({y=0; f=function()
-			Resources.DrawImage(self.def.image, self.worldPos[1], self.worldPos[2], self.worldRot)
-			--love.graphics.push()
-			--	love.graphics.translate(self.pos[1], self.pos[2])
-			--	love.graphics.rotate(self.rotation*math.pi/2)
-			--love.graphics.pop()
+			Resources.DrawImage(self.def.stateImage[self.state], self.worldPos[1], self.worldPos[2], self.worldRot)
 		end})
+		if self.def.topImage then
+			drawQueue:push({y=100; f=function()
+				Resources.DrawImage(self.def.topImage, self.worldPos[1], self.worldPos[2], self.worldRot)
+			end})
+		end
 		if DRAW_DEBUG then
 			love.graphics.circle('line',self.pos[1], self.pos[2], def.radius)
 		end

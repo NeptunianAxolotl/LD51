@@ -12,6 +12,8 @@ local globals = {
 	WORLD_WIDTH = 12,
 	WORLD_HEIGHT = 12,
 	GRID_SIZE = 100,
+	CORNER_SPEED_MULT = 1.15,
+	TRAIN_SPAWN_TIME = 10,
 }
 
 return globals

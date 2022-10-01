@@ -14,10 +14,6 @@ function api.AddTrain(trainType, gridPos, entry)
 	IterableMap.Add(self.trainList, NewTrain(trainData, api, gridPos, entry))
 end
 
-local function SetupTrains()
-	api.AddTrain("basic", {0, 0}, 2)
-end
-
 function api.Update(dt)
 	IterableMap.ApplySelf(self.trainList, "Update", dt)
 end
@@ -31,8 +27,6 @@ function api.Initialize(world)
 		trainList = IterableMap.New(),
 		world = world,
 	}
-	
-	SetupTrains()
 end
 
 return api
