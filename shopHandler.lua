@@ -23,7 +23,6 @@ local function InitializeDecks()
 end
 
 local function UpdateItems()
-	self.shopRotation = self.trackRotation
 	self.items[1] = "curve"
 	self.items[2] = "straight"
 	local drawnCards = DeckHandler.GetNextDraw(self.decks[3], 2)
@@ -51,6 +50,9 @@ function api.SetHeldTrack(newTrack, newRotation)
 end
 
 function api.AddTrackCredits(credits)
+	if self.world.GetGameOver() then
+		return false
+	end
 	self.trackCredits = self.trackCredits + credits
 end
 
@@ -58,7 +60,7 @@ function api.Update(dt)
 	self.trackCreditTimer = self.trackCreditTimer - dt
 	if self.trackCreditTimer <= 0 then
 		self.trackCreditTimer = self.trackCreditTimer + Global.TRACK_CREDIT_TIME
-		self.trackCredits = self.trackCredits + 1
+		api.AddTrackCredits(1)
 	end
 	if not self.heldTrack and self.emptySlot and self.trackCredits > 0 then
 		UpdateItems()
@@ -92,7 +94,6 @@ function api.MousePressed(x, y, button)
 		return true
 	end
 	self.heldTrack = self.items[self.hoveredItem]
-	self.trackRotation = self.shopRotation
 	self.items[self.hoveredItem] = false
 	self.emptySlot = true
 	self.trackCredits = self.trackCredits - 1
@@ -102,7 +103,7 @@ end
 function api.Draw(drawQueue)
 	local mousePos = self.world.GetMousePosition()
 	self.hoveredItem = false
-	if self.heldTrack then
+	if self.heldTrack and not self.world.GetGameOver() then
 		local def = TrackDefs[self.heldTrack]
 		drawQueue:push({y=1000; f=function()
 			local gx, gy = math.floor(mousePos[1] / Global.GRID_SIZE), math.floor(mousePos[2] / Global.GRID_SIZE)
@@ -167,7 +168,6 @@ function api.Initialize(world)
 	}
 	self.heldTrack = false
 	self.trackRotation = 0
-	self.shopRotation = 0
 	self.trackCredits = 5
 	
 	UpdateItems()

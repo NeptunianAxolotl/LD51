@@ -24,17 +24,19 @@ local smoothNumberList = {
 --------------------------------------------------
 
 function api.AddScore(value)
+	if self.world.GetGameOver() then
+		return false
+	end
 	local oldScore = InterfaceUtil.GetRawNumber("score", value)
 	if math.floor(oldScore/Global.SCORE_CREDIT_REQ) ~= math.floor((oldScore + value)/Global.SCORE_CREDIT_REQ) then
 		ShopHandler.AddTrackCredits(math.floor((oldScore + value)/Global.SCORE_CREDIT_REQ) - math.floor(oldScore/Global.SCORE_CREDIT_REQ))
 	end
-	return InterfaceUtil.AddNumber("score", value)
+	InterfaceUtil.AddNumber("score", value)
 end
 
 function api.GetScore()
 	return InterfaceUtil.GetNumber("score")
 end
-
 
 function api.SetGameOver(hasWon, overType)
 	self.world.SetGameOver(hasWon, overType)
