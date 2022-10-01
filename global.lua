@@ -8,6 +8,10 @@ local globals = {
 	PHYSICS_SCALE = 300,
 	LINE_SPACING = 36,
 	INC_OFFSET = -15,
+	
+	WORLD_WIDTH = 12,
+	WORLD_HEIGHT = 12,
+	GRID_SIZE = 100,
 }
 
 return globals

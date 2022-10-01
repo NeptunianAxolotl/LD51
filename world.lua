@@ -6,6 +6,8 @@ EffectsHandler = require("effectsHandler")
 ComponentHandler = require("componentHandler")
 DialogueHandler = require("dialogueHandler")
 
+TerrainHandler = require("terrainHandler")
+
 Camera = require("utilities/cameraUtilities")
 Delay = require("utilities/delay")
 
@@ -44,7 +46,7 @@ function api.GetGameOver()
 end
 
 function api.Restart()
-	PhysicsHandler.Destroy()
+	--PhysicsHandler.Destroy()
 	api.Initialize()
 end
 
@@ -166,17 +168,19 @@ function api.Update(dt, realDt)
 	self.lifetime = self.lifetime + dt
 	Delay.Update(dt)
 	ComponentHandler.Update(dt)
-	ModuleTest.Update(dt)
+	--ModuleTest.Update(dt)
 	
-	PhysicsHandler.Update(math.min(0.04, dt))
-	ShadowHandler.Update(dt)
+	--PhysicsHandler.Update(math.min(0.04, dt))
+	--ShadowHandler.Update(dt)
+
+	TerrainHandler.Update(dt)
 
 	ChatHandler.Update(dt)
 	EffectsHandler.Update(dt)
 	GameHandler.Update(dt)
 	
-	--local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, PlayerHandler.GetViewRestriction(), 0, 0)
-	--Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
+	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, {{pos = {0, 0}, radius = 100}, {pos = {1200, 800}, radius = 100}}, 0, 0)
+	Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
 end
 
 function api.Draw()
@@ -185,7 +189,8 @@ function api.Draw()
 
 	-- Draw world
 	love.graphics.replaceTransform(self.cameraTransform)
-	ModuleTest.Draw(drawQueue)
+	TerrainHandler.Draw(drawQueue)
+	--ModuleTest.Draw(drawQueue)
 	
 	love.graphics.replaceTransform(self.cameraTransform)
 	while true do
@@ -197,7 +202,7 @@ function api.Draw()
 	EffectsHandler.Draw(drawQueue)
 	
 	if not Global.DEBUG_NO_SHADOW and not (Global.DEBUG_SPACE_ZOOM_OUT and love.keyboard.isDown("space")) then
-		ShadowHandler.DrawGroundShadow(self.cameraTransform)
+		--ShadowHandler.DrawGroundShadow(self.cameraTransform)
 	end
 	love.graphics.replaceTransform(self.cameraTransform)
 	while true do
@@ -206,7 +211,7 @@ function api.Draw()
 		d.f()
 	end
 	if not Global.DEBUG_NO_SHADOW and not (Global.DEBUG_SPACE_ZOOM_OUT and love.keyboard.isDown("space")) then
-		ShadowHandler.DrawVisionShadow(self.cameraTransform)
+		--ShadowHandler.DrawVisionShadow(self.cameraTransform)
 	end
 	
 	--local windowX, windowY = love.window.getMode()
@@ -226,7 +231,7 @@ function api.Draw()
 end
 
 function api.ViewResize(width, height)
-	ShadowHandler.ViewResize(width, height)
+	--ShadowHandler.ViewResize(width, height)
 end
 
 function api.Initialize()
@@ -235,28 +240,28 @@ function api.Initialize()
 	self.interfaceTransform = love.math.newTransform()
 	self.emptyTransform = love.math.newTransform()
 	self.paused = false
-	self.musicEnabled = true
+	self.musicEnabled = false
 	self.lifetime = Global.DEBUG_START_LIFETIME or 0
 	
 	Delay.Initialise()
-	ShadowHandler.Initialize(api)
+	--ShadowHandler.Initialize(api)
 	EffectsHandler.Initialize(api)
 	SoundHandler.Initialize()
 	MusicHandler.Initialize(api)
 	
 	ChatHandler.Initialize(api)
 	DialogueHandler.Initialize(api)
-	PhysicsHandler.Initialize(api)
+	--PhysicsHandler.Initialize(api)
+	
+	TerrainHandler.Initialize(api)
 	
 	ComponentHandler.Initialize(api)
 	DeckHandler.Initialize(api)
 	GameHandler.Initialize(api)
-	ModuleTest.Initialize(api)
+	--ModuleTest.Initialize(api)
 	
 	-- Note that the camera pins only function for these particular second entries.
 	Camera.Initialize({
-		--pinX = {875, 0.5},
-		--pinY = {900, 1},
 		minScale = 1000,
 		initPos = {0, 0}
 	})

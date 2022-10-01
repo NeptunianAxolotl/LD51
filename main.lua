@@ -66,15 +66,15 @@ function love.load(arg)
 	local major, minor, revision, codename = love.getVersion()
 	print(string.format("Version %d.%d.%d - %s", major, minor, revision, codename))
 
-	love.window.setTitle("Flickerlight")
+	love.window.setTitle("LD51")
 	love.graphics.setDefaultFilter("nearest", "nearest") -- Removing this helps some things and really hurts others
 
-	love.graphics.setBackgroundColor(0/255, 0/225, 0/255, 1)
+	love.graphics.setBackgroundColor(180/255, 180/255, 180/255, 1)
 
 	love.keyboard.setKeyRepeat(true)
 	math.randomseed(os.clock())
 	Resources.LoadResources()
 	World.Initialize()
 	
-	love.window.maximize() -- Do not fullscreen since we lack an exit button.
+	--love.window.maximize() -- Do not fullscreen since we lack an exit button.
 end
