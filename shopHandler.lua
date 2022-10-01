@@ -24,9 +24,11 @@ end
 
 local function UpdateItems()
 	self.shopRotation = self.trackRotation
-	for i = 1, Global.SHOP_SLOTS do
-		self.items[i] = DeckHandler.GetNextDraw(self.decks[i])[1]
-	end
+	self.items[1] = "curve"
+	self.items[2] = "straight"
+	local drawnCards = DeckHandler.GetNextDraw(self.decks[3], 2)
+	self.items[3] = drawnCards[1]
+	self.items[4] = drawnCards[2]
 	self.emptySlot = false
 end
 

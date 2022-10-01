@@ -2,6 +2,11 @@
 return {
 	stateImage = {"track_sawmill"},
 	shopSlot = false,
+	trainMidFunc = function (self, train)
+		if not train.GetCarrying() then
+			train.SetCarrying("plank")
+		end
+	end,
 	paths = {
 		{
 			posFunc = function (t)

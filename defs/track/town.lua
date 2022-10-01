@@ -3,6 +3,13 @@ return {
 	stateImage = {"track_town"},
 	topImage = "town_over",
 	shopSlot = false,
+	trainMidFunc = function (self, train)
+		if not train.GetCarrying() then
+			return
+		end
+		local good = train.GetCarrying()
+		train.SetCarrying(false)
+	end,
 	paths = {
 		{
 			posFunc = function (t)

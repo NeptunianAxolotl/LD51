@@ -52,9 +52,16 @@ local function NewTrack(self, terrain)
 		if self.def.toggleStates then
 			self.state = self.state%self.def.toggleStates + 1
 		end
-		if self.def.pickupable and not self.IsInUse() and not ShopHandler.GetHeldTrack() then
+		if self.def.pickupable and not self.IsInUse() then
+			local heldType, heldRotation = ShopHandler.GetHeldTrack()
+			if heldType then
+				TerrainHandler.AddTrack(self.pos, heldType, heldRotation)
+				ShopHandler.UseHeldTrack()
+			end
 			ShopHandler.SetHeldTrack(self.trackType, self.rotation)
-			TerrainHandler.DestroyTrack(self.pos)
+			if not heldType then
+				TerrainHandler.DestroyTrack(self.pos)
+			end
 		end
 	end
 	

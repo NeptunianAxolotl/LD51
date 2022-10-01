@@ -2,6 +2,7 @@
 local IterableMap = require("include/IterableMap")
 local util = require("include/util")
 
+local TrainDefs = util.LoadDefDirectory("defs/trains")
 local NewTrain = require("objects/train")
 
 local self = {}
@@ -12,6 +13,7 @@ function api.AddTrain(trainType, gridPos, entry)
 		trainType = trainType,
 	}
 	IterableMap.Add(self.trainList, NewTrain(trainData, api, gridPos, entry))
+	return Global.TRAIN_SPAWN_TIME * (1 + TrainDefs[trainType].cartCount)
 end
 
 function api.Update(dt)

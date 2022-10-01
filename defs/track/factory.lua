@@ -6,8 +6,7 @@ return {
 	updateFunc = function (self, dt)
 		self.spawnTimer = (self.spawnTimer or 0) - dt
 		if self.spawnTimer <= 0 then
-			TrainHandler.AddTrain("basic", self.pos, (self.rotation + 2)%4)
-			self.spawnTimer = Global.TRAIN_SPAWN_TIME
+			self.spawnTimer = TrainHandler.AddTrain("basic", self.pos, (self.rotation + 2)%4)
 		end
 	end,
 	paths = {
