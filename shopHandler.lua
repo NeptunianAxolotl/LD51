@@ -65,7 +65,13 @@ function api.KeyPressed(key, scancode, isRepeat)
 	end
 end
 
-function api.MousePressed(x, y)
+function api.MousePressed(x, y, button)
+	if button == 2 then
+		self.trackRotation = (self.trackRotation + 1)%4
+	end
+	if button ~= 1 then
+		return false
+	end
 	if not (self.hoveredItem and self.trackCredits > 0) then
 		return false
 	end

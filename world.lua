@@ -107,10 +107,10 @@ function api.MousePressed(x, y, button)
 	x, y = self.cameraTransform:inverse():transformPoint(x, y)
 	
 	-- Send event to game components
-	if ShopHandler.MousePressed(x, y) then
+	if ShopHandler.MousePressed(x, y, button) then
 		return
 	end
-	if TerrainHandler.MousePressed(x, y) then
+	if TerrainHandler.MousePressed(x, y, button) then
 		return
 	end
 	if Global.DEBUG_PRINT_CLICK_POS and button == 2 then

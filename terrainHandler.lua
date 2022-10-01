@@ -81,7 +81,10 @@ function api.Draw(drawQueue)
 	IterableMap.ApplySelf(self.trackList, "Draw", drawQueue)
 end
 
-function api.MousePressed(x, y)
+function api.MousePressed(x, y, button)
+	if button ~= 1 then
+		return false
+	end
 	local gx, gy = math.floor(x / Global.GRID_SIZE), math.floor(y / Global.GRID_SIZE)
 	if gx < 0 or gy < 0 or gx >= Global.WORLD_WIDTH or gy >= Global.WORLD_HEIGHT then
 		return false
