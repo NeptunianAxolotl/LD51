@@ -3,6 +3,8 @@ return {
 	stateImage = {"track_signal_on", "track_signal_off"},
 	toggleStates = 2,
 	offState = 2,
+	shopSlot = 3,
+	shopCost = 2,
 	paths = {
 		{
 			posFunc = function (t)

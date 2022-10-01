@@ -5,6 +5,8 @@ return {
 		"track_splay_on",
 	},
 	toggleStates = 2,
+	shopSlot = 3,
+	shopCost = 2,
 	paths = {
 		{
 			posFunc = function (t)

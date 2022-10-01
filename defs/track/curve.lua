@@ -2,6 +2,8 @@
 return {
 	stateImage = {"track_curved"},
 	pickupable = true,
+	shopSlot = 1,
+	shopCost = 1,
 	paths = {
 		{
 			posFunc = function (t)

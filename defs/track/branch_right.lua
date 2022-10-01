@@ -1,6 +1,10 @@
 
 return {
-	stateImage = {"track_cross"},
+	stateImage = {
+		"track_branch_right_off",
+		"track_branch_right_on",
+	},
+	toggleStates = 2,
 	shopSlot = 3,
 	shopCost = 2,
 	paths = {
@@ -13,6 +17,7 @@ return {
 			end,
 			entry = 0,
 			destination = 2,
+			requiredState = 1,
 		},
 		{
 			posFunc = function (t)
@@ -26,23 +31,27 @@ return {
 		},
 		{
 			posFunc = function (t)
-				return {0, 0.5 - t}
+				t = 1 - t
+				return {0.5 - 0.5 * math.cos(t * math.pi / 2), -0.5 + 0.5 * math.sin(t * math.pi / 2)}
 			end,
 			dirFunc = function (t)
-				return 1.5*math.pi
+				return math.pi + t * math.pi / 2
 			end,
-			entry = 1,
+			entry = 0,
 			destination = 3,
+			requiredState = 2,
+			speedMult = Global.CORNER_SPEED_MULT,
 		},
 		{
 			posFunc = function (t)
-				return {0, t - 0.5}
+				return {0.5 - 0.5 * math.cos(t * math.pi / 2), -0.5 + 0.5 * math.sin(t * math.pi / 2)}
 			end,
 			dirFunc = function (t)
-				return 0.5*math.pi
+				return 0.5 * math.pi - t * math.pi / 2
 			end,
 			entry = 3,
-			destination = 1,
+			destination = 0,
+			speedMult = Global.CORNER_SPEED_MULT,
 		},
 	},
 }
