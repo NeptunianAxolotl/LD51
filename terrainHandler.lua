@@ -61,10 +61,16 @@ function api.GetTrackAtPos(gridPos, addDirection)
 	elseif addDirection == 3 then
 		y = y - 1
 	end
-	if not self.trackPos[x] and self.trackPos[x][y] then
+	if not (self.trackPos[x] and self.trackPos[x][y]) then
 		return false
 	end
 	return IterableMap.Get(self.trackList, self.trackPos[x][y])
+end
+
+function api.DestroyTrack(gridPos)
+	local track = api.GetTrackAtPos(gridPos)
+	track.toDestroy = true -- Only terrainHandler should set this, as it has to remove from the map.
+	self.trackPos[gridPos[1]][gridPos[2]] = nil
 end
 
 function api.Update(dt)
@@ -73,6 +79,24 @@ end
 
 function api.Draw(drawQueue)
 	IterableMap.ApplySelf(self.trackList, "Draw", drawQueue)
+end
+
+function api.MousePressed(x, y)
+	local gx, gy = math.floor(x / Global.GRID_SIZE), math.floor(y / Global.GRID_SIZE)
+	if gx < 0 or gy < 0 or gx >= Global.WORLD_WIDTH or gy >= Global.WORLD_HEIGHT then
+		return false
+	end
+	local gridPos = {gx, gy}
+	local track = api.GetTrackAtPos(gridPos)
+	if track then
+		track.MousePressed()
+		return true
+	end
+	local trackType, rotation = ShopHandler.GetHeldTrack()
+	if trackType then
+		AddTrack(gridPos, trackType, rotation)
+		ShopHandler.UseHeldTrack()
+	end
 end
 
 function api.Initialize(world)

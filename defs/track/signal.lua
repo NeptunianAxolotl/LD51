@@ -2,6 +2,7 @@
 return {
 	stateImage = {"track_signal_on", "track_signal_off"},
 	toggleStates = 2,
+	offState = 2,
 	paths = {
 		{
 			posFunc = function (t)
@@ -12,7 +13,6 @@ return {
 			end,
 			entry = 0,
 			destination = 2,
-			requiredState = 1,
 		},
 		{
 			posFunc = function (t)
@@ -23,7 +23,6 @@ return {
 			end,
 			entry = 2,
 			destination = 0,
-			requiredState = 1,
 		},
 	},
 }

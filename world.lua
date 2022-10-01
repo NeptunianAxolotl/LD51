@@ -8,6 +8,7 @@ DialogueHandler = require("dialogueHandler")
 
 TerrainHandler = require("terrainHandler")
 TrainHandler = require("trainHandler")
+ShopHandler = require("shopHandler")
 
 Camera = require("utilities/cameraUtilities")
 Delay = require("utilities/delay")
@@ -86,6 +87,9 @@ function api.KeyPressed(key, scancode, isRepeat)
 	if key == "s" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		api.TakeScreenshot()
 	end
+	if ShopHandler.KeyPressed(key, scancode, isRepeat) then
+		return
+	end
 end
 
 function api.MousePressed(x, y, button)
@@ -103,6 +107,12 @@ function api.MousePressed(x, y, button)
 	x, y = self.cameraTransform:inverse():transformPoint(x, y)
 	
 	-- Send event to game components
+	if ShopHandler.MousePressed(x, y) then
+		return
+	end
+	if TerrainHandler.MousePressed(x, y) then
+		return
+	end
 	if Global.DEBUG_PRINT_CLICK_POS and button == 2 then
 		print("{")
 		print([[    name = "BLA",]])
@@ -176,6 +186,7 @@ function api.Update(dt, realDt)
 
 	TerrainHandler.Update(dt)
 	TrainHandler.Update(dt)
+	ShopHandler.Update(dt)
 
 	ChatHandler.Update(dt)
 	EffectsHandler.Update(dt)
@@ -196,6 +207,7 @@ function api.Draw()
 	love.graphics.replaceTransform(self.cameraTransform)
 	TerrainHandler.Draw(drawQueue)
 	TrainHandler.Draw(drawQueue)
+	ShopHandler.Draw(drawQueue)
 	--ModuleTest.Draw(drawQueue)
 	
 	love.graphics.replaceTransform(self.cameraTransform)
@@ -261,6 +273,7 @@ function api.Initialize()
 	
 	TerrainHandler.Initialize(api)
 	TrainHandler.Initialize(api)
+	ShopHandler.Initialize(api)
 	
 	ComponentHandler.Initialize(api)
 	DeckHandler.Initialize(api)

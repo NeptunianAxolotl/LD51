@@ -7,16 +7,11 @@ local TrackDefs = util.LoadDefDirectory("defs/track")
 local function NewTrack(self, terrain)
 	self.def = TrackDefs[self.trackType]
 	self.inUse = false
+	self.toDestroy = false
 	self.state = 1
 	
 	self.worldPos = {(self.pos[1] + 0.5) * Global.GRID_SIZE, (self.pos[2] + 0.5) * Global.GRID_SIZE}
 	self.worldRot = self.rotation*math.pi/2
-	
-	function self.Update(dt)
-		if self.def.updateFunc then
-			self.def.updateFunc(self, dt)
-		end
-	end
 	
 	function self.GetPathAndNextTrack(entry, isSpawn)
 		local trackSpaceEntry = (entry - self.rotation)%4
@@ -43,7 +38,30 @@ local function NewTrack(self, terrain)
 	end
 	
 	function self.IsInUse()
-		return self.inUse
+		if self.inUse or self.toDestroy then
+			return true
+		end
+		if self.def.offState then
+			return (self.state == self.def.offState)
+		end
+		return false
+	end
+	
+	function self.MousePressed()
+		if self.def.toggleStates then
+			self.state = self.state%self.def.toggleStates + 1
+		end
+		if self.def.pickupable and not self.IsInUse() and not ShopHandler.GetHeldTrack() then
+			ShopHandler.SetHeldTrack(self.trackType, self.rotation)
+			TerrainHandler.DestroyTrack(self.pos)
+		end
+	end
+	
+	function self.Update(dt)
+		if self.def.updateFunc then
+			self.def.updateFunc(self, dt)
+		end
+		return self.toDestroy
 	end
 	
 	function self.Draw(drawQueue)

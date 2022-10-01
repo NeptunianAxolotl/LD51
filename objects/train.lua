@@ -10,12 +10,17 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 	self.travel = 0
 	self.speed = 0
 	local function EnterTrack(nextTrack, entry, isSpawn)
+		local newPath, newDestination = nextTrack.GetPathAndNextTrack(entry, isSpawn)
+		if not newPath then
+			return
+		end
 		if self.currentTrack then
 			self.currentTrack.SetUsedState(false)
 		end
 		
 		self.currentTrack = nextTrack
-		self.currentPath, self.destination = self.currentTrack.GetPathAndNextTrack(entry, isSpawn)
+		self.currentPath = newPath
+		self.destination = newDestination
 		self.currentTrack.SetUsedState(true)
 		self.nextTrack = false
 	end
