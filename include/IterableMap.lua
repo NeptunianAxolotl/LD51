@@ -32,13 +32,14 @@ function IterableMap.Add(self, key, data)
 	if self.indexByKey[key] then
 		-- Overwrites
 		self.dataByKey[key] = data
-		return
+		return key
 	end
 	data = data or true
 	self.indexMax = self.indexMax + 1
 	self.keyByIndex[self.indexMax] = key
 	self.dataByKey[key] = data
 	self.indexByKey[key] = self.indexMax
+	return key
 end
 
 function IterableMap.Remove(self, key)

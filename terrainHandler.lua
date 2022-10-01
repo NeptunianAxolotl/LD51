@@ -7,61 +7,46 @@ local NewTrack = require("objects/track")
 local self = {}
 local api = {}
 
-local function InitializeTiles(width, height)
-	trackMap = IterableMap.New()
+local function AddTrack(pos, trackType, rotation)
+	local x, y = pos[1], pos[2]
+	self.trackPos[x] = self.trackPos[x] or {}
+	if self.trackPos[x][y] then
+		IterableMap.Remove(self.trackList, self.trackPos[x][y])
+	end
 	trackData = {
-		pos = {0, 0},
-		trackType = "straight",
-		rotation = 0,
+		pos = pos,
+		trackType = trackType,
+		rotation = rotation,
 	}
-	IterableMap.Add(trackMap, NewTrack(trackData, api))
-	trackData = {
-		pos = {1, 0},
-		trackType = "straight",
-		rotation = 0,
-	}
-	IterableMap.Add(trackMap, NewTrack(trackData, api))
-	trackData = {
-		pos = {2, 0},
-		trackType = "curve",
-		rotation = 2,
-	}
-	IterableMap.Add(trackMap, NewTrack(trackData, api))
-	trackData = {
-		pos = {2, 1},
-		trackType = "straight",
-		rotation = 1,
-	}
-	IterableMap.Add(trackMap, NewTrack(trackData, api))
-	trackData = {
-		pos = {2, 2},
-		trackType = "curve",
-		rotation = 0,
-	}
-	IterableMap.Add(trackMap, NewTrack(trackData, api))
-	IterableMap.Add(trackMap, NewTrack(trackData, api))
-	trackData = {
-		pos = {3, 2},
-		trackType = "straight",
-		rotation = 0,
-	}
-	IterableMap.Add(trackMap, NewTrack(trackData, api))
-	
-	return trackMap
+	self.trackPos[x][y] = IterableMap.Add(self.trackList, NewTrack(trackData, api))
+end
+
+local function SetupWorld(width, height)
+	AddTrack({0, 0}, "straight", 0)
+	AddTrack({1, 0}, "straight", 0)
+	AddTrack({2, 0}, "curve", 1)
+	AddTrack({2, 1}, "straight", 1)
+	AddTrack({2, 2}, "curve", 3)
+	AddTrack({3, 2}, "straight", 0)
+	AddTrack({4, 2}, "straight", 0)
+	AddTrack({4, 2}, "curve", 1)
 end
 
 function api.Update(world)
 end
 
 function api.Draw(drawQueue)
-	IterableMap.ApplySelf(trackMap, "Draw", drawQueue)
+	IterableMap.ApplySelf(self.trackList, "Draw", drawQueue)
 end
 
 function api.Initialize(world)
 	self = {
-		trackMap = InitializeTiles(Global.WORLD_WIDTH, Global.WORLD_HEIGHT),
+		trackList = IterableMap.New(),
+		trackPos = {},
 		world = world,
 	}
+	
+	SetupWorld(Global.WORLD_WIDTH, Global.WORLD_HEIGHT)
 	
 	--for name in pairs(FeatureDefs) do
 	--	print([[	"]] .. name .. [[",]])

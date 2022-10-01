@@ -51,6 +51,12 @@ local function UpdateCameraToViewPoints(dt, pointList, moveSmooth, scaleSmooth)
 	local wantedScale = math.max((right - left)*self.scaleMult[1], (bottom - top)*self.scaleMult[2])
 	local wantedPos = {(left + right)/2, (top + bottom)/2}
 	
+	if not moveSmooth and not scaleSmooth then
+		self.cameraPos = wantedPos
+		self.cameraScale = wantedScale
+		return self.cameraPos[1], self.cameraPos[2], self.cameraScale
+	end
+	
 	self.cameraVelocity = util.Average(self.cameraVelocity, self.posVelocity, (1 - moveSmooth))
 	local newPos = util.Add(util.Mult(dt, self.cameraVelocity), util.Average(self.cameraPos, wantedPos, (1 - moveSmooth)))
 	self.cameraScale = self.cameraScale*scaleSmooth + wantedScale*(1 - scaleSmooth)
