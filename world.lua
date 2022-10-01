@@ -11,6 +11,7 @@ TrainHandler = require("trainHandler")
 ShopHandler = require("shopHandler")
 
 Camera = require("utilities/cameraUtilities")
+InterfaceUtil = require("utilities/interfaceUtilities")
 Delay = require("utilities/delay")
 
 local ShadowHandler = require("shadowHandler")
@@ -178,6 +179,7 @@ function api.Update(dt, realDt)
 	
 	self.lifetime = self.lifetime + dt
 	Delay.Update(dt)
+	InterfaceUtil.Update(dt)
 	ComponentHandler.Update(dt)
 	--ModuleTest.Update(dt)
 	
@@ -262,6 +264,7 @@ function api.Initialize()
 	self.lifetime = Global.DEBUG_START_LIFETIME or 0
 	
 	Delay.Initialise()
+	InterfaceUtil.Initialize()
 	--ShadowHandler.Initialize(api)
 	EffectsHandler.Initialize(api)
 	SoundHandler.Initialize()

@@ -8,6 +8,7 @@ return {
 			return
 		end
 		local good = train.GetCarrying()
+		GameHandler.AddScore(Global.DELIVER_SCORE * train.def.cartCount)
 		train.SetCarrying(false)
 	end,
 	paths = {

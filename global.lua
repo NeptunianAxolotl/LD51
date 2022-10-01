@@ -18,6 +18,10 @@ local globals = {
 	SHOP_SLOTS = 4,
 	DECK_SIZE_MULT = 3,
 	TRACK_CREDIT_TIME = 10,
+	
+	DELIVER_SCORE = 200,
+	SCORE_CREDIT_REQ = 1000,
+	TRAVEL_SCORE = 10,
 }
 
 return globals

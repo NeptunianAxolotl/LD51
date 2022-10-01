@@ -39,10 +39,10 @@ local FONT = "FreeSansBold.ttf"
 --local FONT = "RBNo3.1-Book.otf" -- https://freefontsfamily.com/rbno3-font-free-download/
 
 function externalFunc.Load()
-	hugeFont  = love.graphics.newFont('include/fonts/' .. FONT, 36)
+	hugeFont  = love.graphics.newFont('include/fonts/' .. FONT, 64)
 	bigFont   = love.graphics.newFont('include/fonts/' .. FONT, 48)
-	medFont   = love.graphics.newFont('include/fonts/' .. FONT, 18)
-	smallFont = love.graphics.newFont('include/fonts/' .. FONT, 14)
+	medFont   = love.graphics.newFont('include/fonts/' .. FONT, 32)
+	smallFont = love.graphics.newFont('include/fonts/' .. FONT, 24)
 end
 
 return externalFunc

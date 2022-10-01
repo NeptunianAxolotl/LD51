@@ -29,6 +29,8 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 		self.destination = newDestination
 		self.currentTrack.SetUsedState(true)
 		self.nextTrack = false
+		
+		GameHandler.AddScore(Global.TRAVEL_SCORE)
 	end
 	EnterTrack(TerrainHandler.GetTrackAtPos(new_gridPos), new_entry, true)
 	

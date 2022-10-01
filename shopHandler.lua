@@ -50,6 +50,10 @@ function api.SetHeldTrack(newTrack, newRotation)
 	end
 end
 
+function api.AddTrackCredits(credits)
+	self.trackCredits = self.trackCredits + credits
+end
+
 function api.Update(dt)
 	self.trackCreditTimer = self.trackCreditTimer - dt
 	if self.trackCreditTimer <= 0 then
@@ -103,10 +107,11 @@ function api.Draw(drawQueue)
 	
 	drawQueue:push({y=0; f=function()
 		local shopItemsX = Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH*0.5
-		local shopItemsY = 100
+		local shopItemsY = 20
 		
 		Font.SetSize(1)
-		love.graphics.print("Track: " .. math.floor(self.trackCredits + 0.02), shopItemsX - 100, shopItemsY)
+		love.graphics.print("Score: " .. math.floor(GameHandler.GetScore() + 0.02), shopItemsX - 100, shopItemsY - 30)
+		love.graphics.print("Track: " .. math.floor(self.trackCredits + 0.02), shopItemsX - 100, shopItemsY + 30)
 		
 		local shopItemsSpacing = 240
 		for i = 1, Global.SHOP_SLOTS do
@@ -133,6 +138,10 @@ function api.Draw(drawQueue)
 			love.graphics.setLineWidth(8)
 			love.graphics.rectangle("line", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2, 8, 8, 16)
 		end
+		
+		Font.SetSize(2)
+		love.graphics.setColor(0, 0, 0, 0.8)
+		love.graphics.print("- Every ten seconds an engine\n(or carriage) spawns and you\ngain a track.\n- Left click selects.\n- Right click rotates.\n- Score deliveries and travel\ndistance. Gain a bonus\ntrack every 1000 points.", shopItemsX - 200, shopItemsY + 120 + shopItemsSpacing * Global.SHOP_SLOTS)
 	end})
 end
 

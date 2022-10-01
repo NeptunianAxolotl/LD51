@@ -8,7 +8,12 @@ MusicHandler = require("musicHandler")
 
 local self = {}
 local api = {}
-local world
+
+local smoothNumberList = {
+	{
+		name = "score",
+	},
+}
 
 --------------------------------------------------
 -- Updating
@@ -17,6 +22,18 @@ local world
 --------------------------------------------------
 -- API
 --------------------------------------------------
+
+function api.AddScore(value)
+	local oldScore = InterfaceUtil.GetRawNumber("score", value)
+	if math.floor(oldScore/Global.SCORE_CREDIT_REQ) ~= math.floor((oldScore + value)/Global.SCORE_CREDIT_REQ) then
+		ShopHandler.AddTrackCredits(math.floor((oldScore + value)/Global.SCORE_CREDIT_REQ) - math.floor(oldScore/Global.SCORE_CREDIT_REQ))
+	end
+	return InterfaceUtil.AddNumber("score", value)
+end
+
+function api.GetScore()
+	return InterfaceUtil.GetNumber("score")
+end
 
 function api.ToggleMenu()
 	self.menuOpen = not self.menuOpen
@@ -44,9 +61,12 @@ function api.DrawInterface()
 	local windowX, windowY = love.window.getMode()
 end
 
-function api.Initialize(parentWorld)
-	self = {}
-	world = parentWorld
+function api.Initialize(world)
+	self = {
+		world = world,
+		score = 0
+	}
+	InterfaceUtil.RegisterSmoothNumber("score", 0, 3)
 end
 
 return api
