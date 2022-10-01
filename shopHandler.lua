@@ -81,6 +81,16 @@ function api.MousePressed(x, y, button)
 	if not (self.hoveredItem and self.trackCredits > 0) then
 		return false
 	end
+	if self.heldTrack then
+		if self.items[self.hoveredItem] then
+			return false
+		end
+		self.items[self.hoveredItem] = self.heldTrack
+		self.heldTrack = false
+		self.emptySlot = false
+		self.trackCredits = self.trackCredits + 1
+		return true
+	end
 	self.heldTrack = self.items[self.hoveredItem]
 	self.trackRotation = self.shopRotation
 	self.items[self.hoveredItem] = false
@@ -117,12 +127,14 @@ function api.Draw(drawQueue)
 		for i = 1, Global.SHOP_SLOTS do
 			local y = shopItemsY + shopItemsSpacing * i
 			local def = self.items[i] and TrackDefs[self.items[i]]
-			if (not self.heldTrack) and util.PosInRectangle(mousePos, shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2) then
-				self.hoveredItem = i
-			end
-				if self.items[i] then
-					Resources.DrawImage(def.stateImage[1], shopItemsX, y, self.shopRotation * math.pi/2, 1, 2)
+			if util.PosInRectangle(mousePos, shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2) then
+				if (not self.heldTrack) or (not self.items[i]) then
+					self.hoveredItem = i
 				end
+			end
+			if self.items[i] then
+				Resources.DrawImage(def.stateImage[1], shopItemsX, y, self.trackRotation * math.pi/2, 1, 2)
+			end
 			
 			if self.trackCredits == 0 then
 				love.graphics.setColor(0.5, 0.5, 0.5, 0.7)
