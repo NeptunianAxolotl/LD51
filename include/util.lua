@@ -325,6 +325,17 @@ end
 
 --------------------------------------------------
 --------------------------------------------------
+-- Group Utilities
+
+function util.Permute(list)
+	for i = #list, 2, -1 do
+		local j = math.random(i)
+		list[i], list[j] = list[j], list[i]
+	end
+end
+
+--------------------------------------------------
+--------------------------------------------------
 -- Probability
 
 function util.WeightsToDistribution(weights)
@@ -444,15 +455,13 @@ function util.GetRandomAngle()
 	return math.random()*2*pi
 end
 
---------------------------------------------------
---------------------------------------------------
--- Group Utilities
-
-function util.Permute(list)
-	for i = #list, 2, -1 do
-		local j = math.random(i)
-		list[i], list[j] = list[j], list[i]
+function util.GetRandomPermutation(size)
+	local myList = {}
+	for i = 1, size do
+		myList[i] = i
 	end
+	util.Permute(myList)
+	return myList
 end
 
 --------------------------------------------------

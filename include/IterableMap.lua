@@ -183,6 +183,20 @@ function IterableMap.ApplySelf(self, funcName, ...)
 	end
 end
 
+function IterableMap.ApplySelfRandomOrder(self, funcName, ...)
+	local permutation = util.GetRandomPermutation(self.indexMax)
+	local i = 1
+	while i <= self.indexMax do
+		local key = self.keyByIndex[permutation[i]]
+		if self.dataByKey[key][funcName](...) then
+			-- Return true to remove element
+			IterableMap.Remove(self, key)
+		else
+			i = i + 1
+		end
+	end
+end
+
 function IterableMap.ApplyNoArg(self, funcToApply)
 	local i = 1
 	while i <= self.indexMax do

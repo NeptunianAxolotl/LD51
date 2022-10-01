@@ -40,8 +40,11 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 				self.speed = 0
 			end
 			self.travel = self.travel + dt*self.speed*(self.currentPath.speedMult or 1)
-			if self.travel >= 0.9 then
+			if self.travel >= 0.92 then
 				self.speed = -0.2
+				if self.travel >= 0.99 then
+					self.travel = 0.99
+				end
 			end
 		end
 		if self.travel >= 1 then

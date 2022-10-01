@@ -15,7 +15,7 @@ function api.AddTrain(trainType, gridPos, entry)
 end
 
 function api.Update(dt)
-	IterableMap.ApplySelf(self.trainList, "Update", dt)
+	IterableMap.ApplySelfRandomOrder(self.trainList, "Update", dt)
 end
 
 function api.Draw(drawQueue)

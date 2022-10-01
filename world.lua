@@ -181,7 +181,10 @@ function api.Update(dt, realDt)
 	EffectsHandler.Update(dt)
 	GameHandler.Update(dt)
 	
-	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, {{pos = {0, 0}, radius = 20}, {pos = {2000, 1056}, radius = 20}}, 0, 0)
+	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, 
+		{{pos = {0, 0}, radius = 20},
+		{pos = {Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH, Global.WORLD_HEIGHT*Global.GRID_SIZE},
+		radius = 20}}, 0, 0)
 	Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
 end
 
