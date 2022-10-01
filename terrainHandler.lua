@@ -32,6 +32,23 @@ local function SetupWorld(width, height)
 	AddTrack({4, 2}, "curve", 1)
 end
 
+function api.GetTrackAtPos(gridPos, addDirection)
+	local x, y = gridPos[1], gridPos[2]
+	if addDirection == 0 then
+		x = x + 1
+	elseif addDirection == 1 then
+		y = y + 1
+	elseif addDirection == 2 then
+		x = x - 1
+	elseif addDirection == 3 then
+		y = y - 1
+	end
+	if not self.trackPos[x] and self.trackPos[x][y] then
+		return false
+	end
+	return IterableMap.Get(self.trackList, self.trackPos[x][y])
+end
+
 function api.Update(world)
 end
 

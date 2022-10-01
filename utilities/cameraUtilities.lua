@@ -51,7 +51,7 @@ local function UpdateCameraToViewPoints(dt, pointList, moveSmooth, scaleSmooth)
 	local wantedScale = math.max((right - left)*self.scaleMult[1], (bottom - top)*self.scaleMult[2])
 	local wantedPos = {(left + right)/2, (top + bottom)/2}
 	
-	if not moveSmooth and not scaleSmooth then
+	if moveSmooth == 0 and scaleSmooth == 0 then
 		self.cameraPos = wantedPos
 		self.cameraScale = wantedScale
 		return self.cameraPos[1], self.cameraPos[2], self.cameraScale

@@ -7,6 +7,7 @@ ComponentHandler = require("componentHandler")
 DialogueHandler = require("dialogueHandler")
 
 TerrainHandler = require("terrainHandler")
+TrainHandler = require("trainHandler")
 
 Camera = require("utilities/cameraUtilities")
 Delay = require("utilities/delay")
@@ -174,12 +175,13 @@ function api.Update(dt, realDt)
 	--ShadowHandler.Update(dt)
 
 	TerrainHandler.Update(dt)
+	TrainHandler.Update(dt)
 
 	ChatHandler.Update(dt)
 	EffectsHandler.Update(dt)
 	GameHandler.Update(dt)
 	
-	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, {{pos = {0, 0}, radius = 100}, {pos = {1200, 800}, radius = 100}}, 0, 0)
+	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, {{pos = {0, 0}, radius = 20}, {pos = {1200, 800}, radius = 20}}, 0, 0)
 	Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
 end
 
@@ -190,6 +192,7 @@ function api.Draw()
 	-- Draw world
 	love.graphics.replaceTransform(self.cameraTransform)
 	TerrainHandler.Draw(drawQueue)
+	TrainHandler.Draw(drawQueue)
 	--ModuleTest.Draw(drawQueue)
 	
 	love.graphics.replaceTransform(self.cameraTransform)
@@ -254,6 +257,7 @@ function api.Initialize()
 	--PhysicsHandler.Initialize(api)
 	
 	TerrainHandler.Initialize(api)
+	TrainHandler.Initialize(api)
 	
 	ComponentHandler.Initialize(api)
 	DeckHandler.Initialize(api)
