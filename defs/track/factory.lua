@@ -6,6 +6,9 @@ return {
 	updateFunc = function (self, dt)
 		self.spawnTimer = (self.spawnTimer or 0) - dt
 		if self.spawnTimer <= 0 then
+			if self.IsInUse() then
+				GameHandler.SetGameOver(false, "factory_block")
+			end
 			self.spawnTimer = TrainHandler.AddTrain("basic", self.pos, (self.rotation + 2)%4)
 		end
 	end,

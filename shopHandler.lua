@@ -120,6 +120,7 @@ function api.Draw(drawQueue)
 		local shopItemsY = 20
 		
 		Font.SetSize(1)
+		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.print("Score: " .. math.floor(GameHandler.GetScore() + 0.02), shopItemsX - 100, shopItemsY - 30)
 		love.graphics.print("Track: " .. math.floor(self.trackCredits + 0.02), shopItemsX - 100, shopItemsY + 30)
 		

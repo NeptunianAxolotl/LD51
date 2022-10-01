@@ -35,6 +35,11 @@ function api.GetScore()
 	return InterfaceUtil.GetNumber("score")
 end
 
+
+function api.SetGameOver(hasWon, overType)
+	self.world.SetGameOver(hasWon, overType)
+end
+
 function api.ToggleMenu()
 	self.menuOpen = not self.menuOpen
 	world.SetMenuState(self.menuOpen)
@@ -59,6 +64,15 @@ end
 
 function api.DrawInterface()
 	local windowX, windowY = love.window.getMode()
+	local gameOver, gameWon, gameLost = self.world.GetGameOver()
+	if gameLost then
+		Font.SetSize(0)
+		love.graphics.setColor(0.9, 0, 0, 1)
+		love.graphics.print("Game Over", windowX*0.5 - 120, windowY*0.5 - 20)
+		
+		Font.SetSize(2)
+		love.graphics.print("The factory is blocked", windowX*0.5 - 120, windowY*0.5 + 45)
+	end
 end
 
 function api.Initialize(world)
