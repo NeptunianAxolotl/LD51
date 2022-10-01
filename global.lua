@@ -1,0 +1,13 @@
+
+local globals = {
+	MASTER_VOLUME = 0.75,
+	MUSIC_VOLUME = 0.4,
+	DEFAULT_MUSIC_DURATION = 174.69,
+	CROSSFADE_TIME = 0,
+	
+	PHYSICS_SCALE = 300,
+	LINE_SPACING = 36,
+	INC_OFFSET = -15,
+}
+
+return globals
