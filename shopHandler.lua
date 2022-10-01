@@ -1,4 +1,5 @@
 
+local Font = require("include/font")
 local util = require("include/util")
 local TrackDefs, TrackDefList = util.LoadDefDirectory("defs/track")
 
@@ -48,7 +49,12 @@ function api.SetHeldTrack(newTrack, newRotation)
 end
 
 function api.Update(dt)
-	if not self.heldTrack and self.emptySlot then
+	self.trackCreditTimer = self.trackCreditTimer - dt
+	if self.trackCreditTimer <= 0 then
+		self.trackCreditTimer = self.trackCreditTimer + Global.TRACK_CREDIT_TIME
+		self.trackCredits = self.trackCredits + 1
+	end
+	if not self.heldTrack and self.emptySlot and self.trackCredits > 0 then
 		UpdateItems()
 	end
 end
@@ -60,13 +66,14 @@ function api.KeyPressed(key, scancode, isRepeat)
 end
 
 function api.MousePressed(x, y)
-	if not self.hoveredItem then
+	if not (self.hoveredItem and self.trackCredits > 0) then
 		return false
 	end
 	self.heldTrack = self.items[self.hoveredItem]
 	self.trackRotation = self.shopRotation
 	self.items[self.hoveredItem] = false
 	self.emptySlot = true
+	self.trackCredits = self.trackCredits - 1
 	return true
 end
 
@@ -86,28 +93,39 @@ function api.Draw(drawQueue)
 		end})
 	end
 	
-	local shopItemsX = Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH*0.5
-	local shopItemsY = 100
-	local shopItemsSpacing = 240
-	for i = 1, Global.SHOP_SLOTS do
-		local y = shopItemsY + shopItemsSpacing * i
-		local def = self.items[i] and TrackDefs[self.items[i]]
-		if (not self.heldTrack) and util.PosInRectangle(mousePos, shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2) then
-			self.hoveredItem = i
-		end
-		drawQueue:push({y=0; f=function()
-			if self.items[i] then
-				Resources.DrawImage(def.stateImage[1], shopItemsX, y, self.shopRotation * math.pi/2, 1, 2)
+	drawQueue:push({y=0; f=function()
+		local shopItemsX = Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH*0.5
+		local shopItemsY = 100
+		
+		Font.SetSize(1)
+		love.graphics.print("Track: " .. math.floor(self.trackCredits + 0.02), shopItemsX - 100, shopItemsY)
+		
+		local shopItemsSpacing = 240
+		for i = 1, Global.SHOP_SLOTS do
+			local y = shopItemsY + shopItemsSpacing * i
+			local def = self.items[i] and TrackDefs[self.items[i]]
+			if (not self.heldTrack) and util.PosInRectangle(mousePos, shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2) then
+				self.hoveredItem = i
 			end
-			if self.hoveredItem == i then
+				if self.items[i] then
+					Resources.DrawImage(def.stateImage[1], shopItemsX, y, self.shopRotation * math.pi/2, 1, 2)
+				end
+			
+			if self.trackCredits == 0 then
+				love.graphics.setColor(0.5, 0.5, 0.5, 0.7)
+				love.graphics.setLineWidth(4)
+				love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2, 8, 8, 16)
+			end
+			
+			if self.hoveredItem == i and self.trackCredits > 0 then
 				love.graphics.setColor(0.35, 1, 0.35, 0.8)
 			else
 				love.graphics.setColor(0, 0, 0, 0.8)
 			end
 			love.graphics.setLineWidth(8)
 			love.graphics.rectangle("line", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2, 8, 8, 16)
-		end})
-	end
+		end
+	end})
 end
 
 function api.Initialize(world)
@@ -115,10 +133,12 @@ function api.Initialize(world)
 		world = world,
 		items = {},
 		decks = InitializeDecks(),
+		trackCreditTimer = Global.TRACK_CREDIT_TIME,
 	}
 	self.heldTrack = false
 	self.trackRotation = 0
 	self.shopRotation = 0
+	self.trackCredits = 5
 	
 	UpdateItems()
 end

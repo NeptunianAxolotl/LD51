@@ -35,12 +35,12 @@ function externalFunc.GetFont()
 	end
 end
 
-local FONT = "alagard.ttf"
+local FONT = "FreeSansBold.ttf"
 --local FONT = "RBNo3.1-Book.otf" -- https://freefontsfamily.com/rbno3-font-free-download/
 
 function externalFunc.Load()
 	hugeFont  = love.graphics.newFont('include/fonts/' .. FONT, 36)
-	bigFont   = love.graphics.newFont('include/fonts/' .. FONT, 24)
+	bigFont   = love.graphics.newFont('include/fonts/' .. FONT, 48)
 	medFont   = love.graphics.newFont('include/fonts/' .. FONT, 18)
 	smallFont = love.graphics.newFont('include/fonts/' .. FONT, 14)
 end

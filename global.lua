@@ -17,6 +17,7 @@ local globals = {
 	TRAIN_SPAWN_TIME = 10,
 	SHOP_SLOTS = 3,
 	DECK_SIZE_MULT = 3,
+	TRACK_CREDIT_TIME = 10,
 }
 
 return globals
