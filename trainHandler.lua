@@ -16,8 +16,36 @@ function api.AddTrain(trainType, gridPos, entry)
 	return Global.TRAIN_SPAWN_TIME * (1 + train.cartCount)
 end
 
+local function DetectRuleOne() -- Very messsy
+	--print("DetectRuleOne")
+	local indexMax, keyByIndex, dataByKey = IterableMap.GetBarbarianData(self.trainList)
+	local positionMap = {}
+	local pointingMap = {}
+	for i = 1, indexMax do
+		local trainID = keyByIndex[i]
+		local train = dataByKey[trainID]
+		if train.travel > 0.52 then
+			local nextTrack = TerrainHandler.GetTrackAtPos(train.currentTrack.pos, (train.currentPath.destination + train.currentTrack.rotation)%4)
+			if nextTrack then
+				local trackStr = train.currentTrack.pos[1] .. "_" .. train.currentTrack.pos[2]
+				local nextStr = nextTrack.pos[1] .. "_" .. nextTrack.pos[2]
+				--print(trainID, trackStr, nextStr)
+				positionMap[trackStr] = train
+				pointingMap[trackStr] = nextStr
+				if pointingMap[nextStr] == trackStr then
+					positionMap[nextStr].SetPermanentBlocked()
+					train.SetPermanentBlocked()
+				end
+			end
+		end
+	end
+end
+
 function api.Update(dt)
 	IterableMap.ApplySelfRandomOrder(self.trainList, "Update", dt)
+	if math.random() < 0.01 then
+		DetectRuleOne()
+	end
 end
 
 function api.Draw(drawQueue)
