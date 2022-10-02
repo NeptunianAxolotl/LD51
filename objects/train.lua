@@ -50,7 +50,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 			if cart.travel > aheadTravel then
 				if cartIndex == #self.carts then
 					-- Last cart frees current track
-					cart.currentTrack.SetUsedState(false, cart.currentPath.entry)
+					cart.currentTrack.SetUsedState(false, cart.currentPath.entry and (cart.currentPath.entry + cart.currentTrack.rotation)%4)
 				end
 				cart.currentTrack = aheadTrack
 				cart.currentPath = aheadPath

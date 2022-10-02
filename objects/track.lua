@@ -37,6 +37,7 @@ local function NewTrack(self, terrain)
 	
 	function self.SetUsedState(newState, entry)
 		if self.def.entryUseIndexMap then
+			entry = (entry - self.rotation)%4
 			self.inUse[self.def.entryUseIndexMap[entry]] = newState
 		else
 			self.inUse = newState
@@ -53,6 +54,7 @@ local function NewTrack(self, terrain)
 		end
 		if self.def.entryUseIndexMap then
 			if entry then
+				entry = (entry - self.rotation)%4
 				if self.inUse[self.def.entryUseIndexMap[entry]] then
 					return true
 				end
@@ -81,6 +83,7 @@ local function NewTrack(self, terrain)
 				ShopHandler.UseHeldTrack()
 			end
 			ShopHandler.SetHeldTrack(self.trackType, self.rotation)
+			ShopHandler.UpdateShopIfEmpty()
 			if not heldType then
 				TerrainHandler.DestroyTrack(self.pos)
 			end
@@ -101,6 +104,9 @@ local function NewTrack(self, terrain)
 		if self.def.topImage then
 			drawQueue:push({y=100; f=function()
 				Resources.DrawImage(self.def.topImage, self.worldPos[1], self.worldPos[2], self.worldRot)
+				if self.def.extraDrawFunc then
+					self.def.extraDrawFunc(self, self.worldPos, self.worldRot)
+				end
 			end})
 		end
 		if DRAW_DEBUG then

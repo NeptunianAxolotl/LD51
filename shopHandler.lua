@@ -56,14 +56,20 @@ function api.AddTrackCredits(credits)
 	self.trackCredits = self.trackCredits + credits
 end
 
+function api.UpdateShopIfEmpty()
+	if self.emptySlot then
+		UpdateItems()
+	end
+end
+
 function api.Update(dt)
 	self.trackCreditTimer = self.trackCreditTimer - dt
 	if self.trackCreditTimer <= 0 then
 		self.trackCreditTimer = self.trackCreditTimer + Global.TRACK_CREDIT_TIME
 		api.AddTrackCredits(1)
 	end
-	if not self.heldTrack and self.emptySlot and self.trackCredits > 0 then
-		UpdateItems()
+	if not self.heldTrack then
+		api.UpdateShopIfEmpty()
 	end
 end
 

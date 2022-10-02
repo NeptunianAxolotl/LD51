@@ -1,4 +1,6 @@
 
+local Font = require("include/font")
+
 return {
 	stateImage = {"track_town"},
 	topImage = "town_over",
@@ -10,6 +12,13 @@ return {
 		local good = train.GetCarrying()
 		GameHandler.AddScore(Global.DELIVER_SCORE * train.def.cartCount)
 		train.SetCarrying(false)
+	end,
+	extraDrawFunc = function (self, pos, rotation)
+		Font.SetSize(3)
+		love.graphics.setColor(0, 0, 0, 1)
+		love.graphics.print(350, pos[1] - 0*Global.GRID_SIZE, pos[2] - 1.32*Global.GRID_SIZE)
+		love.graphics.print(350, pos[1] - 0*Global.GRID_SIZE, pos[2] - 1.09*Global.GRID_SIZE)
+		love.graphics.print(350, pos[1] - 0*Global.GRID_SIZE, pos[2] - 0.86*Global.GRID_SIZE)
 	end,
 	paths = {
 		{
