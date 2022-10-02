@@ -53,7 +53,7 @@ function api.AddTrackCredits(credits, source)
 	if self.world.GetGameOver() then
 		return false
 	end
-	self.trackCredits = self.trackCredits + credits
+	self.trackCredits = math.min(Global.TRACK_MAX, self.trackCredits + credits)
 	GameHandler.AddSourceScore(credits, source)
 end
 
@@ -87,7 +87,7 @@ function api.MousePressed(x, y, button)
 	if button ~= 1 then
 		return false
 	end
-	if not (self.hoveredItem and self.trackCredits > 0) then
+	if not self.hoveredItem then
 		return false
 	end
 	if self.heldTrack then
@@ -104,10 +104,12 @@ function api.MousePressed(x, y, button)
 		self.trackCredits = self.trackCredits + 1
 		return true
 	end
-	self.heldTrack = self.items[self.hoveredItem]
-	self.items[self.hoveredItem] = false
-	self.emptySlot = true
-	self.trackCredits = self.trackCredits - 1
+	if self.trackCredits > 0 then
+		self.heldTrack = self.items[self.hoveredItem]
+		self.items[self.hoveredItem] = false
+		self.emptySlot = true
+		self.trackCredits = self.trackCredits - 1
+	end
 	return true
 end
 
@@ -130,7 +132,7 @@ function api.Draw(drawQueue)
 		end})
 	end
 	
-	drawQueue:push({y=0; f=function()
+	drawQueue:push({y=800; f=function()
 		local shopItemsX = Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH*0.5
 		local shopItemsY = 75
 		

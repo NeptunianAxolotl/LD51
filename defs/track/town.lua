@@ -53,6 +53,7 @@ return {
 		if not GameHandler.GetGameOver() then
 			GameHandler.DepositGoods(good, train.cartCount)
 			GameHandler.AddScore(score, (isPriority and "deliverBonusScore") or "deliverScore")
+			EffectsHandler.SpawnEffect("mult_popup", {self.worldPos[1], self.worldPos[2] - 20}, {scale = 0.7 + 0.3*math.random(), text = "+" .. score, inFront = 700, velocity = {0, -1}})
 		end
 		train.SetCarrying(false)
 	end,

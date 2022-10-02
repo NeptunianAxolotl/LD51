@@ -66,4 +66,14 @@ local mapData = {
 	}
 }
 
+for i = -1, Global.WORLD_WIDTH do
+	mapData.track[#mapData.track + 1] = {pos = {i, -1}, rot = 0, trackType = "mountain_large"}
+	mapData.track[#mapData.track + 1] = {pos = {i, Global.WORLD_HEIGHT}, rot = 0, trackType = "forest"}
+end
+
+for i = -1, Global.WORLD_HEIGHT do
+	mapData.track[#mapData.track + 1] = {pos = {-1, i}, rot = 0, trackType = "forest"}
+	mapData.track[#mapData.track + 1] = {pos = {Global.WORLD_WIDTH, i}, rot = 0, trackType = "forest"}
+end
+
 return mapData
