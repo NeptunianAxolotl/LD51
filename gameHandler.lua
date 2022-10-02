@@ -93,11 +93,32 @@ function api.GetCartBonus()
 	return self.bonusCarts
 end
 
+function api.GetShowOffset(name)
+	local xOffset = -200 * (1 - self[name .. "BonusShow"])
+	local yOffset = 200 * (1 - self[name .. "Show"])
+	return xOffset, yOffset
+end
+
+function api.UpdateShow(name, dt, condition)
+	if condition and self[name .. "Show"] < 1 then
+		self[name .. "Show"] = util.SmoothZeroToOne(self[name .. "Show"] + dt, 1)
+		if self[name .. "Show"] > 1 then
+			self[name .. "Show"] = 1
+		end
+	end
+end
+
 --------------------------------------------------
 -- Updating
 --------------------------------------------------
 
 function api.Update(dt)
+	api.UpdateShow("food", dt, (InterfaceUtil.GetRawNumber("food") > 0 or self.orderSize > Global.ORDER_SIZE))
+	api.UpdateShow("wood", dt, (InterfaceUtil.GetRawNumber("wood") > 0 or self.speedMult > 1))
+	api.UpdateShow("ore", dt, (InterfaceUtil.GetRawNumber("ore") > 0 or self.bonusCarts > 0))
+	api.UpdateShow("foodBonus", dt, (self.orderSize > Global.ORDER_SIZE))
+	api.UpdateShow("woodBonus", dt, (self.speedMult > 1))
+	api.UpdateShow("oreBonus", dt, (self.bonusCarts > 0))
 end
 
 function api.DrawInterface()
@@ -120,6 +141,12 @@ function api.Initialize(world)
 		orderSize = Global.ORDER_SIZE,
 		speedMult = 1,
 		bonusCarts = 0,
+		foodShow = 0,
+		woodShow = 0,
+		oreShow = 0,
+		foodBonusShow = 0,
+		woodBonusShow = 0,
+		oreBonusShow = 0,
 	}
 	InterfaceUtil.RegisterSmoothNumber("score", 0, 3)
 	InterfaceUtil.RegisterSmoothNumber("food", 0, 1.4, Global.BONUS_REQ)

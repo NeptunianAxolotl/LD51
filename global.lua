@@ -9,6 +9,7 @@ local globals = {
 	LINE_SPACING = 36,
 	INC_OFFSET = -15,
 	
+	BLACK_BAR_LEEWAY = 50,
 	WORLD_WIDTH = 26,
 	WORLD_HEIGHT = 15,
 	SHOP_WIDTH = 500,
