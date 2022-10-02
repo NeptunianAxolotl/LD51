@@ -58,8 +58,8 @@ function api.GetGameOver()
 end
 
 function api.ToggleMenu()
-	self.menuOpen = not self.menuOpen
-	world.SetMenuState(self.menuOpen)
+	--self.menuOpen = not self.menuOpen
+	--self.world.SetMenuState(self.menuOpen)
 end
 
 function api.MousePressed(x, y)
