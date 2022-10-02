@@ -6,7 +6,12 @@ local TrackDefs = util.LoadDefDirectory("defs/track")
 
 local function NewTrack(self, terrain)
 	self.def = TrackDefs[self.trackType]
-	self.inUse = false
+	
+	if self.def.entryUseIndexMap then
+		self.inUse = {}
+	else
+		self.inUse = false
+	end
 	self.toDestroy = false
 	self.state = 1
 	
@@ -30,16 +35,33 @@ local function NewTrack(self, terrain)
 		return worldPos, self.worldRot + path.dirFunc(travel)
 	end
 	
-	function self.SetUsedState(newState)
-		self.inUse = newState
+	function self.SetUsedState(newState, entry)
+		if self.def.entryUseIndexMap then
+			self.inUse[self.def.entryUseIndexMap[entry]] = newState
+		else
+			self.inUse = newState
+		end
 	end
 	
 	function self.GetPos()
 		return self.pos
 	end
 	
-	function self.IsInUse()
-		if self.inUse or self.toDestroy then
+	function self.IsInUse(entry)
+		if self.toDestroy then
+			return true
+		end
+		if self.def.entryUseIndexMap then
+			if entry then
+				if self.inUse[self.def.entryUseIndexMap[entry]] then
+					return true
+				end
+			else
+				if self.inUse[1] or self.inUse[2] then
+					return true
+				end
+			end
+		elseif self.inUse then
 			return true
 		end
 		if self.def.offState then

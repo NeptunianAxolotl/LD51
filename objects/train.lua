@@ -21,13 +21,13 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 			return
 		end
 		if self.currentTrack and self.def.cartCount == 0 then
-			self.currentTrack.SetUsedState(false)
+			self.currentTrack.SetUsedState(false, entry)
 		end
 		
 		self.currentTrack = nextTrack
 		self.currentPath = newPath
 		self.destination = newDestination
-		self.currentTrack.SetUsedState(true)
+		self.currentTrack.SetUsedState(true, entry)
 		self.nextTrack = false
 		
 		GameHandler.AddScore(Global.TRAVEL_SCORE)
@@ -50,7 +50,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 			if cart.travel > aheadTravel then
 				if cartIndex == #self.carts then
 					-- Last cart frees current track
-					cart.currentTrack.SetUsedState(false)
+					cart.currentTrack.SetUsedState(false, cart.currentPath.entry)
 				end
 				cart.currentTrack = aheadTrack
 				cart.currentPath = aheadPath
@@ -74,9 +74,10 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 		local oldTravel = self.travel
 		if not self.nextTrack then
 			local nextTrack = TerrainHandler.GetTrackAtPos(self.currentTrack.GetPos(), self.destination)
-			if nextTrack and not nextTrack.IsInUse() and nextTrack.GetPathAndNextTrack((self.destination + 2)%4) then
+			local nextEntry = (self.destination + 2)%4
+			if nextTrack and not nextTrack.IsInUse(nextEntry) and nextTrack.GetPathAndNextTrack(nextEntry) then
 				self.nextTrack = nextTrack
-				self.nextTrack.SetUsedState(true)
+				self.nextTrack.SetUsedState(true, nextEntry)
 			end
 		end
 		if self.nextTrack then
@@ -144,18 +145,45 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 	end
 	
 	function self.Draw(drawQueue)
-		drawQueue:push({y=10; f=function()
-			local drawPos, drawRotation
-			for i = #self.carts, 1, -1 do
-				drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
-				Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation)
-				if self.cargo then
-					Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation)
+		local hasBridge = self.currentPath.raiseTrain
+		if not hasBridge then
+			for i = 1, #self.carts do
+				if self.carts[i].currentPath.raiseTrain then
+					hasBridge = true
+					break
 				end
 			end
-			drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
-			Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation)
-		end})
+		end
+		
+		if hasBridge then
+			drawQueue:push({y=(self.currentPath.raiseTrain or 10); f=function()
+				local drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
+				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation)
+			end})
+			for i = #self.carts, 1, -1 do
+				local drawY = (self.carts[i].currentPath.raiseTrain or 10) - i
+				drawQueue:push({y=drawY; f=function()
+					local drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
+					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation)
+					if self.cargo then
+						Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation)
+					end
+				end})
+			end
+		else
+			drawQueue:push({y=10; f=function()
+				local drawPos, drawRotation
+				for i = #self.carts, 1, -1 do
+					drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
+					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation)
+					if self.cargo then
+						Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation)
+					end
+				end
+				drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
+				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation)
+			end})
+		end
 		if DRAW_DEBUG then
 			love.graphics.circle('line',self.pos[1], self.pos[2], def.radius)
 		end

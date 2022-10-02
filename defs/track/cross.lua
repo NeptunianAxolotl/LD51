@@ -1,8 +1,15 @@
 
 return {
 	stateImage = {"track_cross"},
+	topImage = "track_bridge",
 	shopSlot = 3,
 	shopCost = 2,
+	entryUseIndexMap = {
+		[0] = 1,
+		[1] = 2,
+		[2] = 1,
+		[3] = 2,
+	},
 	paths = {
 		{
 			posFunc = function (t)
@@ -13,6 +20,7 @@ return {
 			end,
 			entry = 0,
 			destination = 2,
+			raiseTrain = 120,
 		},
 		{
 			posFunc = function (t)
@@ -23,6 +31,7 @@ return {
 			end,
 			entry = 2,
 			destination = 0,
+			raiseTrain = 120,
 		},
 		{
 			posFunc = function (t)

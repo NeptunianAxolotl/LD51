@@ -113,6 +113,9 @@ function api.Draw(drawQueue)
 				love.graphics.rectangle("line", gx*Global.GRID_SIZE, gy*Global.GRID_SIZE, Global.GRID_SIZE, Global.GRID_SIZE, 4, 4, 8)
 			end
 			Resources.DrawImage(def.stateImage[1], mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8)
+			if def.topImage then
+				Resources.DrawImage(def.topImage, mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8)
+			end
 		end})
 	end
 	
@@ -136,6 +139,9 @@ function api.Draw(drawQueue)
 			end
 			if self.items[i] then
 				Resources.DrawImage(def.stateImage[1], shopItemsX, y, self.trackRotation * math.pi/2, 1, 2)
+				if def.topImage then
+					Resources.DrawImage(def.topImage, shopItemsX, y, self.trackRotation * math.pi/2, 1, 2)
+				end
 			end
 			
 			if self.trackCredits == 0 then
