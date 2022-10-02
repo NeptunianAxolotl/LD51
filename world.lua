@@ -94,7 +94,7 @@ function api.KeyPressed(key, scancode, isRepeat)
 		api.TakeScreenshot()
 	end
 	if key == "n" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-		-- NExt level
+		-- Next level
 	end
 	if api.GetGameOver() then
 		return -- No doing actions
@@ -184,10 +184,19 @@ function api.GetPhysicsWorld()
 	return PhysicsHandler.GetPhysicsWorld()
 end
 
+local function UpdateCamera()
+	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, 
+		{{pos = {0, 0}, radius = 20},
+		{pos = {Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH, Global.WORLD_HEIGHT*Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT},
+		radius = 20}}, 0, 0)
+	Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
+end
+
 function api.Update(dt, realDt)
 	MusicHandler.Update(realDt)
 	SoundHandler.Update(realDt)
 	if api.GetPaused() then
+		UpdateCamera()
 		return
 	end
 	
@@ -207,12 +216,7 @@ function api.Update(dt, realDt)
 	ChatHandler.Update(dt)
 	EffectsHandler.Update(dt)
 	GameHandler.Update(dt)
-	
-	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, 
-		{{pos = {0, 0}, radius = 20},
-		{pos = {Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH, Global.WORLD_HEIGHT*Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT},
-		radius = 20}}, 0, 0)
-	Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
+	UpdateCamera()
 end
 
 function api.Draw()

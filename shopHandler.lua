@@ -63,6 +63,35 @@ function api.UpdateShopIfEmpty()
 	end
 end
 
+local function ClickShopButton(item)
+	if not item then
+		return false
+	end
+	if self.heldTrack then
+		if self.items[item] then
+			if item <= Global.SHOP_BIN_SLOTS and self.items[item] == self.heldTrack then
+				self.heldTrack = false
+				self.emptySlot = false
+				return false
+			end
+			
+			return false
+		end
+		self.items[item] = self.heldTrack
+		self.heldTrack = false
+		self.emptySlot = false
+		self.trackCredits = self.trackCredits + 1
+		return true
+	end
+	if self.trackCredits > 0 then
+		self.heldTrack = self.items[item]
+		self.items[item] = false
+		self.emptySlot = true
+		self.trackCredits = self.trackCredits - 1
+	end
+	return true
+end
+
 function api.Update(dt)
 	self.trackCreditTimer = self.trackCreditTimer - dt
 	if self.trackCreditTimer <= 0 then
@@ -78,6 +107,18 @@ function api.KeyPressed(key, scancode, isRepeat)
 	if key == "r" or key == "space" then
 		self.trackRotation = (self.trackRotation + 1)%4
 	end
+	if key == "1" then
+		ClickShopButton(1)
+	end
+	if key == "2" then
+		ClickShopButton(2)
+	end
+	if key == "3" then
+		ClickShopButton(3)
+	end
+	if key == "4" then
+		ClickShopButton(4)
+	end
 end
 
 function api.MousePressed(x, y, button)
@@ -87,30 +128,7 @@ function api.MousePressed(x, y, button)
 	if button ~= 1 then
 		return false
 	end
-	if not self.hoveredItem then
-		return false
-	end
-	if self.heldTrack then
-		if self.items[self.hoveredItem] then
-			if self.hoveredItem <= Global.SHOP_BIN_SLOTS and self.items[self.hoveredItem] == self.heldTrack then
-				self.heldTrack = false
-				self.emptySlot = false
-			end
-			return false
-		end
-		self.items[self.hoveredItem] = self.heldTrack
-		self.heldTrack = false
-		self.emptySlot = false
-		self.trackCredits = self.trackCredits + 1
-		return true
-	end
-	if self.trackCredits > 0 then
-		self.heldTrack = self.items[self.hoveredItem]
-		self.items[self.hoveredItem] = false
-		self.emptySlot = true
-		self.trackCredits = self.trackCredits - 1
-	end
-	return true
+	return ClickShopButton(self.hoveredItem)
 end
 
 function api.Draw(drawQueue)

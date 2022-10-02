@@ -78,9 +78,9 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 	end
 	
 	function self.SetPermanentBlocked()
-		self.currentTrack.SetPermanentBlock(((self.currentPath.entry or 0) - self.currentTrack.rotation)%4)
+		self.currentTrack.SetPermanentBlock(((self.currentPath.entry or 0) + self.currentTrack.rotation)%4)
 		for i = 1, #self.carts do
-			self.carts[i].currentTrack.SetPermanentBlock(((self.carts[i].currentPath.entry or 0) - self.carts[i].currentTrack.rotation)%4)
+			self.carts[i].currentTrack.SetPermanentBlock(((self.carts[i].currentPath.entry or 0) + self.carts[i].currentTrack.rotation)%4)
 		end
 		self.permanentlyBlocked = true
 	end
