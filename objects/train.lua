@@ -163,7 +163,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation)
 			end})
 			for i = #self.carts, 1, -1 do
-				local drawY = (self.carts[i].currentPath.raiseTrain or 10) - i
+				local drawY = (self.carts[i].currentPath.raiseTrain or 10) - i*0.01
 				drawQueue:push({y=drawY; f=function()
 					local drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
 					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation)

@@ -181,7 +181,7 @@ function api.Draw(drawQueue)
 		InterfaceUtil.DrawSmoothNumberBar("food", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY}, {barWidth, 40})
 		love.graphics.setColor(0, 0, 0, 0.8)
 		love.graphics.print("Food Delivered", barX, barY - 48)
-		love.graphics.print("Delivery Score: +" .. InterfaceUtil.Round((GameHandler.GetDeliverMult() - 1)*100) .. "%", barX + barWidth*0.5, barY - 48)
+		love.graphics.print("Order Size: " .. InterfaceUtil.Round(GameHandler.GetOrderSize()), barX + barWidth*0.5, barY - 48)
 		barX = barX + barWidth + barSpace
 		
 		InterfaceUtil.DrawSmoothNumberBar("wood", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY}, {barWidth, 40})

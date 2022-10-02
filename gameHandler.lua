@@ -72,7 +72,7 @@ end
 
 function api.ReportOnWrap(name, prevWrap)
 	if name == "food" then
-		self.deliverMult = self.deliverMult + 0.1
+		self.orderSize = self.orderSize + Global.ORDER_SIZE_INC
 	elseif name == "wood" then
 		self.speedMult = self.speedMult + 0.1
 	elseif name == "ore" then
@@ -81,8 +81,8 @@ function api.ReportOnWrap(name, prevWrap)
 	return prevWrap + Global.BONUS_REQ_INC
 end
 
-function api.GetDeliverMult()
-	return self.deliverMult
+function api.GetOrderSize()
+	return self.orderSize
 end
 
 function api.GetSpeedMult()
@@ -117,7 +117,7 @@ function api.Initialize(world)
 	self = {
 		world = world,
 		score = 0,
-		deliverMult = 1,
+		orderSize = Global.ORDER_SIZE,
 		speedMult = 1,
 		bonusCarts = 0,
 	}
