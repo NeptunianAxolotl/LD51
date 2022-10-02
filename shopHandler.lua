@@ -151,7 +151,7 @@ function api.Draw(drawQueue)
 	end
 	
 	drawQueue:push({y=800; f=function()
-		local shopItemsX = TerrainHandler.Width()*Global.GRID_SIZE + Global.SHOP_WIDTH*0.5
+		local shopItemsX = Global.VIEW_WIDTH -  Global.SHOP_WIDTH*0.5
 		local shopItemsY = 75
 		
 		Font.SetSize(1)
@@ -248,10 +248,11 @@ function api.Draw(drawQueue)
 		offset = offset + 30
 		GameHandler.DrawScoreSource("deliverTrack", offset)
 		offset = offset + 30
+		love.graphics.setColor(0, 0, 0, 1)
 		
-		love.graphics.rectangle("fill", -1000, Global.BLACK_BAR_LEEWAY + TerrainHandler.Height() * Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT, 5000, 3000)
+		love.graphics.rectangle("fill", -1000, Global.BLACK_BAR_LEEWAY + Global.VIEW_HEIGHT, 5000, 3000)
 		love.graphics.rectangle("fill", -1000, -3000 - Global.BLACK_BAR_LEEWAY, 5000, 3000)
-		love.graphics.rectangle("fill", Global.BLACK_BAR_LEEWAY + TerrainHandler.Width() * Global.GRID_SIZE + Global.SHOP_WIDTH, -1000, 3000, 5000)
+		love.graphics.rectangle("fill", Global.VIEW_WIDTH, -1000, 3000, 5000)
 		love.graphics.rectangle("fill", -3000 - Global.BLACK_BAR_LEEWAY, -1000, 3000, 5000)
 	end})
 end

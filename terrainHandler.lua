@@ -165,7 +165,7 @@ function api.Initialize(world)
 		world = world,
 	}
 	
-	SetupWorld("map3")
+	SetupWorld("map2")
 end
 
 return api
