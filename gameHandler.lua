@@ -23,14 +23,15 @@ local smoothNumberList = {
 -- API
 --------------------------------------------------
 
+function api.DepositGoods(good, number)
+	InterfaceUtil.AddNumber(good, number)
+end
+
 function api.AddScore(value)
 	if self.world.GetGameOver() then
 		return false
 	end
 	local oldScore = InterfaceUtil.GetRawNumber("score", value)
-	if math.floor(oldScore/Global.SCORE_CREDIT_REQ) ~= math.floor((oldScore + value)/Global.SCORE_CREDIT_REQ) then
-		ShopHandler.AddTrackCredits(math.floor((oldScore + value)/Global.SCORE_CREDIT_REQ) - math.floor(oldScore/Global.SCORE_CREDIT_REQ))
-	end
 	InterfaceUtil.AddNumber("score", value)
 end
 
@@ -40,6 +41,10 @@ end
 
 function api.SetGameOver(hasWon, overType)
 	self.world.SetGameOver(hasWon, overType)
+end
+
+function api.GetGameOver()
+	return self.world.GetGameOver()
 end
 
 function api.ToggleMenu()
@@ -55,6 +60,37 @@ end
 function api.GetViewRestriction()
 	local pointsToView = {{0, 0}, {800, 800}}
 	return pointsToView
+end
+
+function api.ReportOnRecord(name, newRecord, oldRecord)
+	if name == "score" then
+		if math.floor(oldRecord/Global.SCORE_CREDIT_REQ) ~= math.floor(newRecord/Global.SCORE_CREDIT_REQ) then
+			ShopHandler.AddTrackCredits(math.floor(newRecord/Global.SCORE_CREDIT_REQ) - math.floor(oldRecord/Global.SCORE_CREDIT_REQ))
+		end
+	end
+end
+
+function api.ReportOnWrap(name, prevWrap)
+	if name == "food" then
+		self.deliverMult = self.deliverMult + 0.1
+	elseif name == "wood" then
+		self.speedMult = self.speedMult + 0.1
+	elseif name == "ore" then
+		self.bonusCarts = self.bonusCarts + 1
+	end
+	return prevWrap + Global.BONUS_REQ_INC
+end
+
+function api.GetDeliverMult()
+	return self.deliverMult
+end
+
+function api.GetSpeedMult()
+	return self.speedMult
+end
+
+function api.GetCartBonus()
+	return self.bonusCarts
 end
 
 --------------------------------------------------
@@ -80,9 +116,15 @@ end
 function api.Initialize(world)
 	self = {
 		world = world,
-		score = 0
+		score = 0,
+		deliverMult = 1,
+		speedMult = 1,
+		bonusCarts = 0,
 	}
 	InterfaceUtil.RegisterSmoothNumber("score", 0, 3)
+	InterfaceUtil.RegisterSmoothNumber("food", 0, 1.4, Global.BONUS_REQ)
+	InterfaceUtil.RegisterSmoothNumber("wood", 0, 1.4, Global.BONUS_REQ)
+	InterfaceUtil.RegisterSmoothNumber("ore",  0, 1.4, Global.BONUS_REQ)
 end
 
 return api

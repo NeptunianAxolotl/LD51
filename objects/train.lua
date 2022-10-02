@@ -9,9 +9,10 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 	
 	self.travel = 0
 	self.speed = 0
-	if self.def.cartCount > 0 then
+	self.cartCount = self.def.cartCount + GameHandler.GetCartBonus()
+	if self.cartCount > 0 then
 		self.travelLimit = self.def.cartDist+ 0.25
-		self.spawnWaits = self.def.cartCount
+		self.spawnWaits = self.cartCount
 		self.spawnWaitTimer = Global.TRAIN_SPAWN_TIME
 	end
 	
@@ -20,7 +21,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 		if not newPath then
 			return
 		end
-		if self.currentTrack and self.def.cartCount == 0 then
+		if self.currentTrack and self.cartCount == 0 then
 			self.currentTrack.SetUsedState(false, entry)
 		end
 		
@@ -35,7 +36,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 	EnterTrack(TerrainHandler.GetTrackAtPos(new_gridPos), new_entry, true)
 	
 	self.carts = {}
-	for i = 1, self.def.cartCount do
+	for i = 1, self.cartCount do
 		self.carts[i] = {
 			currentTrack = self.currentTrack,
 			currentPath = self.currentPath,
@@ -80,11 +81,12 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 				self.nextTrack.SetUsedState(true, nextEntry)
 			end
 		end
+		local mult = GameHandler.GetSpeedMult()*(self.currentPath.speedMult or 1)
 		if self.nextTrack then
-			self.speed = math.min(self.def.maxSpeed, self.speed + dt*self.def.accel)
+			self.speed = math.min(self.def.maxSpeed, self.speed + dt*self.def.accel*mult)
 		else
 			if self.speed > -0.05 then
-				self.speed = self.speed - dt*self.def.deccel
+				self.speed = self.speed - dt*self.def.deccel*mult
 			end
 			if self.speed < 0 then
 				if self.travel < 0.5 then
@@ -97,7 +99,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 		if self.travelLimit then
 			self.speed = math.min(0.3, self.speed)
 		end
-		local travelChange = dt*self.speed*(self.currentPath.speedMult or 1)
+		local travelChange = dt*self.speed*mult
 		if self.travelLimit then
 			self.travelLimit = self.travelLimit - travelChange
 			if self.travelLimit < 0 then
@@ -122,7 +124,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 			EnterTrack(self.nextTrack, (self.destination + 2)%4)
 		end
 		
-		if self.def.cartCount > 0 then
+		if self.cartCount > 0 then
 			ManageCart(1, self.travel, self.currentTrack, self.currentPath)
 			for i = 2, #self.carts do
 				ManageCart(i, self.carts[i - 1].travel, self.carts[i - 1].currentTrack, self.carts[i - 1].currentPath)

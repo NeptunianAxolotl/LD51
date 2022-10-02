@@ -9,7 +9,9 @@ return {
 			if self.IsInUse() then
 				GameHandler.SetGameOver(false, "factory_block")
 			end
-			self.spawnTimer = TrainHandler.AddTrain("basic", self.pos, (self.rotation + 2)%4)
+			if not GameHandler.GetGameOver() then
+				self.spawnTimer = TrainHandler.AddTrain("basic", self.pos, (self.rotation + 2)%4)
+			end
 		end
 	end,
 	paths = {

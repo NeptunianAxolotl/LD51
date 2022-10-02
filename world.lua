@@ -199,7 +199,7 @@ function api.Update(dt, realDt)
 	
 	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, 
 		{{pos = {0, 0}, radius = 20},
-		{pos = {Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH, Global.WORLD_HEIGHT*Global.GRID_SIZE},
+		{pos = {Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH, Global.WORLD_HEIGHT*Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT},
 		radius = 20}}, 0, 0)
 	Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
 end

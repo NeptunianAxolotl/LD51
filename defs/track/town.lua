@@ -77,10 +77,11 @@ return {
 		end
 		local good = train.GetCarrying()
 		local score = 0
-		for i = 1, train.def.cartCount do
+		for i = 1, train.cartCount do
 			score = score + DepositGood(self, good)
 		end
-		GameHandler.AddScore(score)
+		GameHandler.DepositGoods(good, train.cartCount)
+		GameHandler.AddScore(score*GameHandler.GetDeliverMult())
 		train.SetCarrying(false)
 	end,
 	extraDrawFunc = function (self, pos, rotation)

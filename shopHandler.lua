@@ -172,6 +172,30 @@ function api.Draw(drawQueue)
 		Font.SetSize(2)
 		love.graphics.setColor(0, 0, 0, 0.8)
 		love.graphics.print("- Every ten seconds an engine\n(or carriage) spawns and you\ngain a track.\n- Left click selects.\n- Right click rotates.\n- Score deliveries and travel\ndistance. Gain a bonus\ntrack every 1000 points.", shopItemsX - 200, shopItemsY + 120 + shopItemsSpacing * Global.SHOP_SLOTS)
+		
+		local barY = Global.WORLD_HEIGHT * Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT*0.5 + 10
+		local barX = 100
+		local barWidth = Global.WORLD_WIDTH * Global.GRID_SIZE / 4
+		local barSpace = Global.WORLD_WIDTH * Global.GRID_SIZE / 12
+		
+		InterfaceUtil.DrawSmoothNumberBar("food", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY}, {barWidth, 40})
+		love.graphics.setColor(0, 0, 0, 0.8)
+		love.graphics.print("Food Delivered", barX, barY - 48)
+		love.graphics.print("Delivery Score: +" .. InterfaceUtil.Round((GameHandler.GetDeliverMult() - 1)*100) .. "%", barX + barWidth*0.5, barY - 48)
+		barX = barX + barWidth + barSpace
+		
+		InterfaceUtil.DrawSmoothNumberBar("wood", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY}, {barWidth, 40})
+		love.graphics.setColor(0, 0, 0, 0.8)
+		love.graphics.print("Wood Delivered", barX, barY - 48)
+		love.graphics.print("Train Speed: +" .. InterfaceUtil.Round((GameHandler.GetSpeedMult() - 1)*100) .. "%", barX + barWidth*0.5, barY - 48)
+		barX = barX + barWidth + barSpace
+		
+		InterfaceUtil.DrawSmoothNumberBar("ore", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY}, {barWidth, 40})
+		love.graphics.setColor(0, 0, 0, 0.8)
+		love.graphics.print("Ore Delivered", barX, barY - 48)
+		love.graphics.print("Carriages: " .. (1 + InterfaceUtil.Round(GameHandler.GetCartBonus())), barX + barWidth*0.5, barY - 48)
+		barX = barX + barWidth + barSpace
+	
 	end})
 end
 
