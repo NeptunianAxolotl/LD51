@@ -79,6 +79,7 @@ local function UpdateTransform(cameraTransform, cameraX, cameraY, cameraScale)
 			end
 		end
 	end
+	--print("Camera Scale", boundLimit/cameraScale, boundLimit/cameraScale)
 	cameraTransform:setTransformation(
 		windowX/2, windowY/2, 0,
 		boundLimit/cameraScale, boundLimit/cameraScale,

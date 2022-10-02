@@ -4,7 +4,7 @@ return {
 	shopSlot = false,
 	trainMidFunc = function (self, train)
 		if not train.GetCarrying() then
-			train.SetCarrying("plank")
+			train.SetCarrying("wood")
 		end
 	end,
 	paths = {
