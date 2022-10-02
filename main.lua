@@ -69,7 +69,7 @@ function love.load(arg)
 	love.window.setTitle("LD51")
 	--love.graphics.setDefaultFilter("nearest", "nearest") -- Removing this helps some things and really hurts others
 
-	love.graphics.setBackgroundColor(180/255, 180/255, 180/255, 1)
+	love.graphics.setBackgroundColor(50/255, 140/255, 40/255, 1)
 
 	love.keyboard.setKeyRepeat(true)
 	math.randomseed(os.clock())
