@@ -37,8 +37,12 @@ function api.AddTrack(pos, trackType, rotation, setData)
 	self.trackPos[x][y] = IterableMap.Add(self.trackList, NewTrack(trackData, api))
 end
 
-local function SetupWorld(mapName, width, height)
+local function SetupWorld(mapName)
 	map = MapDefs[mapName]
+	
+	self.width  = map.dimensions.width
+	self.height = map.dimensions.height
+	
 	for i = 1, #map.track do
 		local track = map.track[i]
 		api.AddTrack(track.pos, track.trackType, track.rot, track.setData)
@@ -73,7 +77,7 @@ function api.GetValidGridPlacement(gridPos, alwaysReturn, addDirection)
 	elseif addDirection == 3 then
 		gy = gy - 1
 	end
-	if (gx < 0 or gy < 0 or gx >= Global.WORLD_WIDTH or gy >= Global.WORLD_HEIGHT) then
+	if (gx < 0 or gy < 0 or gx >= TerrainHandler.Width() or gy >= TerrainHandler.Height()) then
 		if alwaysReturn then
 			return {gx, gy}, true
 		end
@@ -115,6 +119,14 @@ function api.DestroyTrack(gridPos)
 	self.trackPos[gridPos[1]][gridPos[2]] = nil
 end
 
+function api.Width()
+	return self.width
+end
+
+function api.Height()
+	return self.height
+end
+
 function api.Update(dt)
 	IterableMap.ApplySelf(self.trackList, "Update", dt)
 end
@@ -153,7 +165,7 @@ function api.Initialize(world)
 		world = world,
 	}
 	
-	SetupWorld("map2", Global.WORLD_WIDTH, Global.WORLD_HEIGHT)
+	SetupWorld("map3")
 end
 
 return api

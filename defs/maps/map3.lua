@@ -1,8 +1,8 @@
 
 local mapData = {
 	dimensions = {
-		width = 26,
-		height = 15,
+		width = 20,
+		height = 12,
 	},
 	track = {
 		{pos = {3, 3}, rot = 0, trackType = "factory"},

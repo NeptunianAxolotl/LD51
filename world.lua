@@ -187,7 +187,8 @@ end
 local function UpdateCamera()
 	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, 
 		{{pos = {0, 0}, radius = 20},
-		{pos = {Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH, Global.WORLD_HEIGHT*Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT},
+		{pos = {TerrainHandler.Width()*Global.GRID_SIZE + Global.SHOP_WIDTH, TerrainHandler.Height()*Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT},
+		--{pos = {TerrainHandler.Width()*Global.GRID_SIZE, TerrainHandler.Height()*Global.GRID_SIZE},
 		radius = 20}}, 0, 0)
 	Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
 end
@@ -305,7 +306,7 @@ function api.Initialize()
 	-- Note that the camera pins only function for these particular second entries.
 	Camera.Initialize({
 		minScale = 1000,
-		initPos = {0, 0}
+		initPos = {0, 0},
 	})
 end
 

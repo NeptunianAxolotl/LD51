@@ -151,7 +151,7 @@ function api.Draw(drawQueue)
 	end
 	
 	drawQueue:push({y=800; f=function()
-		local shopItemsX = Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH*0.5
+		local shopItemsX = TerrainHandler.Width()*Global.GRID_SIZE + Global.SHOP_WIDTH*0.5
 		local shopItemsY = 75
 		
 		Font.SetSize(1)
@@ -195,10 +195,10 @@ function api.Draw(drawQueue)
 		love.graphics.setColor(0, 0, 0, 0.8)
 		love.graphics.print("- Every ten seconds an engine\n(or carriage) spawns and you\ngain a track.\n- Left click selects.\n- Right click rotates.\n- Score deliveries and travel\ndistance. Gain a bonus\ntrack every 1000 points.", shopItemsX - 200, shopItemsY + 120 + shopItemsSpacing * Global.SHOP_SLOTS)
 		
-		local barY = Global.WORLD_HEIGHT * Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT*0.5 + 10
+		local barY = TerrainHandler.Height() * Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT*0.5 + 10
 		local barX = 100
-		local barWidth = Global.WORLD_WIDTH * Global.GRID_SIZE / 4
-		local barSpace = Global.WORLD_WIDTH * Global.GRID_SIZE / 12
+		local barWidth = TerrainHandler.Width() * Global.GRID_SIZE / 4
+		local barSpace = TerrainHandler.Width() * Global.GRID_SIZE / 12
 		
 		local showX, showY = GameHandler.GetShowOffset("food")
 		if showY then
@@ -249,9 +249,9 @@ function api.Draw(drawQueue)
 		GameHandler.DrawScoreSource("deliverTrack", offset)
 		offset = offset + 30
 		
-		love.graphics.rectangle("fill", -1000, Global.BLACK_BAR_LEEWAY + Global.WORLD_HEIGHT * Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT, 5000, 3000)
+		love.graphics.rectangle("fill", -1000, Global.BLACK_BAR_LEEWAY + TerrainHandler.Height() * Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT, 5000, 3000)
 		love.graphics.rectangle("fill", -1000, -3000 - Global.BLACK_BAR_LEEWAY, 5000, 3000)
-		love.graphics.rectangle("fill", Global.BLACK_BAR_LEEWAY + Global.WORLD_WIDTH * Global.GRID_SIZE + Global.SHOP_WIDTH, -1000, 3000, 5000)
+		love.graphics.rectangle("fill", Global.BLACK_BAR_LEEWAY + TerrainHandler.Width() * Global.GRID_SIZE + Global.SHOP_WIDTH, -1000, 3000, 5000)
 		love.graphics.rectangle("fill", -3000 - Global.BLACK_BAR_LEEWAY, -1000, 3000, 5000)
 	end})
 end
