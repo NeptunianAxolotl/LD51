@@ -3,6 +3,7 @@ local IterableMap = require("include/IterableMap")
 local util = require("include/util")
 
 local TrackDefs = util.LoadDefDirectory("defs/track")
+local MapDefs = util.LoadDefDirectory("defs/maps")
 local NewTrack = require("objects/track")
 
 local self = {}
@@ -13,18 +14,18 @@ local function SetUneditable(x, y)
 	self.uneditable[x][y] = true
 end
 
-function api.AddTrack(pos, trackType, rotation)
+function api.AddTrack(pos, trackType, rotation, setData)
 	local x, y = pos[1], pos[2]
 	self.trackPos[x] = self.trackPos[x] or {}
 	if self.trackPos[x][y] then
 		IterableMap.Remove(self.trackList, self.trackPos[x][y])
 	end
 	local def = TrackDefs[trackType]
-	trackData = {
-		pos = pos,
-		trackType = trackType,
-		rotation = rotation,
-	}
+	local trackData = (setData and util.CopyTable(setData)) or {}
+	trackData.pos = pos
+	trackData.trackType = trackType
+	trackData.rotation = rotation
+	
 	if not def.pickupable then
 		SetUneditable(x, y)
 		if def.nearbyBlocked then
@@ -36,44 +37,12 @@ function api.AddTrack(pos, trackType, rotation)
 	self.trackPos[x][y] = IterableMap.Add(self.trackList, NewTrack(trackData, api))
 end
 
-local function SetupWorld(width, height)
-	api.AddTrack({0 + 5, 0 + 7}, "factory", 0)
-	api.AddTrack({1 + 5, 0 + 7}, "straight", 0)
-	api.AddTrack({2 + 5, 0 + 7}, "split", 2)
-	api.AddTrack({2 + 5, 1 + 7}, "straight", 1)
-	api.AddTrack({2 + 5, 2 + 7}, "split", 0)
-	api.AddTrack({3 + 5, 2 + 7}, "straight", 0)
-	api.AddTrack({4 + 5, 2 + 7}, "straight", 0)
-	api.AddTrack({4 + 5, 2 + 7}, "branch_left", 1)
-	api.AddTrack({4 + 5, 3 + 7}, "curve", 3)
-	api.AddTrack({5 + 5, 3 + 7}, "split", 2)
-	api.AddTrack({5 + 5, 2 + 7}, "straight", 1)
-	api.AddTrack({5 + 5, 1 + 7}, "straight", 1)
-	api.AddTrack({5 + 5, 0 + 7}, "curve", 1)
-	api.AddTrack({4 + 5, 0 + 7}, "curve", 0)
-	api.AddTrack({4 + 5, 1 + 7}, "straight", 1)
-	
-	api.AddTrack({2 + 5, -1 + 7}, "curve", 0)
-	api.AddTrack({3 + 5, -1 + 7}, "straight", 0)
-	api.AddTrack({4 + 5, -1 + 7}, "sawmill", 0)
-	api.AddTrack({5 + 5, -1 + 7}, "straight", 0)
-	api.AddTrack({6 + 5, -1 + 7}, "town", 0)
-	api.AddTrack({7 + 5, -1 + 7}, "straight", 0)
-	api.AddTrack({8 + 5, -1 + 7}, "farm", 0)
-	api.AddTrack({9 + 5, -1 + 7}, "straight", 0)
-	api.AddTrack({10+ 5, -1 + 7}, "mine", 0)
-	api.AddTrack({11+ 5, -1 + 7}, "straight", 0)
-	
-	api.AddTrack({5 + 5, 4 + 7}, "signal", 1)
-	api.AddTrack({5 + 5, 5 + 7}, "cross", 1)
-	api.AddTrack({5 + 5, 6 + 7}, "curve", 3)
-	api.AddTrack({6 + 5, 6 + 7}, "curve", 2)
-	api.AddTrack({6 + 5, 5 + 7}, "curve", 1)
-	api.AddTrack({4 + 5, 5 + 7}, "town", 0)
-	api.AddTrack({3 + 5, 5 + 7}, "straight", 0)
-	api.AddTrack({2 + 5, 5 + 7}, "curve", 3)
-	api.AddTrack({2 + 5, 4 + 7}, "straight", 1)
-	api.AddTrack({2 + 5, 3 + 7}, "straight", 1)
+local function SetupWorld(mapName, width, height)
+	map = MapDefs[mapName]
+	for i = 1, #map.track do
+		local track = map.track[i]
+		api.AddTrack(track.pos, track.trackType, track.rot, track.setData)
+	end
 end
 
 function api.GetTrackAtPos(gridPos, addDirection)
@@ -148,7 +117,7 @@ function api.Initialize(world)
 		world = world,
 	}
 	
-	SetupWorld(Global.WORLD_WIDTH, Global.WORLD_HEIGHT)
+	SetupWorld("map1", Global.WORLD_WIDTH, Global.WORLD_HEIGHT)
 	
 	--for name in pairs(FeatureDefs) do
 	--	print([[	"]] .. name .. [[",]])
