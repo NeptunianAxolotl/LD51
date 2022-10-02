@@ -153,11 +153,7 @@ function api.Initialize(world)
 		world = world,
 	}
 	
-	SetupWorld("map1", Global.WORLD_WIDTH, Global.WORLD_HEIGHT)
-	
-	--for name in pairs(FeatureDefs) do
-	--	print([[	"]] .. name .. [[",]])
-	--end
+	SetupWorld("map2", Global.WORLD_WIDTH, Global.WORLD_HEIGHT)
 end
 
 return api
