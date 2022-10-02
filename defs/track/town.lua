@@ -29,13 +29,14 @@ local function DepositGoods(self, good, count)
 	CheckPriorityGoodInit(self)
 	
 	local scoreOut = count * ((good == self.priorityGood and Global.PRIORITY_DELIVER_SCORE) or Global.BASE_DELIVER_SCORE)
+	local isPriority = (good == self.priorityGood)
 	if good == self.priorityGood then
 		self.priorityRemaining = self.priorityRemaining - count
 	end
 	if self.priorityRemaining <= 0 then
 		GetNextPriority(self)
 	end
-	return scoreOut
+	return scoreOut, isPriority
 end
 
 return {
@@ -47,10 +48,10 @@ return {
 			return
 		end
 		local good = train.GetCarrying()
-		local score = DepositGoods(self, good, train.cartCount)
+		local score, isPriority = DepositGoods(self, good, train.cartCount)
 		if not GameHandler.GetGameOver() then
 			GameHandler.DepositGoods(good, train.cartCount)
-			GameHandler.AddScore(score)
+			GameHandler.AddScore(score, (isPriority and "deliverBonusScore") or "deliverScore")
 		end
 		train.SetCarrying(false)
 	end,

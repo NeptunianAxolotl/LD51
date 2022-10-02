@@ -25,14 +25,24 @@ local smoothNumberList = {
 
 function api.DepositGoods(good, number)
 	InterfaceUtil.AddNumber(good, number)
+	self.deliveries = self.deliveries + 1
+	if self.deliveries >= Global.DELIVERY_PER_TRACK then
+		ShopHandler.AddTrackCredits(1, "deliverTrack")
+		self.deliveries = 0
+	end
 end
 
-function api.AddScore(value)
+function api.AddScore(value, source)
 	if self.world.GetGameOver() then
 		return false
 	end
 	local oldScore = InterfaceUtil.GetRawNumber("score", value)
 	InterfaceUtil.AddNumber("score", value)
+	self.scoreSource[source] = self.scoreSource[source] + value
+end
+
+function api.AddSourceScore(value, source)
+	self.scoreSource[source] = self.scoreSource[source] + value
 end
 
 function api.GetScore()
@@ -63,11 +73,11 @@ function api.GetViewRestriction()
 end
 
 function api.ReportOnRecord(name, newRecord, oldRecord)
-	if name == "score" then
-		if math.floor(oldRecord/Global.SCORE_CREDIT_REQ) ~= math.floor(newRecord/Global.SCORE_CREDIT_REQ) then
-			ShopHandler.AddTrackCredits(math.floor(newRecord/Global.SCORE_CREDIT_REQ) - math.floor(oldRecord/Global.SCORE_CREDIT_REQ))
-		end
-	end
+	--if name == "score" then
+	--	if math.floor(oldRecord/Global.SCORE_CREDIT_REQ) ~= math.floor(newRecord/Global.SCORE_CREDIT_REQ) then
+	--		ShopHandler.AddTrackCredits(math.floor(newRecord/Global.SCORE_CREDIT_REQ) - math.floor(oldRecord/Global.SCORE_CREDIT_REQ))
+	--	end
+	--end
 end
 
 function api.ReportOnWrap(name, prevWrap)
@@ -96,7 +106,7 @@ end
 function api.GetShowOffset(name)
 	local xOffset = -200 * (1 - self[name .. "BonusShow"])
 	local yOffset = 200 * (1 - self[name .. "Show"])
-	return xOffset, yOffset
+	return (self[name .. "BonusShow"] > 0) and xOffset, (self[name .. "Show"] > 0) and yOffset
 end
 
 function api.UpdateShow(name, dt, condition)
@@ -106,6 +116,12 @@ function api.UpdateShow(name, dt, condition)
 			self[name .. "Show"] = 1
 		end
 	end
+end
+
+function api.DrawScoreSource(source, offset)
+	Font.SetSize(2)
+	love.graphics.setColor(0, 0, 0, 0.8)
+	love.graphics.print(source .. ": " .. self.scoreSource[source], 12, offset)
 end
 
 --------------------------------------------------
@@ -147,6 +163,14 @@ function api.Initialize(world)
 		foodBonusShow = 0,
 		woodBonusShow = 0,
 		oreBonusShow = 0,
+		deliveries = 0,
+		scoreSource = {
+			travelScore = 0,
+			deliverScore = 0,
+			deliverBonusScore = 0,
+			tickTrack = 0,
+			deliverTrack = 0,
+		}
 	}
 	InterfaceUtil.RegisterSmoothNumber("score", 0, 3)
 	InterfaceUtil.RegisterSmoothNumber("food", 0, 1.4, Global.BONUS_REQ)

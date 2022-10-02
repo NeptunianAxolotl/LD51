@@ -117,7 +117,7 @@ function api.DrawSmoothNumberBar(name, color, backgroundCol, pos, size)
 	local number = self.smoothNumbers[name]
 	local prop = number.has / number.wrap
 	local text = api.Round(number.has) .. " / " .. api.Round(number.wrap)
-	api.DrawBar(color, backgroundCol, prop, text, {0, 0}, pos, size)
+	api.DrawBar(color, backgroundCol, prop, text, {0, -3}, pos, size)
 end
 
 --------------------------------------------------

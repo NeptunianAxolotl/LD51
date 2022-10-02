@@ -49,11 +49,12 @@ function api.SetHeldTrack(newTrack, newRotation)
 	end
 end
 
-function api.AddTrackCredits(credits)
+function api.AddTrackCredits(credits, source)
 	if self.world.GetGameOver() then
 		return false
 	end
 	self.trackCredits = self.trackCredits + credits
+	GameHandler.AddSourceScore(credits, source)
 end
 
 function api.UpdateShopIfEmpty()
@@ -66,7 +67,7 @@ function api.Update(dt)
 	self.trackCreditTimer = self.trackCreditTimer - dt
 	if self.trackCreditTimer <= 0 then
 		self.trackCreditTimer = self.trackCreditTimer + Global.TRACK_CREDIT_TIME
-		api.AddTrackCredits(1)
+		api.AddTrackCredits(1, "tickTrack")
 	end
 	if not self.heldTrack then
 		api.UpdateShopIfEmpty()
@@ -179,29 +180,54 @@ function api.Draw(drawQueue)
 		local barSpace = Global.WORLD_WIDTH * Global.GRID_SIZE / 12
 		
 		local showX, showY = GameHandler.GetShowOffset("food")
-		InterfaceUtil.DrawSmoothNumberBar("food", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY + showY}, {barWidth, 40})
-		love.graphics.setColor(0, 0, 0, 0.8)
-		love.graphics.print("Food Delivered", barX, barY - 48 + showY)
-		love.graphics.print("Order Size: " .. InterfaceUtil.Round(GameHandler.GetOrderSize()), barX + barWidth*0.5 + showX, barY - 48 + showY)
+		if showY then
+			InterfaceUtil.DrawSmoothNumberBar("food", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY + showY}, {barWidth, 40})
+			love.graphics.setColor(0, 0, 0, 0.8)
+			love.graphics.print("Food Delivered", barX, barY - 48 + showY)
+			if showX then
+				love.graphics.print("Order Size: " .. InterfaceUtil.Round(GameHandler.GetOrderSize()), barX + barWidth*0.5 + showX, barY - 48 + showY)
+			end
+		end
 		barX = barX + barWidth + barSpace
 		
 		showX, showY = GameHandler.GetShowOffset("wood")
-		InterfaceUtil.DrawSmoothNumberBar("wood", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY + showY}, {barWidth, 40})
-		love.graphics.setColor(0, 0, 0, 0.8)
-		love.graphics.print("Wood Delivered", barX, barY - 48 + showY)
-		love.graphics.print("Train Speed: +" .. InterfaceUtil.Round((GameHandler.GetSpeedMult() - 1)*100) .. "%", barX + barWidth*0.5 + showX, barY - 48 + showY)
+		if showY then
+			InterfaceUtil.DrawSmoothNumberBar("wood", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY + showY}, {barWidth, 40})
+			love.graphics.setColor(0, 0, 0, 0.8)
+			love.graphics.print("Wood Delivered", barX, barY - 48 + showY)
+			if showX then
+				love.graphics.print("Train Speed: +" .. InterfaceUtil.Round((GameHandler.GetSpeedMult() - 1)*100) .. "%", barX + barWidth*0.5 + showX, barY - 48 + showY)
+			end
+		end
 		barX = barX + barWidth + barSpace
 		
 		showX, showY = GameHandler.GetShowOffset("ore")
-		InterfaceUtil.DrawSmoothNumberBar("ore", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY + showY}, {barWidth, 40})
-		love.graphics.setColor(0, 0, 0, 0.8)
-		love.graphics.print("Ore Delivered", barX, barY - 48 + showY)
-		love.graphics.print("Carriages: " .. (1 + InterfaceUtil.Round(GameHandler.GetCartBonus())), barX + barWidth*0.5 + showX, barY - 48 + showY)
+		if showY then
+			InterfaceUtil.DrawSmoothNumberBar("ore", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY + showY}, {barWidth, 40})
+			love.graphics.setColor(0, 0, 0, 0.8)
+			love.graphics.print("Ore Delivered", barX, barY - 48 + showY)
+			if showX then
+				love.graphics.print("Carriages: " .. (1 + InterfaceUtil.Round(GameHandler.GetCartBonus())), barX + barWidth*0.5 + showX, barY - 48 + showY)
+			end
+		end
 		barX = barX + barWidth + barSpace
 	end})
 	
 	drawQueue:push({y=1000; f=function()
 		love.graphics.setColor(0, 0, 0, 1)
+		
+		local offset = 10
+		GameHandler.DrawScoreSource("travelScore", offset)
+		offset = offset + 30
+		GameHandler.DrawScoreSource("deliverScore", offset)
+		offset = offset + 30
+		GameHandler.DrawScoreSource("deliverBonusScore", offset)
+		offset = offset + 30
+		GameHandler.DrawScoreSource("tickTrack", offset)
+		offset = offset + 30
+		GameHandler.DrawScoreSource("deliverTrack", offset)
+		offset = offset + 30
+		
 		love.graphics.rectangle("fill", -1000, Global.BLACK_BAR_LEEWAY + Global.WORLD_HEIGHT * Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT, 5000, 3000)
 		love.graphics.rectangle("fill", -1000, -3000 - Global.BLACK_BAR_LEEWAY, 5000, 3000)
 		love.graphics.rectangle("fill", Global.BLACK_BAR_LEEWAY + Global.WORLD_WIDTH * Global.GRID_SIZE + Global.SHOP_WIDTH, -1000, 3000, 5000)

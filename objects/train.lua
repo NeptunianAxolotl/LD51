@@ -31,7 +31,9 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 		self.currentTrack.SetUsedState(true, entry)
 		self.nextTrack = false
 		
-		GameHandler.AddScore(Global.TRAVEL_SCORE)
+		if not isSpawn then
+			GameHandler.AddScore(Global.TRAVEL_SCORE, "travelScore")
+		end
 	end
 	EnterTrack(TerrainHandler.GetTrackAtPos(new_gridPos), new_entry, true)
 	
