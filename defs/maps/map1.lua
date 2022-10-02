@@ -31,7 +31,7 @@ local mapData = {
 		{pos = {5 + 5, 6 + 7}, rot = 3, trackType = "curve"},
 		{pos = {6 + 5, 6 + 7}, rot = 2, trackType = "curve"},
 		{pos = {6 + 5, 5 + 7}, rot = 1, trackType = "curve"},
-		{pos = {4 + 5, 5 + 7}, rot = 0, trackType = "town", setData = {prices = {food = 250, wood = 150, ore = 200}}},
+		{pos = {4 + 5, 5 + 7}, rot = 0, trackType = "town", setData = {}},
 		{pos = {3 + 5, 5 + 7}, rot = 0, trackType = "straight"},
 		{pos = {2 + 5, 5 + 7}, rot = 3, trackType = "curve"},
 		{pos = {2 + 5, 4 + 7}, rot = 1, trackType = "straight"},

@@ -18,11 +18,14 @@ local function NewTrack(self, terrain)
 	self.worldPos = {(self.pos[1] + 0.5) * Global.GRID_SIZE, (self.pos[2] + 0.5) * Global.GRID_SIZE}
 	self.worldRot = self.rotation*math.pi/2
 	
-	function self.GetPathAndNextTrack(entry, isSpawn)
+	function self.GetPathAndNextTrack(entry, isSpawn, ignoreState)
+		if self.permanentlyBlocked then
+			return false
+		end
 		local trackSpaceEntry = (entry - self.rotation)%4
 		for i = 1, #self.def.paths do
 			local path = self.def.paths[i]
-			if (isSpawn and path.isSpawnPath) or (trackSpaceEntry == path.entry and ((not path.requiredState) or self.state == path.requiredState)) then
+			if (isSpawn and path.isSpawnPath) or (trackSpaceEntry == path.entry and (ignoreState or (not path.requiredState) or (self.state == path.requiredState))) then
 				local worldSpaceDest = (path.destination + self.rotation)%4
 				return path, worldSpaceDest
 			end
@@ -49,7 +52,7 @@ local function NewTrack(self, terrain)
 	end
 	
 	function self.IsInUse(entry)
-		if self.toDestroy then
+		if self.toDestroy or self.permanentlyBlocked then
 			return true
 		end
 		if self.def.entryUseIndexMap then
@@ -70,6 +73,10 @@ local function NewTrack(self, terrain)
 			return (self.state == self.def.offState)
 		end
 		return false
+	end
+	
+	function self.SetPermanentBlock()
+		self.permanentlyBlocked = true
 	end
 	
 	function self.MousePressed()

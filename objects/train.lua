@@ -71,7 +71,16 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 		self.cargo = newCarry
 	end
 	
-	function self.Update(dt)
+	local function UpdateMovement(dt)
+		if self.permanentlyBlocked then
+			self.fireSpawnTimer = (self.fireSpawnTimer or 0) - dt
+			if self.fireSpawnTimer <= 0 then
+				self.fireSpawnTimer = 0.2 + 0.3 * math.random()
+				local drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
+				EffectsHandler.SpawnEffect("fireball_explode", drawPos)
+			end
+			return
+		end
 		local oldTravel = self.travel
 		if not self.nextTrack then
 			local nextTrack = TerrainHandler.GetTrackAtPos(self.currentTrack.GetPos(), self.destination)
@@ -86,12 +95,14 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 			self.speed = math.min(self.def.maxSpeed, self.speed + dt*self.def.accel*mult)
 		else
 			if self.speed > -0.05 then
-				self.speed = self.speed - dt*self.def.deccel*mult
+				if (self.travel > 0.4 or self.speed > 0.12) or self.travel > 0.55 then
+					self.speed = self.speed - dt*self.def.deccel*mult
+				end
 			end
 			if self.speed < 0 then
-				if self.travel < 0.5 then
+				if self.travel < 0.52 then
 					self.speed = 0.12
-				elseif self.travel < 0.55 then
+				elseif self.travel < 0.6 then
 					self.speed = 0
 				end
 			end
@@ -119,6 +130,13 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 		if oldTravel < 0.5 and self.travel >= 0.5 and self.currentTrack.def.trainMidFunc then
 			self.currentTrack.def.trainMidFunc(self.currentTrack, self)
 		end
+		if self.travel > 0.52 and TerrainHandler.IsExitPermanentlyBlocked(self.currentTrack.GetPos(), self.destination) then
+			self.currentTrack.SetPermanentBlock()
+			for i = 1, #self.carts do
+				self.carts[i].currentTrack.SetPermanentBlock()
+			end
+			self.permanentlyBlocked = true
+		end
 		if self.travel >= 1 then
 			self.travel = self.travel - 1
 			EnterTrack(self.nextTrack, (self.destination + 2)%4)
@@ -144,6 +162,10 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 				end
 			end
 		end
+	end
+	
+	function self.Update(dt)
+		UpdateMovement(dt)
 	end
 	
 	function self.Draw(drawQueue)

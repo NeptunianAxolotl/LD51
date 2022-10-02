@@ -62,9 +62,21 @@ function api.GetTrackAtPos(gridPos, addDirection)
 	return IterableMap.Get(self.trackList, self.trackPos[x][y])
 end
 
-function api.GetValidPlacement(pos, alwaysReturn)
-	local gx, gy = math.floor(pos[1] / Global.GRID_SIZE), math.floor(pos[2] / Global.GRID_SIZE)
+function api.GetValidGridPlacement(gridPos, alwaysReturn, addDirection)
+	local gx, gy = gridPos[1], gridPos[2]
+	if addDirection == 0 then
+		gx = gx + 1
+	elseif addDirection == 1 then
+		gy = gy + 1
+	elseif addDirection == 2 then
+		gx = gx - 1
+	elseif addDirection == 3 then
+		gy = gy - 1
+	end
 	if (gx < 0 or gy < 0 or gx >= Global.WORLD_WIDTH or gy >= Global.WORLD_HEIGHT) then
+		if alwaysReturn then
+			return {gx, gy}, true
+		end
 		return false
 	end
 	if (self.uneditable[gx] and self.uneditable[gx][gy]) then
@@ -74,6 +86,27 @@ function api.GetValidPlacement(pos, alwaysReturn)
 		return false
 	end
 	return {gx, gy}
+end
+
+function api.GetValidPlacement(pos, alwaysReturn, addDirection)
+	local gx, gy = math.floor(pos[1] / Global.GRID_SIZE), math.floor(pos[2] / Global.GRID_SIZE)
+	return api.GetValidGridPlacement({gx, gy}, alwaysReturn, addDirection)
+end
+
+function api.IsExitPermanentlyBlocked(pos, destination)
+	local gridPos, blocked = api.GetValidGridPlacement(pos, true, destination)
+	if not blocked then
+		return false -- Facing into a tile that can be edited.
+	end
+	local track = api.GetTrackAtPos(gridPos)
+	if not track then
+		return true -- Facing into an uneditable non-track piece.
+	end
+	local entry = (destination + 2)%4
+	if track.GetPathAndNextTrack(entry, false, true) then
+		return false -- Uneditable track has an entry for this destination
+	end
+	return true
 end
 
 function api.DestroyTrack(gridPos)
