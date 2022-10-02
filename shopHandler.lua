@@ -132,10 +132,11 @@ function api.Draw(drawQueue)
 	
 	drawQueue:push({y=0; f=function()
 		local shopItemsX = Global.WORLD_WIDTH*Global.GRID_SIZE + Global.SHOP_WIDTH*0.5
-		local shopItemsY = 20
+		local shopItemsY = 75
 		
 		Font.SetSize(1)
 		love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.print("Time: " .. util.SecondsToString(GameHandler.GetTimeRemaining()), shopItemsX - 100, shopItemsY - 90)
 		love.graphics.print("Score: " .. math.floor(GameHandler.GetScore() + 0.02), shopItemsX - 100, shopItemsY - 30)
 		love.graphics.print("Track: " .. math.floor(self.trackCredits + 0.02), shopItemsX - 100, shopItemsY + 30)
 		
@@ -244,7 +245,7 @@ function api.Initialize(world)
 	}
 	self.heldTrack = false
 	self.trackRotation = 0
-	self.trackCredits = 5
+	self.trackCredits = Global.STARTING_TRACK
 	
 	UpdateItems()
 end

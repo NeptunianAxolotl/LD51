@@ -11,8 +11,12 @@ function api.AddTrain(trainType, gridPos, entry)
 	trainData = {
 		trainType = trainType,
 	}
-	local train = NewTrain(trainData, api, gridPos, entry)
+	local train = NewTrain(trainData, api, gridPos, entry, not self.firstTrainDone)
 	IterableMap.Add(self.trainList, train)
+	if not self.firstTrainDone then
+		self.firstTrainDone = true
+		return Global.TRAIN_SPAWN_TIME - 1 -- Minus one to leave the factory
+	end
 	return Global.TRAIN_SPAWN_TIME * (1 + train.cartCount)
 end
 

@@ -75,6 +75,11 @@ function api.SetGameOver(hasWon, overType)
 	end
 end
 
+function api.SetPaused(newPause, force)
+	self.paused = newPause
+	self.forcePaused = force
+end
+
 function api.KeyPressed(key, scancode, isRepeat)
 	if key == "escape" or key == "return" or key == "kpenter" then
 		GameHandler.ToggleMenu()
@@ -82,14 +87,20 @@ function api.KeyPressed(key, scancode, isRepeat)
 	if key == "r" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		api.Restart()
 	end
-	if key == "p" then
+	if key == "p" and not self.forcePaused then
 		self.paused = not self.paused
 	end
 	if key == "s" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		api.TakeScreenshot()
 	end
+	if key == "n" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+		-- NExt level
+	end
 	if api.GetGameOver() then
 		return -- No doing actions
+	end
+	if GameHandler.KeyPressed(key, scancode, isRepeat) then
+		return
 	end
 	if ShopHandler.KeyPressed(key, scancode, isRepeat) then
 		return

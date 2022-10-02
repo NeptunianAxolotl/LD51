@@ -14,12 +14,18 @@ local function UpdateSmoothNumber(dt, name)
 	if not number.diff or number.diff == 0 then
 		return
 	end
-	local rate = number.rate*0.1*(0.24 + 0.06 * math.abs(number.want - number.has) / number.diff)
-	if math.abs(rate) <= 0.008 or math.abs(number.want - number.has) < 0.02*number.diff then
+	if not dt then
+		-- Force update
 		number.has = number.want
-		number.diff = false
+		number.diff = 0
+	else
+		local rate = dt*number.rate*15*(0.24 + 0.06 * math.abs(number.want - number.has) / number.diff)
+		if math.abs(rate) <= 0.008 or math.abs(number.want - number.has) < 0.02*number.diff then
+			number.has = number.want
+			number.diff = false
+		end
+		number.has = number.has + rate*(number.want - number.has)*2
 	end
-	number.has = number.has + rate*(number.want - number.has)*2
 	while number.wrap and number.has >= number.wrap do
 		number.want = number.want - number.wrap
 		number.has = number.has - number.wrap
@@ -76,6 +82,12 @@ function api.RegisterSmoothNumber(name, initial, rate, wrap)
 		rate = rate
 	}
 	self.smoothNumberList[#self.smoothNumberList + 1] = name
+end
+
+function api.ForceUpdataAllNumbers()
+	for i = 1, #self.smoothNumberList do
+		UpdateSmoothNumber(false, self.smoothNumberList[i])
+	end
 end
 
 --------------------------------------------------

@@ -73,11 +73,6 @@ function api.GetViewRestriction()
 end
 
 function api.ReportOnRecord(name, newRecord, oldRecord)
-	--if name == "score" then
-	--	if math.floor(oldRecord/Global.SCORE_CREDIT_REQ) ~= math.floor(newRecord/Global.SCORE_CREDIT_REQ) then
-	--		ShopHandler.AddTrackCredits(math.floor(newRecord/Global.SCORE_CREDIT_REQ) - math.floor(oldRecord/Global.SCORE_CREDIT_REQ))
-	--	end
-	--end
 end
 
 function api.ReportOnWrap(name, prevWrap)
@@ -124,9 +119,25 @@ function api.DrawScoreSource(source, offset)
 	love.graphics.print(source .. ": " .. self.scoreSource[source], 12, offset)
 end
 
+function api.GetTimeRemaining()
+	return self.gameTime
+end
+
 --------------------------------------------------
 -- Updating
 --------------------------------------------------
+
+function api.KeyPressed(key, scancode, isRepeat)
+	if not self.timeGameOver then
+		return false
+	end
+	if key == "c" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+		self.timeGameOver = false
+		self.endless = true
+		self.gameTime = Global.GAME_TIME
+		self.world.SetPaused(false, false)
+	end
+end
 
 function api.Update(dt)
 	api.UpdateShow("food", dt, (InterfaceUtil.GetRawNumber("food") > 0 or self.orderSize > Global.ORDER_SIZE))
@@ -135,18 +146,44 @@ function api.Update(dt)
 	api.UpdateShow("foodBonus", dt, (self.orderSize > Global.ORDER_SIZE))
 	api.UpdateShow("woodBonus", dt, (self.speedMult > 1))
 	api.UpdateShow("oreBonus", dt, (self.bonusCarts > 0))
+	
+	if self.endless then
+		self.gameTime = self.gameTime + dt
+	else
+		if self.gameTime > 0 then
+			self.gameTime = self.gameTime - dt
+			if self.gameTime < 0 then
+				self.world.SetPaused(true, true)
+				InterfaceUtil.ForceUpdataAllNumbers()
+				self.timeGameOver = true
+				self.gameTime = 0
+			end
+		end
+	end
 end
 
 function api.DrawInterface()
 	local windowX, windowY = love.window.getMode()
 	local gameOver, gameWon, gameLost = self.world.GetGameOver()
-	if gameLost then
+	if gameOver then
 		Font.SetSize(0)
 		love.graphics.setColor(0.9, 0, 0, 1)
-		love.graphics.print("Game Over", windowX*0.5 - 120, windowY*0.5 - 20)
+		love.graphics.printf("Game Over", windowX*0.5 - 750, windowY*0.5 - 20, 1500, "center")
 		
 		Font.SetSize(2)
-		love.graphics.print("The factory is blocked", windowX*0.5 - 120, windowY*0.5 + 45)
+		love.graphics.printf("The factory is blocked", windowX*0.5 - 750, windowY*0.5 + 55, 1500, "center")
+		love.graphics.printf("Press 'Ctrl+R' to restart", windowX*0.5 - 750, windowY*0.5 + 95, 1500, "center")
+		love.graphics.printf("Final Score: " .. InterfaceUtil.Round(InterfaceUtil.GetRawNumber("score")), windowX*0.5 - 750, windowY*0.5 + 135, 1500, "center")
+	elseif self.timeGameOver then
+		Font.SetSize(0)
+		love.graphics.setColor(0.9, 0, 0, 1)
+		love.graphics.printf("The Factory Survived", windowX*0.5 - 750, windowY*0.5 - 20, 1500, "center")
+		
+		Font.SetSize(2)
+		love.graphics.printf("Press 'Ctrl+N' for the next level", windowX*0.5 - 750, windowY*0.5 + 55, 1500, "center")
+		love.graphics.printf("Press 'Ctrl+C' for endless", windowX*0.5 - 750, windowY*0.5 + 95, 1500, "center")
+		love.graphics.printf("Final Score: " .. InterfaceUtil.Round(InterfaceUtil.GetRawNumber("score")), windowX*0.5 - 750, windowY*0.5 + 135, 1500, "center")
+		
 	end
 end
 
@@ -164,6 +201,7 @@ function api.Initialize(world)
 		woodBonusShow = 0,
 		oreBonusShow = 0,
 		deliveries = 0,
+		gameTime = Global.GAME_TIME,
 		scoreSource = {
 			travelScore = 0,
 			deliverScore = 0,
@@ -172,7 +210,7 @@ function api.Initialize(world)
 			deliverTrack = 0,
 		}
 	}
-	InterfaceUtil.RegisterSmoothNumber("score", 0, 3)
+	InterfaceUtil.RegisterSmoothNumber("score", 0, 2)
 	InterfaceUtil.RegisterSmoothNumber("food", 0, 1.4, Global.BONUS_REQ)
 	InterfaceUtil.RegisterSmoothNumber("wood", 0, 1.4, Global.BONUS_REQ)
 	InterfaceUtil.RegisterSmoothNumber("ore",  0, 1.4, Global.BONUS_REQ)

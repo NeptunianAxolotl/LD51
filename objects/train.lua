@@ -4,7 +4,7 @@ local Font = require("include/font")
 
 local TrainDefs = util.LoadDefDirectory("defs/trains")
 
-local function NewTrain(self, trainHandler, new_gridPos, new_entry)
+local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 	self.def = TrainDefs[self.trainType]
 	
 	self.travel = 0
@@ -13,7 +13,11 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 	if self.cartCount > 0 then
 		self.travelLimit = self.def.cartDist+ 0.25
 		self.spawnWaits = self.cartCount
-		self.spawnWaitTimer = Global.TRAIN_SPAWN_TIME
+		if firstTrain then
+			self.spawnWaitTimer = 0
+		else
+			self.spawnWaitTimer = Global.TRAIN_SPAWN_TIME
+		end
 	end
 	
 	local function EnterTrack(nextTrack, entry, isSpawn)

@@ -23,6 +23,7 @@ local function CheckPriorityGoodInit(self)
 		self.priorityGoodIndex = #self.wantedGoodList
 		GetNextPriority(self)
 	end
+	self.priorityRemaining = (self.priorityRemaining or GameHandler.GetOrderSize())
 end
 
 local function DepositGoods(self, good, count)
