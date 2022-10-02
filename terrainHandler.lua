@@ -42,6 +42,7 @@ local function SetupWorld(mapName)
 	
 	self.width  = map.dimensions.width
 	self.height = map.dimensions.height
+	self.tileSize = map.dimensions.tileSize
 	
 	for i = 1, #map.track do
 		local track = map.track[i]
@@ -77,7 +78,7 @@ function api.GetValidGridPlacement(gridPos, alwaysReturn, addDirection)
 	elseif addDirection == 3 then
 		gy = gy - 1
 	end
-	if (gx < 0 or gy < 0 or gx >= TerrainHandler.Width() or gy >= TerrainHandler.Height()) then
+	if (gx < 0 or gy < 0 or gx >= self.width or gy >= self.height) then
 		if alwaysReturn then
 			return {gx, gy}, true
 		end
@@ -93,7 +94,7 @@ function api.GetValidGridPlacement(gridPos, alwaysReturn, addDirection)
 end
 
 function api.GetValidPlacement(pos, alwaysReturn, addDirection)
-	local gx, gy = math.floor(pos[1] / Global.GRID_SIZE), math.floor(pos[2] / Global.GRID_SIZE)
+	local gx, gy = math.floor(pos[1] / self.tileSize), math.floor(pos[2] / self.tileSize)
 	return api.GetValidGridPlacement({gx, gy}, alwaysReturn, addDirection)
 end
 
@@ -125,6 +126,14 @@ end
 
 function api.Height()
 	return self.height
+end
+
+function api.TileSize()
+	return self.tileSize
+end
+
+function api.TileScale()
+	return self.tileSize / Global.GRID_SIZE
 end
 
 function api.Update(dt)
@@ -165,7 +174,7 @@ function api.Initialize(world)
 		world = world,
 	}
 	
-	SetupWorld("map2")
+	SetupWorld("map3")
 end
 
 return api

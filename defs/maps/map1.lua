@@ -1,5 +1,10 @@
 
 local mapData = {
+	dimensions = {
+		width = 26,
+		height = 15,
+		tileSize = 96,
+	},
 	track = {
 		{pos = {0 + 5, 0 + 7}, rot = 0, trackType = "factory"},
 		{pos = {1 + 5, 0 + 7}, rot = 0, trackType = "straight"},

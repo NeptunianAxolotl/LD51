@@ -3,6 +3,7 @@ local mapData = {
 	dimensions = {
 		width = 20,
 		height = 12,
+		tileSize = 125,
 	},
 	track = {
 		{pos = {3, 3}, rot = 0, trackType = "factory"},

@@ -97,7 +97,10 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 				for i = 1, #self.carts do
 					if math.random() < 0.38 then
 						drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
-						EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 30, 12, drawRotation), {scale = 0.7 + 0.3*math.random(), inFront = self.carts[i].currentPath.setEffect})
+						EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 30, 12, drawRotation), {
+							scale = (0.7 + 0.3*math.random()) * TerrainHandler.TileScale(),
+							inFront = self.carts[i].currentPath.setEffect
+						})
 					end
 				end
 			end
@@ -200,15 +203,15 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 		if hasBridge then
 			drawQueue:push({y=(self.currentPath.raiseTrain or 10); f=function()
 				local drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
-				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation)
+				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
 			end})
 			for i = #self.carts, 1, -1 do
 				local drawY = (self.carts[i].currentPath.raiseTrain or 10) - i*0.01
 				drawQueue:push({y=drawY; f=function()
 					local drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
-					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation)
+					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
 					if self.cargo then
-						Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation)
+						Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
 					end
 				end})
 			end
@@ -217,13 +220,13 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 				local drawPos, drawRotation
 				for i = #self.carts, 1, -1 do
 					drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
-					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation)
+					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
 					if self.cargo then
-						Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation)
+						Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
 					end
 				end
 				drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
-				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation)
+				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
 			end})
 		end
 		if DRAW_DEBUG then

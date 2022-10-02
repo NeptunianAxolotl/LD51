@@ -141,7 +141,7 @@ function api.Draw(drawQueue)
 			if pos then
 				love.graphics.setColor(1, 1, 1, 0.2)
 				love.graphics.setLineWidth(5)
-				love.graphics.rectangle("line", pos[1]*Global.GRID_SIZE, pos[2]*Global.GRID_SIZE, Global.GRID_SIZE, Global.GRID_SIZE, 4, 4, 8)
+				love.graphics.rectangle("line", pos[1]*TerrainHandler.TileSize(), pos[2]*TerrainHandler.TileSize(), TerrainHandler.TileSize(), TerrainHandler.TileSize(), 4, 4, 8)
 			end
 			Resources.DrawImage(def.stateImage[1], mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8)
 			if def.topImage then

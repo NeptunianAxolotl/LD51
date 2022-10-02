@@ -15,7 +15,7 @@ local function NewTrack(self, terrain)
 	self.toDestroy = false
 	self.state = 1
 	
-	self.worldPos = {(self.pos[1] + 0.5) * Global.GRID_SIZE, (self.pos[2] + 0.5) * Global.GRID_SIZE}
+	self.worldPos = {(self.pos[1] + 0.5) * TerrainHandler.TileSize(), (self.pos[2] + 0.5) * TerrainHandler.TileSize()}
 	self.worldRot = self.rotation*math.pi/2
 	
 	function self.GetPathAndNextTrack(entry, isSpawn, ignoreState)
@@ -34,7 +34,7 @@ local function NewTrack(self, terrain)
 	end
 	
 	function self.GetPathDraw(path, travel)
-		local worldPos = util.Add(self.worldPos, util.Mult(Global.GRID_SIZE, util.RotateVector(path.posFunc(travel), self.worldRot)))
+		local worldPos = util.Add(self.worldPos, util.Mult(TerrainHandler.TileSize(), util.RotateVector(path.posFunc(travel), self.worldRot)))
 		return worldPos, self.worldRot + path.dirFunc(travel)
 	end
 	
@@ -131,11 +131,11 @@ local function NewTrack(self, terrain)
 	
 	function self.Draw(drawQueue)
 		drawQueue:push({y=0 + self.pos[2]*0.01; f=function()
-			Resources.DrawImage(self.def.stateImage[self.state], self.worldPos[1], self.worldPos[2], self.worldRot)
+			Resources.DrawImage(self.def.stateImage[self.state], self.worldPos[1], self.worldPos[2], self.worldRot, false, TerrainHandler.TileScale())
 		end})
 		if self.def.topImage then
 			drawQueue:push({y=100 + self.pos[2]*0.01; f=function()
-				Resources.DrawImage(self.def.topImage, self.worldPos[1], self.worldPos[2], self.worldRot)
+				Resources.DrawImage(self.def.topImage, self.worldPos[1], self.worldPos[2], self.worldRot, false, TerrainHandler.TileScale())
 				if self.def.extraDrawFunc then
 					self.def.extraDrawFunc(self, self.worldPos, self.worldRot)
 				end
