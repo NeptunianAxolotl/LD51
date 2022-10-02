@@ -36,6 +36,18 @@ local mapData = {
 		{pos = {2 + 5, 5 + 7}, rot = 3, trackType = "curve"},
 		{pos = {2 + 5, 4 + 7}, rot = 1, trackType = "straight"},
 		{pos = {2 + 5, 3 + 7}, rot = 1, trackType = "straight"},
+		
+		{pos = {10+ 5, -1 + 6}, rot = 0, trackType = "mountain_small"},
+		{pos = {4 + 5, -1 + 6}, rot = 0, trackType = "forest"},
+		{pos = {4 + 4, -1 + 6}, rot = 0, trackType = "forest"},
+		{pos = {4 + 5, -1 + 5}, rot = 0, trackType = "forest"},
+		{pos = {4 + 4, -1 + 5}, rot = 0, trackType = "forest"},
+		{pos = {4 + 3, -1 + 5}, rot = 0, trackType = "forest"},
+		
+		{pos = {8 + 5, -1 + 6}, rot = 0, trackType = "field"},
+		{pos = {9 + 5, -1 + 6}, rot = 0, trackType = "field"},
+		{pos = {8 + 5, -1 + 5}, rot = 0, trackType = "field"},
+		{pos = {9 + 5, -1 + 5}, rot = 0, trackType = "field"},
 	}
 }
 

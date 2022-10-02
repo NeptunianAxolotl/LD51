@@ -5,6 +5,8 @@ local data = {}
 local largeTracks = {
 	["track_town"] = true,
 	["track_mine"] = true,
+	["track_farm"] = true,
+	["track_sawmill"] = true,
 	["town_over"] = true,
 }
 

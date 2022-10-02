@@ -2,6 +2,11 @@
 local names = util.GetDefDirList("resources/images/scenery")
 local data = {}
 
+local manualOffset = {
+	forest = 0.035,
+	forest2 = 0.025,
+	farm = 0.1,
+}
 
 for i = 1, #names do
 	data[#data + 1] = {
@@ -11,7 +16,7 @@ for i = 1, #names do
 		xScale = Global.GRID_SIZE/400,
 		yScale = Global.GRID_SIZE/400,
 		xOffset = 0.5,
-		yOffset = 0.8,
+		yOffset = 0.4 + (manualOffset[names[i]] or 0),
 	}
 	print("added", names[i])
 end
