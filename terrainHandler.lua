@@ -95,6 +95,9 @@ function api.MousePressed(x, y, button)
 		return false
 	end
 	local gridPos, blocked = api.GetValidPlacement({x, y}, true)
+	if not gridPos then
+		return false
+	end
 	local track = api.GetTrackAtPos(gridPos)
 	if track then
 		track.MousePressed()

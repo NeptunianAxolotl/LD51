@@ -4,6 +4,7 @@ local data = {}
 
 local largeTracks = {
 	["track_town"] = true,
+	["track_mine"] = true,
 	["town_over"] = true,
 }
 
