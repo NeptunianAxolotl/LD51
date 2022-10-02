@@ -384,6 +384,14 @@ function util.SampleDistribution(distribution, rngIn)
 	return #distribution
 end
 
+function util.RandomPointInRectangle(pos, width, height, angle)
+	local rectPoint = {(math.random() - 0.5) * width, (math.random() - 0.5) * height}
+	if angle then
+		rectPoint = util.RotateVector(rectPoint, angle)
+	end
+	return util.Add(pos, rectPoint)
+end
+
 function util.RandomPointInCircle(radius, startAngle, endAngle)
 	startAngle = startAngle or 0
 	endAngle = endAngle or 2*pi

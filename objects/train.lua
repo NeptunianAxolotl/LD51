@@ -75,9 +75,13 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 		if self.permanentlyBlocked then
 			self.fireSpawnTimer = (self.fireSpawnTimer or 0) - dt
 			if self.fireSpawnTimer <= 0 then
-				self.fireSpawnTimer = 0.2 + 0.3 * math.random()
+				self.fireSpawnTimer = 0.2 + 0.15 * math.random()
 				local drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
-				EffectsHandler.SpawnEffect("fireball_explode", drawPos)
+				EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 45, 10, drawRotation))
+				for i = 1, #self.carts do
+					drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
+					EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 30, 10, drawRotation))
+				end
 			end
 			return
 		end
