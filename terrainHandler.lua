@@ -2,6 +2,7 @@
 local IterableMap = require("include/IterableMap")
 local util = require("include/util")
 
+local TrackDefs = util.LoadDefDirectory("defs/track")
 local NewTrack = require("objects/track")
 
 local self = {}
@@ -18,6 +19,10 @@ function api.AddTrack(pos, trackType, rotation)
 		trackType = trackType,
 		rotation = rotation,
 	}
+	if not TrackDefs[trackType].pickupable then
+		self.uneditable[x] = self.uneditable[x] or {}
+		self.uneditable[x][y] = true
+	end
 	self.trackPos[x][y] = IterableMap.Add(self.trackList, NewTrack(trackData, api))
 end
 
@@ -78,6 +83,17 @@ function api.GetTrackAtPos(gridPos, addDirection)
 	return IterableMap.Get(self.trackList, self.trackPos[x][y])
 end
 
+function api.GetValidPlacement(pos)
+	local gx, gy = math.floor(pos[1] / Global.GRID_SIZE), math.floor(pos[2] / Global.GRID_SIZE)
+	if (gx < 0 or gy < 0 or gx >= Global.WORLD_WIDTH or gy >= Global.WORLD_HEIGHT) then
+		return false
+	end
+	if (self.uneditable[gx] and self.uneditable[gx][gy]) then
+		return false
+	end
+	return {gx, gy}
+end
+
 function api.DestroyTrack(gridPos)
 	local track = api.GetTrackAtPos(gridPos)
 	track.toDestroy = true -- Only terrainHandler should set this, as it has to remove from the map.
@@ -117,6 +133,7 @@ function api.Initialize(world)
 	self = {
 		trackList = IterableMap.New(),
 		trackPos = {},
+		uneditable = {},
 		world = world,
 	}
 	

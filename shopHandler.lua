@@ -91,6 +91,10 @@ function api.MousePressed(x, y, button)
 	end
 	if self.heldTrack then
 		if self.items[self.hoveredItem] then
+			if self.hoveredItem <= Global.SHOP_BIN_SLOTS and self.items[self.hoveredItem] == self.heldTrack then
+				self.heldTrack = false
+				self.emptySlot = false
+			end
 			return false
 		end
 		self.items[self.hoveredItem] = self.heldTrack
@@ -112,11 +116,11 @@ function api.Draw(drawQueue)
 	if self.heldTrack and not self.world.GetGameOver() then
 		local def = TrackDefs[self.heldTrack]
 		drawQueue:push({y=1000; f=function()
-			local gx, gy = math.floor(mousePos[1] / Global.GRID_SIZE), math.floor(mousePos[2] / Global.GRID_SIZE)
-			if not (gx < 0 or gy < 0 or gx >= Global.WORLD_WIDTH or gy >= Global.WORLD_HEIGHT) then
+			local pos = TerrainHandler.GetValidPlacement(mousePos)
+			if pos then
 				love.graphics.setColor(1, 1, 1, 0.2)
 				love.graphics.setLineWidth(5)
-				love.graphics.rectangle("line", gx*Global.GRID_SIZE, gy*Global.GRID_SIZE, Global.GRID_SIZE, Global.GRID_SIZE, 4, 4, 8)
+				love.graphics.rectangle("line", pos[1]*Global.GRID_SIZE, pos[2]*Global.GRID_SIZE, Global.GRID_SIZE, Global.GRID_SIZE, 4, 4, 8)
 			end
 			Resources.DrawImage(def.stateImage[1], mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8)
 			if def.topImage then
@@ -139,7 +143,7 @@ function api.Draw(drawQueue)
 			local y = shopItemsY + shopItemsSpacing * i
 			local def = self.items[i] and TrackDefs[self.items[i]]
 			if util.PosInRectangle(mousePos, shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2) then
-				if (not self.heldTrack) or (not self.items[i]) then
+				if (not self.heldTrack) or (not self.items[i]) or (i <= Global.SHOP_BIN_SLOTS and self.items[i] == self.heldTrack) then
 					self.hoveredItem = i
 				end
 			end

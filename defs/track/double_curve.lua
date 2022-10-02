@@ -1,7 +1,6 @@
 
 return {
 	stateImage = {"track_double_curved"},
-	pickupable = true,
 	shopSlot = 3,
 	shopCost = 2,
 	entryUseIndexMap = {
