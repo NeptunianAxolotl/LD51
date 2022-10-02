@@ -93,12 +93,15 @@ function api.GetTrackAtPos(gridPos, addDirection)
 	return IterableMap.Get(self.trackList, self.trackPos[x][y])
 end
 
-function api.GetValidPlacement(pos)
+function api.GetValidPlacement(pos, alwaysReturn)
 	local gx, gy = math.floor(pos[1] / Global.GRID_SIZE), math.floor(pos[2] / Global.GRID_SIZE)
 	if (gx < 0 or gy < 0 or gx >= Global.WORLD_WIDTH or gy >= Global.WORLD_HEIGHT) then
 		return false
 	end
 	if (self.uneditable[gx] and self.uneditable[gx][gy]) then
+		if alwaysReturn then
+			return {gx, gy}, true
+		end
 		return false
 	end
 	return {gx, gy}
@@ -122,19 +125,18 @@ function api.MousePressed(x, y, button)
 	if button ~= 1 then
 		return false
 	end
-	local gridPos = api.GetValidPlacement({x, y})
-	if not gridPos then
-		return true
-	end
+	local gridPos, blocked = api.GetValidPlacement({x, y}, true)
 	local track = api.GetTrackAtPos(gridPos)
 	if track then
 		track.MousePressed()
 		return true
 	end
-	local trackType, rotation = ShopHandler.GetHeldTrack()
-	if trackType then
-		api.AddTrack(gridPos, trackType, rotation)
-		ShopHandler.UseHeldTrack()
+	if not blocked then
+		local trackType, rotation = ShopHandler.GetHeldTrack()
+		if trackType then
+			api.AddTrack(gridPos, trackType, rotation)
+			ShopHandler.UseHeldTrack()
+		end
 	end
 end
 
