@@ -8,20 +8,30 @@ local NewTrack = require("objects/track")
 local self = {}
 local api = {}
 
+local function SetUneditable(x, y)
+	self.uneditable[x] = self.uneditable[x] or {}
+	self.uneditable[x][y] = true
+end
+
 function api.AddTrack(pos, trackType, rotation)
 	local x, y = pos[1], pos[2]
 	self.trackPos[x] = self.trackPos[x] or {}
 	if self.trackPos[x][y] then
 		IterableMap.Remove(self.trackList, self.trackPos[x][y])
 	end
+	local def = TrackDefs[trackType]
 	trackData = {
 		pos = pos,
 		trackType = trackType,
 		rotation = rotation,
 	}
-	if not TrackDefs[trackType].pickupable then
-		self.uneditable[x] = self.uneditable[x] or {}
-		self.uneditable[x][y] = true
+	if not def.pickupable then
+		SetUneditable(x, y)
+		if def.nearbyBlocked then
+			for i = 1, #def.nearbyBlocked do
+				SetUneditable(x + def.nearbyBlocked[i][1], y + def.nearbyBlocked[i][2])
+			end
+		end
 	end
 	self.trackPos[x][y] = IterableMap.Add(self.trackList, NewTrack(trackData, api))
 end
@@ -112,11 +122,10 @@ function api.MousePressed(x, y, button)
 	if button ~= 1 then
 		return false
 	end
-	local gx, gy = math.floor(x / Global.GRID_SIZE), math.floor(y / Global.GRID_SIZE)
-	if gx < 0 or gy < 0 or gx >= Global.WORLD_WIDTH or gy >= Global.WORLD_HEIGHT then
-		return false
+	local gridPos = api.GetValidPlacement({x, y})
+	if not gridPos then
+		return true
 	end
-	local gridPos = {gx, gy}
 	local track = api.GetTrackAtPos(gridPos)
 	if track then
 		track.MousePressed()

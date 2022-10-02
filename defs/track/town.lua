@@ -90,6 +90,9 @@ return {
 		love.graphics.print((self.prices and self.prices.wood) or Global.BASE_DELIVER_SCORE, pos[1] - 0*Global.GRID_SIZE, pos[2] - 1.09*Global.GRID_SIZE)
 		love.graphics.print((self.prices and self.prices.ore) or Global.BASE_DELIVER_SCORE, pos[1] - 0*Global.GRID_SIZE, pos[2] - 0.86*Global.GRID_SIZE)
 	end,
+	nearbyBlocked = {
+		{0, -1},
+	},
 	paths = {
 		{
 			posFunc = function (t)
