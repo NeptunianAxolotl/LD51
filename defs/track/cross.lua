@@ -42,6 +42,7 @@ return {
 			end,
 			entry = 1,
 			destination = 3,
+			setEffect = 60,
 		},
 		{
 			posFunc = function (t)
@@ -52,6 +53,7 @@ return {
 			end,
 			entry = 3,
 			destination = 1,
+			setEffect = 60,
 		},
 	},
 }

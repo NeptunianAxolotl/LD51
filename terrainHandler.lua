@@ -9,7 +9,7 @@ local NewTrack = require("objects/track")
 local self = {}
 local api = {}
 
-local function SetUneditable(x, y)
+function api.SetUneditable(x, y)
 	self.uneditable[x] = self.uneditable[x] or {}
 	self.uneditable[x][y] = true
 end
@@ -27,10 +27,10 @@ function api.AddTrack(pos, trackType, rotation, setData)
 	trackData.rotation = rotation
 	
 	if not def.pickupable then
-		SetUneditable(x, y)
+		api.SetUneditable(x, y)
 		if def.nearbyBlocked then
 			for i = 1, #def.nearbyBlocked do
-				SetUneditable(x + def.nearbyBlocked[i][1], y + def.nearbyBlocked[i][2])
+				api.SetUneditable(x + def.nearbyBlocked[i][1], y + def.nearbyBlocked[i][2])
 			end
 		end
 	end

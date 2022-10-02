@@ -75,12 +75,16 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 		if self.permanentlyBlocked then
 			self.fireSpawnTimer = (self.fireSpawnTimer or 0) - dt
 			if self.fireSpawnTimer <= 0 then
-				self.fireSpawnTimer = 0.2 + 0.15 * math.random()
+				self.fireSpawnTimer = 0.12 + 0.15 * math.random()
 				local drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
-				EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 45, 10, drawRotation))
+				if math.random() < 0.6 then
+					EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 45, 12, drawRotation), {scale = 0.7 + 0.3*math.random(), inFront = self.currentPath.setEffect})
+				end
 				for i = 1, #self.carts do
-					drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
-					EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 30, 10, drawRotation))
+					if math.random() < 0.5 then
+						drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
+						EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 30, 12, drawRotation), {scale = 0.7 + 0.3*math.random(), inFront = self.carts[i].currentPath.setEffect})
+					end
 				end
 			end
 			return
@@ -135,9 +139,9 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry)
 			self.currentTrack.def.trainMidFunc(self.currentTrack, self)
 		end
 		if self.travel > 0.52 and TerrainHandler.IsExitPermanentlyBlocked(self.currentTrack.GetPos(), self.destination) then
-			self.currentTrack.SetPermanentBlock()
+			self.currentTrack.SetPermanentBlock(((self.currentPath.entry or 0) - self.currentTrack.rotation)%4)
 			for i = 1, #self.carts do
-				self.carts[i].currentTrack.SetPermanentBlock()
+				self.carts[i].currentTrack.SetPermanentBlock(((self.carts[i].currentPath.entry or 0) - self.carts[i].currentTrack.rotation)%4)
 			end
 			self.permanentlyBlocked = true
 		end

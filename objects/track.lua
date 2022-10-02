@@ -19,7 +19,7 @@ local function NewTrack(self, terrain)
 	self.worldRot = self.rotation*math.pi/2
 	
 	function self.GetPathAndNextTrack(entry, isSpawn, ignoreState)
-		if self.permanentlyBlocked then
+		if self.IsPermanentlyBlocked(entry) then
 			return false
 		end
 		local trackSpaceEntry = (entry - self.rotation)%4
@@ -52,7 +52,7 @@ local function NewTrack(self, terrain)
 	end
 	
 	function self.IsInUse(entry)
-		if self.toDestroy or self.permanentlyBlocked then
+		if self.toDestroy then
 			return true
 		end
 		if self.def.entryUseIndexMap then
@@ -61,12 +61,18 @@ local function NewTrack(self, terrain)
 				if self.inUse[self.def.entryUseIndexMap[entry]] then
 					return true
 				end
+				if self.permanentlyBlocked and self.permanentlyBlocked[self.def.entryUseIndexMap[entry]] then
+					return true
+				end
 			else
 				if self.inUse[1] or self.inUse[2] then
 					return true
 				end
+				if self.permanentlyBlocked and self.permanentlyBlocked[1] and self.permanentlyBlocked[2] then
+					return true
+				end
 			end
-		elseif self.inUse then
+		elseif self.inUse or self.permanentlyBlocked then
 			return true
 		end
 		if self.def.offState then
@@ -75,8 +81,27 @@ local function NewTrack(self, terrain)
 		return false
 	end
 	
-	function self.SetPermanentBlock()
-		self.permanentlyBlocked = true
+	function self.SetPermanentBlock(entry)
+		TerrainHandler.SetUneditable(self.pos[1], self.pos[2])
+		if self.def.entryUseIndexMap then
+			entry = (entry - self.rotation)%4
+			self.permanentlyBlocked = self.permanentlyBlocked or {}
+			self.permanentlyBlocked[self.def.entryUseIndexMap[entry]] = true
+		else
+			self.permanentlyBlocked = true
+		end
+	end
+	
+	function self.IsPermanentlyBlocked(entry)
+		if self.def.entryUseIndexMap then
+			entry = (entry - self.rotation)%4
+			if self.permanentlyBlocked then
+				return self.permanentlyBlocked[self.def.entryUseIndexMap[entry]]
+			end
+		else
+			return self.permanentlyBlocked
+		end
+		return false
 	end
 	
 	function self.MousePressed()

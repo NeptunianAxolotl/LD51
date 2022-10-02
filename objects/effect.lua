@@ -7,7 +7,7 @@ local DRAW_DEBUG = false
 
 local function NewEffect(self, def)
 	-- pos
-	self.inFront = def.inFront or 0
+	self.inFront = self.inFront or def.inFront or 0
 	local maxLife = (def.duration == "inherit" and def.image and Resources.GetAnimationDuration(def.image)) or def.duration
 	if not maxLife then
 		print(maxLife, def.image, def.actual_image)
@@ -44,7 +44,7 @@ local function NewEffect(self, def)
 	end
 	
 	function self.Draw(drawQueue)
-		drawQueue:push({y=self.pos[2] + self.inFront; f=function()
+		drawQueue:push({y=self.inFront; f=function()
 			if def.fontSize and self.text then
 				local col = def.color
 				Font.SetSize(def.fontSize)
