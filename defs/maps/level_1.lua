@@ -13,6 +13,7 @@ local mapData = {
 	},
 	baseCarriages = 2,
 	rules = {
+		trainDelayOverride = 0,
 		shopState = {
 			"straight",
 			"straight",

@@ -24,6 +24,10 @@ function api.AddTrain(trainType, gridPos, entry)
 	return Global.TRAIN_SPAWN_TIME
 end
 
+function api.DefaultSpawnTimer()
+	return (self.mapRules and self.mapRules.trainDelayOverride) or Global.TRAIN_SPAWN_TIME
+end
+
 local function DetectRuleOne() -- Very messsy
 	--print("DetectRuleOne")
 	local indexMax, keyByIndex, dataByKey = IterableMap.GetBarbarianData(self.trainList)

@@ -3,7 +3,7 @@ return {
 	stateImage = {"track_straight_half"},
 	topImage = "train_factory",
 	updateFunc = function (self, dt)
-		self.spawnTimer = (self.spawnTimer or 0) - dt
+		self.spawnTimer = (self.spawnTimer or TrainHandler.DefaultSpawnTimer()) - dt
 		if self.spawnTimer <= 0 then
 			if self.IsInUse() then
 				GameHandler.SetGameOver(false, "factory_block")
