@@ -124,7 +124,7 @@ end
 
 function api.AddBonus(pos, name)
 	if name == "wood" then
-		local magnitude = 0.2
+		local magnitude = 0.25
 		self.speedMult = self.speedMult + magnitude
 		EffectsHandler.SpawnEffect("mult_popup", util.Add(pos, {0, -20}), {text = "+Train Speed", inFront = 700, velocity = {0, -1}})
 	end
