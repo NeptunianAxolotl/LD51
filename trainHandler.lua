@@ -3,15 +3,23 @@ local IterableMap = require("include/IterableMap")
 local util = require("include/util")
 
 local NewTrain = require("objects/train")
+local MapDefs = util.LoadDefDirectory("defs/maps")
 
 local self = {}
 local api = {}
 
 function api.AddTrain(trainType, gridPos, entry)
+	if self.mapRules and self.mapRules.trainLimit then
+		self.trainsSpawned = (self.trainsSpawned or 0)
+		if self.trainsSpawned >= self.mapRules.trainLimit then
+			return Global.TRAIN_SPAWN_TIME
+		end
+		self.trainsSpawned = self.trainsSpawned + 1
+	end
 	trainData = {
 		trainType = trainType,
 	}
-	local train = NewTrain(trainData, api, gridPos, entry, not self.firstTrainDone)
+	local train = NewTrain(trainData, api, gridPos, entry, not self.firstTrainDone, self.baseCarriages)
 	IterableMap.Add(self.trainList, train)
 	if not self.firstTrainDone then
 		self.firstTrainDone = true
@@ -45,6 +53,19 @@ local function DetectRuleOne() -- Very messsy
 	end
 end
 
+local function SetupMapRules()
+	local mapRules = MapDefs[self.world.GetMapName()].rules
+	if mapRules then
+		self.mapRules = mapRules
+	end
+	self.baseCarriages = MapDefs[self.world.GetMapName()].baseCarriages or 1
+end
+
+function api.NotifyGameLoss()
+	-- Blow up all the trains
+	IterableMap.ApplySelf(self.trainList, "SetPermanentBlocked")
+end
+
 function api.Update(dt)
 	IterableMap.ApplySelfRandomOrder(self.trainList, "Update", dt)
 	if math.random() < 0.01 then
@@ -61,6 +82,8 @@ function api.Initialize(world)
 		trainList = IterableMap.New(),
 		world = world,
 	}
+	
+	SetupMapRules()
 end
 
 return api

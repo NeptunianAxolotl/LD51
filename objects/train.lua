@@ -4,12 +4,12 @@ local Font = require("include/font")
 
 local TrainDefs = util.LoadDefDirectory("defs/trains")
 
-local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
+local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain, baseCarriages)
 	self.def = TrainDefs[self.trainType]
 	
 	self.travel = 0
 	self.speed = 0
-	self.cartCount = self.def.cartCount + GameHandler.GetCartBonus()
+	self.cartCount = baseCarriages + GameHandler.GetCartBonus()
 
 	local function EnterTrack(nextTrack, entry, isSpawn)
 		local newPath, newDestination = nextTrack.GetPathAndNextTrack(entry, isSpawn)

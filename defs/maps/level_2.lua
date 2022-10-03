@@ -1,6 +1,6 @@
 
 local mapData = {
-	humanName = "Tutorial Valley",
+	humanName = "Level 2",
 	dimensions = {
 		width = 9,
 		height = 5,

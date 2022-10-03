@@ -1,0 +1,6 @@
+
+return {
+	stateImage = {"grass"},
+	paths = {
+	},
+}

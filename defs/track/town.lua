@@ -25,6 +25,26 @@ local function DeliverGoods(self, count)
 	end
 end
 
+local goodOffsets = {
+	{-0.3, -1.3},
+	{-0.34, -0.75},
+	{0.08, -0.85},
+	{0.38, -0.77},
+	{0.35, -0.49},
+	{0.06, -0.28},
+	{-0.34, -0.24},
+}
+
+local goodScales = {
+	1.6,
+	0.65,
+	0.6,
+	0.5,
+	0.45,
+	0.4,
+	0.35,
+}
+
 return {
 	stateImage = {"track_town"},
 	topImage = "town_over",
@@ -32,7 +52,7 @@ return {
 		if not train.GetCarrying() then
 			return
 		end
-		local wanted, remaining = GetWantedGood(self)
+		local wanted, totalWanted = GetWantedGood(self)
 		if wanted ~= train.GetCarrying() then
 			return
 		end
@@ -46,13 +66,27 @@ return {
 		end
 		return train.GetCarrying() == wanted
 	end,
+	updateFunc = function (self, dt)
+		if GetWantedGood(self) then
+			TerrainHandler.NotifyTownMissingGood()
+		end
+	end,
 	extraDrawFunc = function (self, pos, rotation)
-		Font.SetSize(3)
-		love.graphics.setColor(0, 0, 0, 1)
-		local wanted, remaining = GetWantedGood(self)
-		if wanted then
-			love.graphics.print(wanted, pos[1] - 0.3*Global.GRID_SIZE, pos[2] - 1.18*Global.GRID_SIZE)
-			love.graphics.print(remaining - (self.delivered or 0), pos[1] - 0.3*Global.GRID_SIZE, pos[2] - 0.9*Global.GRID_SIZE)
+		local wantedGood, totalWanted = GetWantedGood(self)
+		if wantedGood then
+			TerrainHandler.DrawTownResourceText(pos, (self.delivered or 0), totalWanted)
+			local spotIndex = 1
+			for i = self.wantIndex, #self.progression do
+				if goodOffsets[spotIndex] then
+					local scale = (first and 1.5) or 0.65
+					local gPos = util.Add(pos, util.Mult(TerrainHandler.TileSize(), goodOffsets[spotIndex]))
+					Resources.DrawImage(self.progression[i].good .. "_icon", gPos[1], gPos[2], 0, false, goodScales[spotIndex]*TerrainHandler.TileScale())
+					spotIndex = spotIndex + 1
+				end
+			end
+		else
+			Resources.DrawImage("tick_icon", pos[1], pos[2] - 1.1*TerrainHandler.TileSize(), 0, false, TerrainHandler.TileScale()*0.9)
+			
 		end
 	end,
 	nearbyBlocked = {

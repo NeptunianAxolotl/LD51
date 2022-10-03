@@ -134,62 +134,54 @@ end
 --------------------------------------------------
 
 function api.KeyPressed(key, scancode, isRepeat)
-	if not self.timeGameOver then
-		return false
-	end
-	if key == "c" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-		self.timeGameOver = false
-		self.endless = true
-		self.gameTime = Global.GAME_TIME
-		self.world.SetPaused(false, false)
-	end
 end
 
 function api.Update(dt)
-	api.UpdateShow("food", dt, (InterfaceUtil.GetRawNumber("food") > 0 or self.orderSize > Global.ORDER_SIZE))
-	api.UpdateShow("wood", dt, (InterfaceUtil.GetRawNumber("wood") > 0 or self.speedMult > 1))
-	api.UpdateShow("ore", dt, (InterfaceUtil.GetRawNumber("ore") > 0 or self.bonusCarts > 0))
-	api.UpdateShow("foodBonus", dt, (self.orderSize > Global.ORDER_SIZE))
-	api.UpdateShow("woodBonus", dt, (self.speedMult > 1))
-	api.UpdateShow("oreBonus", dt, (self.bonusCarts > 0))
-	
-	if self.endless then
-		self.gameTime = self.gameTime + dt
-	else
-		if self.gameTime > 0 then
-			self.gameTime = self.gameTime - dt
-			if self.gameTime < 0 then
-				self.world.SetPaused(true, true)
-				InterfaceUtil.ForceUpdataAllNumbers()
-				self.timeGameOver = true
-				self.gameTime = 0
-			end
-		end
+	if self.world.GetGameOver() then
+		self.levelAlpha = math.min(1, self.levelAlpha + dt*1.9)
 	end
 end
 
 function api.DrawInterface()
-	local windowX, windowY = love.window.getMode()
 	local gameOver, gameWon, gameLost = self.world.GetGameOver()
-	if gameOver then
+	if not gameOver then
+		return
+	end
+	local windowX, windowY = love.window.getMode()
+	local overX = windowX*0.32
+	local overWidth = windowX*0.36
+	local overY = windowY*0.3
+	local overHeight = windowY*0.4
+	if gameLost then
+		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.97*self.levelAlpha)
+		love.graphics.setLineWidth(4)
+		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight, 8, 8, 16)
+		love.graphics.setColor(0, 0, 0, 1*self.levelAlpha)
+		love.graphics.setLineWidth(10)
+		love.graphics.rectangle("line", overX, overY, overWidth, overHeight, 8, 8, 16)
+		
 		Font.SetSize(0)
-		love.graphics.setColor(0.9, 0, 0, 1)
-		love.graphics.printf("Game Over", windowX*0.5 - 750, windowY*0.5 - 20, 1500, "center")
+		love.graphics.setColor(0, 0, 0, 1*self.levelAlpha)
+		love.graphics.printf("Blockage!", overX, overY + overHeight * 0.04, overWidth, "center")
 		
 		Font.SetSize(2)
-		love.graphics.printf("The factory is blocked", windowX*0.5 - 750, windowY*0.5 + 55, 1500, "center")
-		love.graphics.printf("Press 'Ctrl+R' to restart", windowX*0.5 - 750, windowY*0.5 + 95, 1500, "center")
-		love.graphics.printf("Final Score: " .. InterfaceUtil.Round(InterfaceUtil.GetRawNumber("score")), windowX*0.5 - 750, windowY*0.5 + 135, 1500, "center")
-	elseif self.timeGameOver then
+		love.graphics.printf("A blocked portal caused all the trains to explode.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "left")
+		love.graphics.printf("Press 'Ctrl+R' to retry the level", overX, overY + overHeight * 0.72, overWidth, "center")
+	elseif gameWon then
+		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.97*self.levelAlpha)
+		love.graphics.setLineWidth(4)
+		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight, 8, 8, 16)
+		love.graphics.setColor(0, 0, 0, 1*self.levelAlpha)
+		love.graphics.setLineWidth(10)
+		love.graphics.rectangle("line", overX, overY, overWidth, overHeight, 8, 8, 16)
+		
 		Font.SetSize(0)
-		love.graphics.setColor(0.9, 0, 0, 1)
-		love.graphics.printf("The Factory Survived", windowX*0.5 - 750, windowY*0.5 - 20, 1500, "center")
+		love.graphics.setColor(0, 0, 0, 1*self.levelAlpha)
+		love.graphics.printf("Sucess!", overX, overY + overHeight * 0.04, overWidth, "center")
 		
 		Font.SetSize(2)
-		love.graphics.printf("Press 'Ctrl+N' for the next level", windowX*0.5 - 750, windowY*0.5 + 55, 1500, "center")
-		love.graphics.printf("Press 'Ctrl+C' for endless", windowX*0.5 - 750, windowY*0.5 + 95, 1500, "center")
-		love.graphics.printf("Final Score: " .. InterfaceUtil.Round(InterfaceUtil.GetRawNumber("score")), windowX*0.5 - 750, windowY*0.5 + 135, 1500, "center")
-		
+		love.graphics.printf("All deliveries were fulfilled.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
+		love.graphics.printf("Press 'Ctrl+N' for the next level", overX, overY + overHeight * 0.72, overWidth, "center")
 	end
 end
 
@@ -207,6 +199,7 @@ function api.Initialize(world)
 		woodBonusShow = 0,
 		oreBonusShow = 0,
 		deliveries = 0,
+		levelAlpha = 0,
 		gameTime = Global.GAME_TIME,
 		scoreSource = {
 			travelScore = 0,

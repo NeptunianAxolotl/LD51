@@ -1,7 +1,9 @@
 
 local Font = require("include/font")
 local util = require("include/util")
+
 local TrackDefs, TrackDefList = util.LoadDefDirectory("defs/track")
+local MapDefs = util.LoadDefDirectory("defs/maps")
 
 local api = {}
 local self = {}
@@ -18,6 +20,18 @@ local function InitializeDeck()
 		end
 	end
 	return DeckHandler.GetDeck(validItems, true)
+end
+
+local function SetupWorldRules()
+	local map = MapDefs[self.world.GetMapName()]
+	if map.rules then
+		self.mapRules = map.rules
+		if self.mapRules.shopState then
+			for i = 1, #self.mapRules.shopState do
+				self.items[i] = self.mapRules.shopState[i]
+			end
+		end
+	end
 end
 
 local function UpdateItems(refreshAll)
@@ -127,6 +141,9 @@ function api.KeyPressed(key, scancode, isRepeat)
 		elseif key == "4" then
 			self.heldTrack = "mountain_large"
 			self.holdingDoodad = true
+		elseif key == "5" then
+			self.heldTrack = "grass"
+			self.holdingDoodad = true
 		end
 		if key == "q" then
 			self.heldTrack = "block"
@@ -218,12 +235,20 @@ function api.Draw(drawQueue)
 	
 	drawQueue:push({y=800; f=function()
 		local shopItemsX = Global.VIEW_WIDTH -  Global.SHOP_WIDTH*0.5
-		local shopItemsY = 75 - TerrainHandler.GetVertOffset()
+		local shopItemsY = 160 - TerrainHandler.GetVertOffset()
+		local buttonExtra = 20
 		
+		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.98)
+		love.graphics.rectangle("fill", Global.VIEW_WIDTH - Global.SHOP_WIDTH, -1000, Global.SHOP_WIDTH * 2, Global.VIEW_HEIGHT + 2000)
+		love.graphics.setColor(0, 0, 0, 1)
+		love.graphics.setLineWidth(12)
+		love.graphics.rectangle("line", Global.VIEW_WIDTH - Global.SHOP_WIDTH, -1000, Global.SHOP_WIDTH * 2, Global.VIEW_HEIGHT + 2000, 8, 8, 16)
+		
+		love.graphics.setColor(0, 0, 0, 1)
+		Font.SetSize(0)
+		love.graphics.printf(TerrainHandler.GetLevelHumanName(), shopItemsX - Global.SHOP_WIDTH*0.45, shopItemsY - 140, Global.SHOP_WIDTH*0.9, "center")
 		Font.SetSize(1)
-		love.graphics.setColor(1, 1, 1, 1)
-		love.graphics.print("Time: " .. util.SecondsToString(GameHandler.GetTimeRemaining()), shopItemsX - 100, shopItemsY - 90)
-		love.graphics.print("Score: " .. math.floor(GameHandler.GetScore() + 0.02), shopItemsX - 100, shopItemsY - 30)
+		love.graphics.printf("Track Shop" , shopItemsX - 200, shopItemsY + 30, 400, "center")
 		
 		local shopItemsSpacing = 240
 		for i = 1, Global.SHOP_SLOTS do
@@ -259,8 +284,11 @@ function api.Draw(drawQueue)
 			love.graphics.rectangle("line", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2, 8, 8, 16)
 		end
 		
+		if (self.mapRules and self.mapRules.refreshDisabled) then
+			return
+		end
 		local y = shopItemsY + shopItemsSpacing * (Global.SHOP_SLOTS + 1.1)
-		if util.PosInRectangle(mousePos, shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE) then
+		if util.PosInRectangle(mousePos, shopItemsX - Global.GRID_SIZE - buttonExtra, y - Global.GRID_SIZE, Global.GRID_SIZE * 2 + buttonExtra*2, Global.GRID_SIZE) then
 			self.hoveredItem = Global.SHOP_SLOTS + 1
 		end
 		if self.shopBlockedTimer then
@@ -269,7 +297,7 @@ function api.Draw(drawQueue)
 			love.graphics.setColor(0.5, 0.7, 0.8, 1)
 		end
 		love.graphics.setLineWidth(4)
-		love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE, 8, 8, 16)
+		love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE - buttonExtra, y - Global.GRID_SIZE, Global.GRID_SIZE * 2 + buttonExtra*2, Global.GRID_SIZE, 8, 8, 16)
 		
 		if self.hoveredItem == Global.SHOP_SLOTS + 1 and not self.shopBlockedTimer then
 			love.graphics.setColor(0.35, 1, 0.35, 0.8)
@@ -277,7 +305,7 @@ function api.Draw(drawQueue)
 			love.graphics.setColor(0, 0, 0, 0.8)
 		end
 		love.graphics.setLineWidth(8)
-		love.graphics.rectangle("line", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE, 8, 8, 16)
+		love.graphics.rectangle("line", shopItemsX - Global.GRID_SIZE - buttonExtra, y - Global.GRID_SIZE, Global.GRID_SIZE * 2 + buttonExtra*2, Global.GRID_SIZE, 8, 8, 16)
 			
 		Font.SetSize(1)
 		love.graphics.setColor(0, 0, 0, 0.8)
@@ -285,10 +313,38 @@ function api.Draw(drawQueue)
 	end})
 	
 	drawQueue:push({y=1000; f=function()
+		if (self.mapRules and self.mapRules.hints) then
+			for i = 1, #self.mapRules.hints do
+				local hint = self.mapRules.hints[i]
+				local pos = util.Mult(TerrainHandler.TileSize(), hint.pos)
+				local size = util.Mult(TerrainHandler.TileSize(), hint.size)
+				
+				if hint.arrowDest then
+					local arrowDest = util.Mult(TerrainHandler.TileSize(), hint.arrowDest)
+					love.graphics.setColor(0, 0, 0, 1)
+					love.graphics.setLineWidth(12)
+					if hint.arrow == "right" then
+						love.graphics.line(pos[1] + size[1], pos[2] + size[2], arrowDest[1], arrowDest[2])
+					end
+					if hint.arrow == "left" then
+						love.graphics.line(pos[1], pos[2] + size[2], arrowDest[1], arrowDest[2])
+					end
+				end
+				
+				Font.SetSize(1)
+				love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.98)
+				love.graphics.setLineWidth(4)
+				love.graphics.rectangle("fill", pos[1], pos[2], size[1], size[2], 8, 8, 16)
+				love.graphics.setColor(0, 0, 0, 1)
+				love.graphics.setLineWidth(12)
+				love.graphics.rectangle("line", pos[1], pos[2], size[1], size[2], 8, 8, 16)
+				love.graphics.printf(hint.text, pos[1] + 25, pos[2] + 10, size[1] - 50, "left")
+			end
+		end
 		love.graphics.setColor(0, 0, 0, 1)
 		love.graphics.rectangle("fill", -1000, Global.BLACK_BAR_LEEWAY + Global.VIEW_HEIGHT - TerrainHandler.GetVertOffset(), 5000, 3000)
 		love.graphics.rectangle("fill", -1000, -3000 - Global.BLACK_BAR_LEEWAY - TerrainHandler.GetVertOffset(), 5000, 3000)
-		love.graphics.rectangle("fill", Global.VIEW_WIDTH, -1000, 3000, 5000)
+		love.graphics.rectangle("fill", Global.VIEW_WIDTH + Global.BLACK_BAR_LEEWAY, -1000, 3000, 5000)
 		love.graphics.rectangle("fill", -3000 - Global.BLACK_BAR_LEEWAY, -1000, 3000, 5000)
 	end})
 end
@@ -304,6 +360,7 @@ function api.Initialize(world)
 	self.trackRotation = 0
 	
 	UpdateItems(true)
+	SetupWorldRules()
 end
 
 return api

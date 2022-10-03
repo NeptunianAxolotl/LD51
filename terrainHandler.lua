@@ -1,6 +1,7 @@
 
 local IterableMap = require("include/IterableMap")
 local util = require("include/util")
+local Font = require("include/font")
 
 local TrackDefs = util.LoadDefDirectory("defs/track")
 local MapDefs = util.LoadDefDirectory("defs/maps")
@@ -37,9 +38,12 @@ function api.AddTrack(pos, trackType, rotation, setData)
 	self.trackPos[x][y] = IterableMap.Add(self.trackList, NewTrack(trackData, api))
 end
 
-local function SetupWorld(mapName)
-	map = MapDefs[mapName]
+local function SetupWorld()
+	local map = MapDefs[self.world.GetMapName()]
 	
+	self.mapRules = map.rules
+	self.humanName = map.humanName
+	self.townDrawParams = map.townDrawParams
 	self.width  = map.dimensions.width
 	self.height = map.dimensions.height
 	self.tileSize = map.dimensions.tileSize
@@ -141,8 +145,27 @@ function api.GetVertOffset()
 	return self.vertOffset
 end
 
+function api.GetLevelHumanName()
+	return self.humanName
+end
+
+function api.DrawTownResourceText(pos, count, needed)
+	Font.SetSize(self.townDrawParams.font)
+	pos = util.Add(pos, util.Mult(self.tileSize, self.townDrawParams.pos))
+	love.graphics.setColor(0, 0, 0, 1)
+	love.graphics.print(count .. "/" .. needed, pos[1], pos[2])
+end
+
+function api.NotifyTownMissingGood()
+	self.anyTownMissingGood = true
+end
+
 function api.Update(dt)
+	self.anyTownMissingGood = false
 	IterableMap.ApplySelf(self.trackList, "Update", dt)
+	if not self.anyTownMissingGood then
+		self.world.SetGameOver(true, "delivery")
+	end
 end
 
 function api.Draw(drawQueue)
@@ -160,13 +183,21 @@ function api.MousePressed(x, y, button)
 	if not gridPos then
 		return false
 	end
+	local trackType, rotation = ShopHandler.GetHeldTrack()
+	if trackType then
+		if self.mapRules and self.mapRules.onlyPlaceRot and not self.mapRules.onlyPlaceRot[rotation] then
+			return
+		end
+		if self.mapRules and self.mapRules.onlyPlaceType and self.mapRules.onlyPlaceType ~= trackType then
+			return
+		end
+	end
 	local track = api.GetTrackAtPos(gridPos)
 	if track then
 		track.MousePressed()
 		return true
 	end
 	if not blocked then
-		local trackType, rotation = ShopHandler.GetHeldTrack()
 		if trackType and not TrackDefs[trackType].notPlaceable then
 			api.AddTrack(gridPos, trackType, rotation)
 			ShopHandler.UseHeldTrack()
@@ -182,7 +213,7 @@ function api.Initialize(world)
 		world = world,
 	}
 	
-	SetupWorld("level_1")
+	SetupWorld()
 end
 
 return api

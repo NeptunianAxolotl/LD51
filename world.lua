@@ -11,6 +11,8 @@ DoodadHandler = require("doodadHandler")
 TrainHandler = require("trainHandler")
 ShopHandler = require("shopHandler")
 
+LevelList = require("defs/levelList")
+
 Camera = require("utilities/cameraUtilities")
 InterfaceUtil = require("utilities/interfaceUtilities")
 Delay = require("utilities/delay")
@@ -51,7 +53,23 @@ end
 
 function api.Restart()
 	--PhysicsHandler.Destroy()
-	api.Initialize()
+	api.Initialize(self.mapName)
+end
+
+local function SwitchLevel(diff)
+	local levelIndex = false
+	for i = 1, #LevelList do
+		if LevelList[i] == self.mapName then
+			levelIndex = i
+			break
+		end
+	end
+	if not levelIndex then
+		return
+	end
+	if LevelList[levelIndex + diff] then
+		api.Initialize(LevelList[levelIndex + diff])
+	end
 end
 
 function api.GetLifetime()
@@ -59,7 +77,7 @@ function api.GetLifetime()
 end
 
 function api.TakeScreenshot()
-	love.filesystem.setIdentity("TheMilesHigh/screenshots")
+	love.filesystem.setIdentity("LD51/screenshots")
 	love.graphics.captureScreenshot("screenshot_" .. math.floor(math.random()*100000) .. "_.png")
 end
 
@@ -73,6 +91,7 @@ function api.SetGameOver(hasWon, overType)
 	else
 		self.gameLost = true
 		self.overType = overType
+		TrainHandler.NotifyGameLoss()
 	end
 end
 
@@ -95,7 +114,10 @@ function api.KeyPressed(key, scancode, isRepeat)
 		api.TakeScreenshot()
 	end
 	if key == "n" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-		-- Next level
+		SwitchLevel(1)
+	end
+	if key == "p" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+		SwitchLevel(-1)
 	end
 	if api.GetGameOver() then
 		return -- No doing actions
@@ -171,6 +193,10 @@ end
 function api.WorldScaleToScreenScale()
 	local m11 = self.cameraTransform:getMatrix()
 	return m11
+end
+
+function api.GetMapName()
+	return self.mapName
 end
 
 function api.GetCameraExtents(buffer)
@@ -276,7 +302,7 @@ function api.ViewResize(width, height)
 	--ShadowHandler.ViewResize(width, height)
 end
 
-function api.Initialize()
+function api.Initialize(mapName)
 	self = {}
 	self.cameraTransform = love.math.newTransform()
 	self.interfaceTransform = love.math.newTransform()
@@ -284,6 +310,7 @@ function api.Initialize()
 	self.paused = false
 	self.musicEnabled = false
 	self.lifetime = Global.DEBUG_START_LIFETIME or 0
+	self.mapName = mapName or LevelList[1]
 	
 	Delay.Initialise()
 	InterfaceUtil.Initialize()
