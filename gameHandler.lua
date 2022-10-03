@@ -158,7 +158,7 @@ function api.DrawInterface()
 	local overY = windowY*0.3
 	local overHeight = windowY*0.4
 	if gameLost then
-		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.5*self.levelAlpha)
+		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(4)
 		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight, 8, 8, 16)
 		love.graphics.setColor(0, 0, 0, 0.8*self.levelAlpha)
@@ -173,7 +173,7 @@ function api.DrawInterface()
 		love.graphics.printf("A blocked portal caused all the trains to explode.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "left")
 		love.graphics.printf("Press 'Ctrl+R' to retry the level", overX, overY + overHeight * 0.72, overWidth, "center")
 	elseif gameWon then
-		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.5*self.levelAlpha)
+		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(4)
 		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight, 8, 8, 16)
 		love.graphics.setColor(0, 0, 0, 0.8*self.levelAlpha)
@@ -188,7 +188,7 @@ function api.DrawInterface()
 		love.graphics.printf("All deliveries were fulfilled.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
 		love.graphics.printf("Press 'Ctrl+N' for the next level", overX, overY + overHeight * 0.72, overWidth, "center")
 	elseif self.world.GetPaused() then
-		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.5*self.levelAlpha)
+		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(4)
 		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight, 8, 8, 16)
 		love.graphics.setColor(0, 0, 0, 0.8*self.levelAlpha)
