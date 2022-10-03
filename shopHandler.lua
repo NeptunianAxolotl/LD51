@@ -89,6 +89,7 @@ local function ClickShopButton(item)
 		self.shopBlockedTimer = Global.REFRESH_TIMER
 		self.heldTrack = false
 		UpdateItems(true)
+		SoundHandler.PlaySound("switch")
 		return
 	end
 	if self.heldTrack then
@@ -96,13 +97,15 @@ local function ClickShopButton(item)
 			self.items[self.emptySlot] = self.heldTrack
 			self.heldTrack = self.items[item]
 			self.emptySlot = item
-			self.items[item] = false
+			self.items[item] = 
+			SoundHandler.PlaySound("take")
 			return true
 		end
 		if self.emptySlot == item then
 			self.items[item] = self.heldTrack
 			self.heldTrack = false
 			self.emptySlot = false
+			SoundHandler.PlaySound("take")
 			return true
 		end
 	end

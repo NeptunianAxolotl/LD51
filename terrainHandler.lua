@@ -201,6 +201,7 @@ function api.MousePressed(x, y, button)
 		if trackType and not TrackDefs[trackType].notPlaceable then
 			api.AddTrack(gridPos, trackType, rotation)
 			ShopHandler.UseHeldTrack()
+			SoundHandler.PlaySound("put")
 		end
 	end
 end
