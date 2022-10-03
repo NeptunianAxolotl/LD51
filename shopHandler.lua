@@ -82,6 +82,9 @@ function api.UpdateShopIfEmpty()
 end
 
 local function ClickShopButton(item)
+	if not item then
+		return false
+	end
 	if item == Global.SHOP_SLOTS + 1 then
 		if self.shopBlockedTimer then
 			return
@@ -97,18 +100,19 @@ local function ClickShopButton(item)
 			self.items[self.emptySlot] = self.heldTrack
 			self.heldTrack = self.items[item]
 			self.emptySlot = item
-			self.items[item] = 
-			SoundHandler.PlaySound("take")
+			self.items[item] = false
+			SoundHandler.PlaySound("put")
 			return true
 		end
 		if self.emptySlot == item then
 			self.items[item] = self.heldTrack
 			self.heldTrack = false
 			self.emptySlot = false
-			SoundHandler.PlaySound("take")
+			SoundHandler.PlaySound("put")
 			return true
 		end
 	end
+	SoundHandler.PlaySound("take")
 	self.heldTrack = self.items[item]
 	self.items[item] = false
 	self.emptySlot = item
@@ -130,6 +134,7 @@ end
 function api.KeyPressed(key, scancode, isRepeat)
 	if key == "r" or key == "space" then
 		self.trackRotation = (self.trackRotation + 1)%4
+		--SoundHandler.PlaySound("spin")
 	end
 	if Global.DOODAD_MODE then
 		if key == "1" then
@@ -191,6 +196,7 @@ function api.MousePressed(x, y, button)
 			self.trackRotation = 0
 		elseif button == 2 then
 			self.trackRotation = (self.trackRotation + 1)%4
+			--SoundHandler.PlaySound("spin")
 		end
 		if button == 1 and self.heldTrack then
 			local mousePos = self.world.GetMousePosition()
@@ -208,6 +214,7 @@ function api.MousePressed(x, y, button)
 	end
 	if button == 2 then
 		self.trackRotation = (self.trackRotation + 1)%4
+		--SoundHandler.PlaySound("spin")
 	end
 	if button ~= 1 then
 		return false

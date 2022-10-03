@@ -116,7 +116,7 @@ local function NewTrack(self, terrain)
 			ShopHandler.UseHeldTrack()
 			ShopHandler.UpdateShopIfEmpty()
 			TerrainHandler.DestroyTrack(self.pos)
-			SoundHandler.PlaySound("take")
+			SoundHandler.PlaySound("put")
 		elseif heldType and TrackDefs[heldType].overwrite and TrackDefs[heldType].overwrite[self.trackType] and not self.IsInUse(false, true) then
 			local overwriteRot = TrackDefs[heldType].overwrite[self.trackType].rot
 			local relativeRot = (heldRotation - self.rotation)%4
@@ -124,7 +124,7 @@ local function NewTrack(self, terrain)
 				ShopHandler.UseHeldTrack()
 				ShopHandler.UpdateShopIfEmpty()
 				TerrainHandler.AddTrack(self.pos, heldType, heldRotation)
-			SoundHandler.PlaySound("put")
+				SoundHandler.PlaySound("put")
 			end
 		elseif self.def.toggleStates then
 			self.state = self.state%self.def.toggleStates + 1
