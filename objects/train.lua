@@ -83,12 +83,15 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 				self.fireSpawnTimer = 0.12 + 0.15 * math.random()
 				local drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
 				if math.random() < 0.46 then
-					EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 45, 12, drawRotation), {scale = 0.7 + 0.3*math.random(), inFront = self.currentPath.setEffect})
+					EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 45 * TerrainHandler.TileScale(), 12 * TerrainHandler.TileScale(), drawRotation), {
+						scale = (0.7 + 0.3*math.random()) * TerrainHandler.TileScale(),
+						inFront = self.currentPath.setEffect
+					})
 				end
 				for i = 1, #self.carts do
 					if math.random() < 0.38 then
 						drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
-						EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 30, 12, drawRotation), {
+						EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 30 * TerrainHandler.TileScale(), 12 * TerrainHandler.TileScale(), drawRotation), {
 							scale = (0.7 + 0.3*math.random()) * TerrainHandler.TileScale(),
 							inFront = self.carts[i].currentPath.setEffect
 						})
