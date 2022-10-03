@@ -5,7 +5,7 @@ return {
 		"track_branch_right_on",
 	},
 	toggleStates = 2,
-	shopFrequency = 3,
+	inShop = true,
 	removable = true,
 	overwrite = {
 		straight = {

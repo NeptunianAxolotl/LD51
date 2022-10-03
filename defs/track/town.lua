@@ -15,11 +15,9 @@ end
 
 local function DeliverGoods(self, count)
 	self.delivered = (self.delivered or 0) + count
-	local _, required, bonus = GetWantedGood(self)
+	local good, required, bonus = GetWantedGood(self)
 	if self.delivered >= required then
-		if bonus then
-			GameHandler.AddBonus(self.worldPos, bonus[1], bonus[2])
-		end
+		GameHandler.AddBonus(self.worldPos, good)
 		self.wantIndex = self.wantIndex + 1
 		self.delivered = 0
 	end

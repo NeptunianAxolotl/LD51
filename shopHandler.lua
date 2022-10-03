@@ -8,13 +8,25 @@ local MapDefs = util.LoadDefDirectory("defs/maps")
 local api = {}
 local self = {}
 
+local shopFrequency = {
+	straight = 14,
+	curve = 14,
+	crowbar = 3,
+	signal = 3,
+	branch_right = 3,
+	branch_left = 3,
+	split = 3,
+	cross = 2,
+	double_curve = 4,
+}
+
 local function InitializeDeck()
 	local deck = {}
 	local validItems = {}
 	for i = 1, #TrackDefList do
 		local def = TrackDefs[TrackDefList[i]]
-		if def.shopFrequency then
-			for j = 1, Global.DECK_SIZE_MULT * def.shopFrequency do
+		if def.inShop then
+			for j = 1, Global.DECK_SIZE_MULT * shopFrequency[TrackDefList[i]] do
 				validItems[#validItems + 1] = TrackDefList[i]
 			end
 		end
@@ -43,7 +55,7 @@ local function UpdateItems(refreshAll)
 		end
 	end
 	if refreshAll then
-		local draws = DeckHandler.GetNextDraw(self.deck, 4, toAvoid)
+		local draws = DeckHandler.GetNextDraw(self.deck, 4)
 		for i = 1, Global.SHOP_SLOTS do
 			self.items[i] = draws[i]
 		end
@@ -52,7 +64,7 @@ local function UpdateItems(refreshAll)
 	
 	for i = 1, Global.SHOP_SLOTS do
 		if not self.items[i] then
-			self.items[i] = DeckHandler.GetNextDraw(self.deck, 1, toAvoid)[1]
+			self.items[i] = DeckHandler.GetNextDraw(self.deck, 1)[1]
 		end
 	end
 end

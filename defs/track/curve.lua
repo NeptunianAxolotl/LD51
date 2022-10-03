@@ -2,7 +2,7 @@
 return {
 	stateImage = {"track_curved"},
 	removable = true,
-	shopFrequency = 3,
+	inShop = true,
 	paths = {
 		{
 			posFunc = function (t)

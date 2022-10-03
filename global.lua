@@ -25,7 +25,7 @@ local globals = {
 	DECK_SIZE_MULT = 1,
 	
 	TRAVEL_SCORE = 5,
-	REFRESH_TIMER = 2,
+	REFRESH_TIMER = 10,
 	
 	BASE_DELIVER_SCORE = 150,
 	PRIORITY_DELIVER_SCORE = 500,
@@ -40,7 +40,7 @@ local globals = {
 	
 	DOODAD_MODE = false,
 	DEBUG_DRAW_BLOCK = false,
-	INIT_LEVEL = 2,
+	INIT_LEVEL = 3,
 }
 
 return globals

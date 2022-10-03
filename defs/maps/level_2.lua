@@ -1,6 +1,6 @@
 
 local mapData = {
-	humanName = "Level 2",
+	humanName = "Wooda",
 	dimensions = {
 		width = 14,
 		height = 8,
@@ -9,7 +9,7 @@ local mapData = {
 	},
 	townDrawParams = {
 		font = 0,
-		pos = {0.05, -1.42}
+		pos = {0.05, -1.53}
 	},
 	baseCarriages = 1,
 	rules = {
@@ -30,6 +30,11 @@ local mapData = {
 				size = {3.3, 1.6},
 				arrow = "midRight",
 				arrowDest = {14.5, 7.08},
+			},
+			{
+				text = "- Fires in the wrong spot require a restart (Ctrl+R).",
+				pos = {10.9, 0},
+				size = {2.4, 1.6},
 			},
 		}
 	},

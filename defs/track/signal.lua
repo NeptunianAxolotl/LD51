@@ -4,7 +4,7 @@ return {
 	toggleStates = 2,
 	offState = 1,
 	removable = true,
-	shopFrequency = 3,
+	inShop = true,
 	overwrite = {
 		straight = {
 			rot = {

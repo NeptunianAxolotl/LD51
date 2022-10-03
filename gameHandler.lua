@@ -122,10 +122,16 @@ function api.GetTimeRemaining()
 	return self.gameTime
 end
 
-function api.AddBonus(pos, name, magnitude)
-	if name == "speedMult" then
+function api.AddBonus(pos, name)
+	if name == "wood" then
+		local magnitude = 0.2
 		self.speedMult = self.speedMult + magnitude
 		EffectsHandler.SpawnEffect("mult_popup", util.Add(pos, {0, -20}), {text = "+Train Speed", inFront = 700, velocity = {0, -1}})
+	end
+	if name == "ore" then
+		self.bonusCarts = self.bonusCarts + 1
+		EffectsHandler.SpawnEffect("mult_popup", util.Add(pos, {0, -20}), {text = "+Carriage", inFront = 700, velocity = {0, -1}})
+	
 	end
 end
 
