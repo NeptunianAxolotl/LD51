@@ -227,6 +227,13 @@ local mapData = {
 {pos = {11.01853345788, 0.90887495400249}, doodadType = "forest"},
 {pos = {10.08740588202, 8.0475189651268}, doodadType = "grass"},
 {pos = {7.9994232620018, 4.8591122834579}, doodadType = "grass"},
+
+{pos = {1.7777988599694, 10.911440641984}, doodadType = "grass"},
+{pos = {1.1429394708163, 10.474092787591}, doodadType = "grass"},
+{pos = {0.098947939665421, 10.036744933197}, doodadType = "grass"},
+{pos = {-0.73342342653136, 9.3877766927083}, doodadType = "grass"},
+{pos = {0.64915974934896, 11.207708828691}, doodadType = "grass"},
+{pos = {-1.1989872144616, 8.4002172497736}, doodadType = "grass"},
 	},
 }
 

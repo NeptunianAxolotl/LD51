@@ -158,6 +158,7 @@ function api.DrawInterface()
 	local overWidth = windowX*0.36
 	local overY = windowY*0.3
 	local overHeight = windowY*0.4
+	
 	if gameLost then
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(4)
