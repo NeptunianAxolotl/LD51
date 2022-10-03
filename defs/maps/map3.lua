@@ -65,9 +65,15 @@ local mapData = {
 		{pos = {9, 1}, rot = 0, trackType = "forest"},
 		{pos = {9, 2}, rot = 0, trackType = "sawmill"},
 		
-		{pos = {20, 4}, rot = 0, trackType = "town", setData = {wantedGoodList = {"food", "wood"}, priorityGood = "food"}},
-		{pos = {14, 12}, rot = 0, trackType = "town", setData = {wantedGoodList = {"wood", "ore"}, priorityGood = "wood"}},
-		{pos = {3, 8}, rot = 0, trackType = "town", setData = {wantedGoodList = {"food", "ore"}, priorityGood = "ore"}},
+		{pos = {20, 4}, rot = 0, trackType = "town", setData = {progression = {
+			{good = "food", count = 5, bonus = {"speedMult", 0.1}},
+		}}},
+		{pos = {14, 12}, rot = 0, trackType = "town", setData = {progression = {
+			{good = "food", count = 5, bonus = {"speedMult", 0.1}},
+		}}},
+		{pos = {3, 8}, rot = 0, trackType = "town", setData = {progression = {
+			{good = "food", count = 5, bonus = {"speedMult", 0.1}},
+		}}},
 	}
 }
 

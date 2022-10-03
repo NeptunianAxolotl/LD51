@@ -2,9 +2,10 @@
 return {
 	stateImage = {"track_farm"},
 	trainMidFunc = function (self, train)
-		if not train.GetCarrying() then
-			train.SetCarrying("food")
-		end
+		train.SetCarrying("food")
+	end,
+	trainSlowFunc = function (self, train)
+		return train.GetCarrying() ~= "food"
 	end,
 	paths = {
 		{

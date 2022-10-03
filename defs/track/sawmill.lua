@@ -2,9 +2,10 @@
 return {
 	stateImage = {"track_sawmill"},
 	trainMidFunc = function (self, train)
-		if not train.GetCarrying() then
-			train.SetCarrying("wood")
-		end
+		train.SetCarrying("wood")
+	end,
+	trainSlowFunc = function (self, train)
+		return train.GetCarrying() ~= "wood"
 	end,
 	paths = {
 		{

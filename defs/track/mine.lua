@@ -2,9 +2,10 @@
 return {
 	stateImage = {"track_mine"},
 	trainMidFunc = function (self, train)
-		if not train.GetCarrying() then
-			train.SetCarrying("ore")
-		end
+		train.SetCarrying("ore")
+	end,
+	trainSlowFunc = function (self, train)
+		return train.GetCarrying() ~= "ore"
 	end,
 	paths = {
 		{

@@ -33,6 +33,12 @@ local function NewTrack(self, terrain)
 		return false
 	end
 	
+	function self.ShouldTrainSlow(train)
+		if self.def.trainSlowFunc then
+			return self.def.trainSlowFunc(self, train)
+		end
+	end
+	
 	function self.GetPathDraw(path, travel)
 		local worldPos = util.Add(self.worldPos, util.Mult(TerrainHandler.TileSize(), util.RotateVector(path.posFunc(travel), self.worldRot)))
 		return worldPos, self.worldRot + path.dirFunc(travel)

@@ -116,10 +116,12 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 			end
 		end
 		local mult = GameHandler.GetSpeedMult()*(self.currentPath.speedMult or 1)
-		if self.nextTrack then
+		local travelFullSpeed = self.nextTrack and not self.currentTrack.ShouldTrainSlow(self)
+		local wantStop = (not self.nextTrack)
+		if travelFullSpeed then
 			self.speed = math.min(self.def.maxSpeed, self.speed + dt*self.def.accel*mult)
 		else
-			if self.speed > -0.05 then
+			if (self.speed > -0.05 and wantStop) or (self.speed > 0.2 and not wantStop) then
 				if (self.travel > 0.4 or self.speed > 0.12) or self.travel > 0.55 then
 					self.speed = self.speed - dt*self.def.deccel*mult
 				end
@@ -144,7 +146,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 			end
 		end
 		self.travel = self.travel + travelChange
-		if not self.nextTrack then
+		if not travelFullSpeed then
 			if self.travel >= 0.92 then
 				self.speed = -0.2
 				if self.travel >= 0.99 then
