@@ -26,7 +26,7 @@ function api.AddTrack(pos, trackType, rotation, setData)
 	trackData.trackType = trackType
 	trackData.rotation = rotation
 	
-	if not def.pickupable then
+	if not def.removable then
 		api.SetUneditable(x, y)
 		if def.nearbyBlocked then
 			for i = 1, #def.nearbyBlocked do
@@ -159,7 +159,7 @@ function api.MousePressed(x, y, button)
 	end
 	if not blocked then
 		local trackType, rotation = ShopHandler.GetHeldTrack()
-		if trackType then
+		if trackType and not TrackDefs[trackType].notPlaceable then
 			api.AddTrack(gridPos, trackType, rotation)
 			ShopHandler.UseHeldTrack()
 		end

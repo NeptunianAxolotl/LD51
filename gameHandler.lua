@@ -27,7 +27,6 @@ function api.DepositGoods(good, number)
 	InterfaceUtil.AddNumber(good, number)
 	self.deliveries = self.deliveries + 1
 	if self.deliveries >= Global.DELIVERY_PER_TRACK then
-		ShopHandler.AddTrackCredits(1, "deliverTrack")
 		self.deliveries = 0
 	end
 end

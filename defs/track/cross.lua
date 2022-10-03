@@ -2,8 +2,8 @@
 return {
 	stateImage = {"track_cross"},
 	topImage = "track_bridge",
-	shopSlot = 3,
-	shopCost = 2,
+	shopFrequencty = 3,
+	removable = true,
 	entryUseIndexMap = {
 		[0] = 1,
 		[1] = 2,

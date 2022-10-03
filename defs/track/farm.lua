@@ -1,7 +1,6 @@
 
 return {
 	stateImage = {"track_farm"},
-	shopSlot = false,
 	trainMidFunc = function (self, train)
 		if not train.GetCarrying() then
 			train.SetCarrying("food")

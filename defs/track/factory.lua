@@ -2,7 +2,6 @@
 return {
 	stateImage = {"track_straight_half"},
 	topImage = "train_factory",
-	shopSlot = false,
 	updateFunc = function (self, dt)
 		self.spawnTimer = (self.spawnTimer or 0) - dt
 		if self.spawnTimer <= 0 then

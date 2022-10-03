@@ -43,7 +43,6 @@ end
 return {
 	stateImage = {"track_town"},
 	topImage = "town_over",
-	shopSlot = false,
 	trainMidFunc = function (self, train)
 		if not train.GetCarrying() then
 			return

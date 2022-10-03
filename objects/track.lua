@@ -105,20 +105,13 @@ local function NewTrack(self, terrain)
 	end
 	
 	function self.MousePressed()
-		if self.def.toggleStates then
-			self.state = self.state%self.def.toggleStates + 1
-		end
-		if self.def.pickupable and not self.IsInUse() then
-			local heldType, heldRotation = ShopHandler.GetHeldTrack()
-			if heldType then
-				TerrainHandler.AddTrack(self.pos, heldType, heldRotation)
-				ShopHandler.UseHeldTrack()
-			end
-			ShopHandler.SetHeldTrack(self.trackType, self.rotation)
+		local heldType, heldRotation = ShopHandler.GetHeldTrack()
+		if heldType and self.def.removable and not self.IsInUse() and TrackDefs[heldType].isCrowbar then
+			ShopHandler.UseHeldTrack()
 			ShopHandler.UpdateShopIfEmpty()
-			if not heldType then
-				TerrainHandler.DestroyTrack(self.pos)
-			end
+			TerrainHandler.DestroyTrack(self.pos)
+		elseif self.def.toggleStates then
+			self.state = self.state%self.def.toggleStates + 1
 		end
 	end
 	

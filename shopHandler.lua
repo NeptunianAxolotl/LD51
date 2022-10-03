@@ -6,29 +6,35 @@ local TrackDefs, TrackDefList = util.LoadDefDirectory("defs/track")
 local api = {}
 local self = {}
 
-local function InitializeDecks()
-	local decks = {}
-	for i = 1, Global.SHOP_SLOTS do
-		local validItems = {}
-		for j = 1, #TrackDefList do
-			if TrackDefs[TrackDefList[j]].shopSlot == i then
-				for k = 1, Global.DECK_SIZE_MULT do
-					validItems[#validItems + 1] = TrackDefList[j]
-				end
+local function InitializeDeck()
+	local deck = {}
+	local validItems = {}
+	for j = 1, #TrackDefList do
+		local def = TrackDefs[TrackDefList[j]]
+		if def.shopFrequency then
+			for k = 1, Global.DECK_SIZE_MULT * def.shopFrequency do
+				validItems[#validItems + 1] = TrackDefList[j]
 			end
 		end
-		decks[i] = DeckHandler.GetDeck(validItems, true)
 	end
-	return decks
+	return DeckHandler.GetDeck(validItems, true)
 end
 
-local function UpdateItems()
-	self.items[1] = "curve"
-	self.items[2] = "straight"
-	local drawnCards = DeckHandler.GetNextDraw(self.decks[3], 2)
-	self.items[3] = drawnCards[1]
-	self.items[4] = drawnCards[2]
+local function UpdateItems(refreshAll)
 	self.emptySlot = false
+	if refreshAll then
+		local draws = DeckHandler.GetNextDraw(self.deck, 4)
+		for i = 1, Global.SHOP_SLOTS do
+			self.items[i] = draws[i]
+		end
+		return
+	end
+	
+	for i = 1, Global.SHOP_SLOTS do
+		if not self.items[i] then
+			self.items[i] = DeckHandler.GetNextDraw(self.deck, 1)[1]
+		end
+	end
 end
 
 function api.GetHeldTrack()
@@ -49,14 +55,6 @@ function api.SetHeldTrack(newTrack, newRotation)
 	end
 end
 
-function api.AddTrackCredits(credits, source)
-	if self.world.GetGameOver() then
-		return false
-	end
-	self.trackCredits = math.min(Global.TRACK_MAX, self.trackCredits + credits)
-	GameHandler.AddSourceScore(credits, source)
-end
-
 function api.UpdateShopIfEmpty()
 	if self.emptySlot then
 		UpdateItems()
@@ -68,35 +66,32 @@ local function ClickShopButton(item)
 		return false
 	end
 	if self.heldTrack then
-		if self.items[item] then
-			if item <= Global.SHOP_BIN_SLOTS and self.items[item] == self.heldTrack then
-				self.heldTrack = false
-				self.emptySlot = false
-				return false
-			end
-			
-			return false
+		if self.items[item] and self.emptySlot then
+			self.items[self.emptySlot] = self.heldTrack
+			self.heldTrack = self.items[item]
+			self.emptySlot = item
+			self.items[item] = false
+			return true
 		end
-		self.items[item] = self.heldTrack
-		self.heldTrack = false
-		self.emptySlot = false
-		self.trackCredits = self.trackCredits + 1
-		return true
+		if self.emptySlot == item then
+			self.items[item] = self.heldTrack
+			self.heldTrack = false
+			self.emptySlot = false
+			return true
+		end
 	end
-	if self.trackCredits > 0 then
-		self.heldTrack = self.items[item]
-		self.items[item] = false
-		self.emptySlot = true
-		self.trackCredits = self.trackCredits - 1
-	end
+	self.heldTrack = self.items[item]
+	self.items[item] = false
+	self.emptySlot = item
 	return true
 end
 
 function api.Update(dt)
-	self.trackCreditTimer = self.trackCreditTimer - dt
-	if self.trackCreditTimer <= 0 then
-		self.trackCreditTimer = self.trackCreditTimer + Global.TRACK_CREDIT_TIME
-		api.AddTrackCredits(1, "tickTrack")
+	if self.shopBlockedTimer then
+		self.shopBlockedTimer = self.shopBlockedTimer - dt
+		if self.shopBlockedTimer <= 0 then
+			self.shopBlockedTimer = false
+		end
 	end
 	if not self.heldTrack then
 		api.UpdateShopIfEmpty()
@@ -158,16 +153,13 @@ function api.Draw(drawQueue)
 		love.graphics.setColor(1, 1, 1, 1)
 		love.graphics.print("Time: " .. util.SecondsToString(GameHandler.GetTimeRemaining()), shopItemsX - 100, shopItemsY - 90)
 		love.graphics.print("Score: " .. math.floor(GameHandler.GetScore() + 0.02), shopItemsX - 100, shopItemsY - 30)
-		love.graphics.print("Track: " .. math.floor(self.trackCredits + 0.02), shopItemsX - 100, shopItemsY + 30)
 		
 		local shopItemsSpacing = 240
 		for i = 1, Global.SHOP_SLOTS do
 			local y = shopItemsY + shopItemsSpacing * i
 			local def = self.items[i] and TrackDefs[self.items[i]]
 			if util.PosInRectangle(mousePos, shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2) then
-				if (not self.heldTrack) or (not self.items[i]) or (i <= Global.SHOP_BIN_SLOTS and self.items[i] == self.heldTrack) then
-					self.hoveredItem = i
-				end
+				self.hoveredItem = i
 			end
 			if self.items[i] then
 				Resources.DrawImage(def.stateImage[1], shopItemsX, y, self.trackRotation * math.pi/2, 1, 2)
@@ -176,13 +168,13 @@ function api.Draw(drawQueue)
 				end
 			end
 			
-			if self.trackCredits == 0 then
+			if self.shopBlockedTimer then
 				love.graphics.setColor(0.5, 0.5, 0.5, 0.7)
 				love.graphics.setLineWidth(4)
 				love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2, 8, 8, 16)
 			end
 			
-			if self.hoveredItem == i and self.trackCredits > 0 then
+			if self.hoveredItem == i and not self.shopBlockedTimer then
 				love.graphics.setColor(0.35, 1, 0.35, 0.8)
 			else
 				love.graphics.setColor(0, 0, 0, 0.8)
@@ -261,14 +253,13 @@ function api.Initialize(world)
 	self = {
 		world = world,
 		items = {},
-		decks = InitializeDecks(),
-		trackCreditTimer = Global.TRACK_CREDIT_TIME,
+		deck = InitializeDeck(),
+		shopBlockedTimer = false,
 	}
 	self.heldTrack = false
 	self.trackRotation = 0
-	self.trackCredits = Global.STARTING_TRACK
 	
-	UpdateItems()
+	UpdateItems(true)
 end
 
 return api
