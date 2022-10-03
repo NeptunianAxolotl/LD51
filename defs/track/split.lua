@@ -9,7 +9,10 @@ return {
 	removable = true,
 	overwrite = {
 		curve = {
-			rot = {0, 1}
+			rot = {
+				[0] = true,
+				[1] = true,
+			}
 		},
 	},
 	paths = {

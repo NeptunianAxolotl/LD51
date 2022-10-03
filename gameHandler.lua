@@ -182,7 +182,7 @@ function api.DrawInterface()
 		
 		Font.SetSize(0)
 		love.graphics.setColor(0, 0, 0, 1*self.levelAlpha)
-		love.graphics.printf("Sucess!", overX, overY + overHeight * 0.04, overWidth, "center")
+		love.graphics.printf("Success!", overX, overY + overHeight * 0.04, overWidth, "center")
 		
 		Font.SetSize(2)
 		love.graphics.printf("All deliveries were fulfilled.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
