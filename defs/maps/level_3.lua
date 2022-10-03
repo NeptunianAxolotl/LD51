@@ -32,7 +32,7 @@ local mapData = {
 			{good = "food", count = 10},
 		}}},
 {pos = {12, 3}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "ore", count = 3}, {good = "ore", count = 3},
+			{good = "ore", count = 5},
 		}}},
 
 {pos = {8, 1}, rot = 1, trackType = "factory"},

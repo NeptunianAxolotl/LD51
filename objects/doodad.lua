@@ -13,7 +13,7 @@ local function NewTrack(self, terrain)
 			Resources.DrawImage(self.def.image, self.worldPos[1], self.worldPos[2], 0, false, TerrainHandler.TileScale())
 		end})
 		if self.def.topImage then
-			drawQueue:push({y=100 + self.pos[2]*0.01 - 0.001; f=function()
+			drawQueue:push({y=200 + self.pos[2]*0.01 - 0.001; f=function()
 				Resources.DrawImage(self.def.topImage, self.worldPos[1], self.worldPos[2], 0, false, TerrainHandler.TileScale())
 				if self.def.extraDrawFunc then
 					self.def.extraDrawFunc(self, self.worldPos, self.worldRot)
