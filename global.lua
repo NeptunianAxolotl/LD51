@@ -3,7 +3,7 @@ local globals = {
 	BACK_COL = {130/255, 162/255, 58/255},
 	PANEL_COL = {0.45, 0.51, 0.55},
 	
-	MASTER_VOLUME = 0.75,
+	MASTER_VOLUME = 0.2,
 	MUSIC_VOLUME = 0.11,
 	DEFAULT_MUSIC_DURATION = 270,
 	CROSSFADE_TIME = 0,
@@ -38,8 +38,8 @@ local globals = {
 	ORDER_SIZE = 5,
 	ORDER_SIZE_INC = 5,
 	
-	DOODAD_MODE = true,
-	DEBUG_DRAW_BLOCK = true,
+	DOODAD_MODE = false,
+	DEBUG_DRAW_BLOCK = false,
 	INIT_LEVEL = 1,
 }
 
