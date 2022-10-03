@@ -17,7 +17,7 @@ function api.AddTrain(trainType, gridPos, entry)
 		self.firstTrainDone = true
 		return Global.TRAIN_SPAWN_TIME - 1 -- Minus one to leave the factory
 	end
-	return Global.TRAIN_SPAWN_TIME * (1 + train.cartCount)
+	return Global.TRAIN_SPAWN_TIME
 end
 
 local function DetectRuleOne() -- Very messsy

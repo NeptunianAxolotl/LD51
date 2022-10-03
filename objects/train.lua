@@ -10,16 +10,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 	self.travel = 0
 	self.speed = 0
 	self.cartCount = self.def.cartCount + GameHandler.GetCartBonus()
-	if self.cartCount > 0 then
-		self.travelLimit = self.def.cartDist+ 0.25
-		self.spawnWaits = self.cartCount
-		if firstTrain then
-			self.spawnWaitTimer = 0
-		else
-			self.spawnWaitTimer = Global.TRAIN_SPAWN_TIME
-		end
-	end
-	
+
 	local function EnterTrack(nextTrack, entry, isSpawn)
 		local newPath, newDestination = nextTrack.GetPathAndNextTrack(entry, isSpawn)
 		if not newPath then
@@ -134,17 +125,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 				end
 			end
 		end
-		if self.travelLimit then
-			self.speed = math.min(0.3, self.speed)
-		end
 		local travelChange = dt*self.speed*mult
-		if self.travelLimit then
-			self.travelLimit = self.travelLimit - travelChange
-			if self.travelLimit < 0 then
-				travelChange = travelChange + self.travelLimit
-				self.travelLimit = 0
-			end
-		end
 		self.travel = self.travel + travelChange
 		if not travelFullSpeed then
 			if self.travel >= 0.92 then
@@ -169,20 +150,6 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain)
 			ManageCart(1, self.travel, self.currentTrack, self.currentPath)
 			for i = 2, #self.carts do
 				ManageCart(i, self.carts[i - 1].travel, self.carts[i - 1].currentTrack, self.carts[i - 1].currentPath)
-			end
-		end
-		
-		if self.spawnWaitTimer then
-			self.spawnWaitTimer = self.spawnWaitTimer - dt
-			if self.spawnWaitTimer <= 0 then
-				self.spawnWaits = self.spawnWaits - 1
-				if self.spawnWaits <= 0 then
-					self.travelLimit = false
-					self.spawnWaitTimer = false
-				else
-					self.travelLimit = self.def.cartDist
-					self.spawnWaitTimer = Global.TRAIN_SPAWN_TIME
-				end
 			end
 		end
 	end
