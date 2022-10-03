@@ -4,9 +4,9 @@ local mapData = {
 	finalLevel = true,
 	dimensions = {
 		width = 17,
-		height = 13,
+		height = 11,
 		tileSize = 138,
-		vertOffset = 0,
+		vertOffset = 30,
 	},
 	townDrawParams = {
 		font = 0,
@@ -116,6 +116,16 @@ local mapData = {
 		{pos = {6, 10}, rot = 0, trackType = "block"},
 		{pos = {2, 9}, rot = 0, trackType = "block"},
 		{pos = {3, 9}, rot = 0, trackType = "block"},
+		
+		{pos = {16, 4}, rot = 0, trackType = "block"},
+{pos = {16, 5}, rot = 0, trackType = "block"},
+{pos = {16, 6}, rot = 0, trackType = "block"},
+{pos = {16, 7}, rot = 0, trackType = "block"},
+{pos = {16, 8}, rot = 0, trackType = "block"},
+{pos = {16, 9}, rot = 0, trackType = "block"},
+{pos = {16, 10}, rot = 0, trackType = "block"},
+{pos = {16, 0}, rot = 0, trackType = "block"},
+{pos = {16, -1}, rot = 0, trackType = "block"},
 	},
 	doodads = {
 		{pos = {2.9988275058028, 6.8692971934443}, doodadType = "field"},

@@ -342,7 +342,7 @@ function api.Draw(drawQueue)
 	end})
 	
 	drawQueue:push({y=1000; f=function()
-		if (self.mapRules and self.mapRules.hints) then
+		if (self.mapRules and self.mapRules.hints) and TerrainHandler.GetOrderMult() <= 1 then
 			for i = 1, #self.mapRules.hints do
 				local hint = self.mapRules.hints[i]
 				local pos = util.Mult(TerrainHandler.TileSize(), hint.pos)
