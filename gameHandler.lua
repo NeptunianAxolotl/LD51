@@ -188,8 +188,6 @@ function api.DrawInterface()
 		love.graphics.printf("All deliveries were fulfilled.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
 		love.graphics.printf("Press 'Ctrl+N' for the next level", overX, overY + overHeight * 0.72, overWidth, "center")
 	elseif self.world.GetPaused() then
-		overX = windowX*0.35
-		overWidth = windowX*0.3
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.97*self.levelAlpha)
 		love.graphics.setLineWidth(4)
 		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight, 8, 8, 16)
@@ -202,7 +200,7 @@ function api.DrawInterface()
 		love.graphics.printf("Paused", overX, overY + overHeight * 0.04, overWidth, "center")
 		
 		Font.SetSize(2)
-		love.graphics.printf("'p' to unpause\n'ctrl+m' to toggle music.\n'ctrl+r' to restart\n'ctrl+n' for next level.\n'ctrl+p.' for previous level.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
+		love.graphics.printf("'p' to unpause\n'ctrl+m' to toggle music.\n'ctrl+r' to restart\n'ctrl+n' for next level.\n'ctrl+p.' for last level.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
 	end
 end
 
