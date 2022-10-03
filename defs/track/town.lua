@@ -2,42 +2,27 @@
 local Font = require("include/font")
 local util = require("include/util")
 
-local function GetNextPriority(self)
-	self.priorityGoodIndex = (self.priorityGoodIndex or 0) + 1
-	if self.priorityGoodIndex > #self.wantedGoodList then
-		util.Permute(self.wantedGoodList)
-		self.priorityGoodIndex = 1
-		while #self.wantedGoodList > 1 and self.priorityGood == self.wantedGoodList[1] do
-			util.Permute(self.wantedGoodList)
+local function GetWantedGood(self)
+	if not self.wantIndex then
+		self.wantIndex = 1
+	end
+	if not self.progression[self.wantIndex] then
+		return false
+	end
+	local prog = self.progression[self.wantIndex]
+	return prog.good, prog.count, prog.bonus
+end
+
+local function DeliverGoods(self, count)
+	self.delivered = (self.delivered or 0) + count
+	local _, required, bonus = GetWantedGood(self)
+	if self.delivered >= required then
+		if bonus then
+			GameHandler.AddBonus(self.worldPos, bonus[1], bonus[2])
 		end
+		self.wantIndex = self.wantIndex + 1
+		self.delivered = 0
 	end
-	self.priorityGood = self.wantedGoodList[self.priorityGoodIndex]
-	self.priorityRemaining = GameHandler.GetOrderSize()
-end
-
-local function CheckPriorityGoodInit(self)
-	if not self.wantedGoodList then
-		self.wantedGoodList = {"food", "wood", "ore"}
-	end
-	if not self.priorityGood then
-		self.priorityGoodIndex = #self.wantedGoodList
-		GetNextPriority(self)
-	end
-	self.priorityRemaining = (self.priorityRemaining or GameHandler.GetOrderSize())
-end
-
-local function DepositGoods(self, good, count)
-	CheckPriorityGoodInit(self)
-	
-	local scoreOut = count * ((good == self.priorityGood and Global.PRIORITY_DELIVER_SCORE) or Global.BASE_DELIVER_SCORE)
-	local isPriority = (good == self.priorityGood)
-	if good == self.priorityGood then
-		self.priorityRemaining = self.priorityRemaining - count
-	end
-	if self.priorityRemaining <= 0 then
-		GetNextPriority(self)
-	end
-	return scoreOut, isPriority
 end
 
 return {
@@ -47,21 +32,28 @@ return {
 		if not train.GetCarrying() then
 			return
 		end
-		local good = train.GetCarrying()
-		local score, isPriority = DepositGoods(self, good, train.cartCount)
-		if not GameHandler.GetGameOver() then
-			GameHandler.DepositGoods(good, train.cartCount)
-			GameHandler.AddScore(score, (isPriority and "deliverBonusScore") or "deliverScore")
-			EffectsHandler.SpawnEffect("mult_popup", {self.worldPos[1], self.worldPos[2] - 20}, {scale = 0.7 + 0.3*math.random(), text = "+" .. score, inFront = 700, velocity = {0, -1}})
+		local wanted, remaining = GetWantedGood(self)
+		if wanted ~= train.GetCarrying() then
+			return
 		end
+		DeliverGoods(self, train.cartCount)
 		train.SetCarrying(false)
 	end,
+	trainSlowFunc = function (self, train)
+		local wanted = GetWantedGood(self)
+		if not wanted then
+			return false
+		end
+		return train.GetCarrying() == wanted
+	end,
 	extraDrawFunc = function (self, pos, rotation)
-		CheckPriorityGoodInit(self)
 		Font.SetSize(3)
 		love.graphics.setColor(0, 0, 0, 1)
-		love.graphics.print(self.priorityGood, pos[1] - 0.3*Global.GRID_SIZE, pos[2] - 1.18*Global.GRID_SIZE)
-		love.graphics.print(self.priorityRemaining, pos[1] - 0.3*Global.GRID_SIZE, pos[2] - 0.9*Global.GRID_SIZE)
+		local wanted, remaining = GetWantedGood(self)
+		if wanted then
+			love.graphics.print(wanted, pos[1] - 0.3*Global.GRID_SIZE, pos[2] - 1.18*Global.GRID_SIZE)
+			love.graphics.print(remaining - (self.delivered or 0), pos[1] - 0.3*Global.GRID_SIZE, pos[2] - 0.9*Global.GRID_SIZE)
+		end
 	end,
 	nearbyBlocked = {
 		{0, -1},

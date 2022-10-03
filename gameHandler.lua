@@ -122,6 +122,13 @@ function api.GetTimeRemaining()
 	return self.gameTime
 end
 
+function api.AddBonus(pos, name, magnitude)
+	if name == "speedMult" then
+		self.speedMult = self.speedMult + magnitude
+		EffectsHandler.SpawnEffect("mult_popup", util.Add(pos, {0, -20}), {text = "+Train Speed", inFront = 700, velocity = {0, -1}})
+	end
+end
+
 --------------------------------------------------
 -- Updating
 --------------------------------------------------
