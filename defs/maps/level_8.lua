@@ -16,13 +16,13 @@ local mapData = {
 		--{pos = {8, 1}, rot = 0, trackType = "town", setData = {progression = {
 		--	{good = "wood", count = 3}}}},
 {pos = {5, 5}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "wood", count = 15}, {good = "food", count = 15}}}},
+			{good = "wood", count = 20}, {good = "food", count = 20}}}},
 {pos = {12, 10}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "food", count = 15}, {good = "wood", count = 15}}}},
+			{good = "food", count = 20}, {good = "wood", count = 20}}}},
 {pos = {14, 1}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "ore", count = 15}, {good = "food", count = 15}}}},
+			{good = "ore", count = 20}, {good = "food", count = 20}}}},
 {pos = {16, 6}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "food", count = 15}}}},
+			{good = "food", count = 20}}}},
 			
 {pos = {16, 11}, rot = 0, trackType = "farm"},
 {pos = {10, 4}, rot = 0, trackType = "farm"},
