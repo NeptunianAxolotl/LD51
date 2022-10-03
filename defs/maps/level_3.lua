@@ -35,8 +35,7 @@ local mapData = {
 			{good = "ore", count = 3}, {good = "ore", count = 3},
 		}}},
 
-{pos = {8, 0}, rot = 1, trackType = "factory"},
-{pos = {8, 1}, rot = 3, trackType = "straight"},
+{pos = {8, 1}, rot = 1, trackType = "factory"},
 {pos = {8, 2}, rot = 3, trackType = "straight"},
 {pos = {8, 3}, rot = 3, trackType = "straight"},
 {pos = {8, 4}, rot = 3, trackType = "straight"},

@@ -40,7 +40,7 @@ local globals = {
 	
 	DOODAD_MODE = false,
 	DEBUG_DRAW_BLOCK = false,
-	INIT_LEVEL = 3,
+	INIT_LEVEL = 1,
 }
 
 return globals
