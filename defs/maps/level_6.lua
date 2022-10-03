@@ -24,6 +24,11 @@ local mapData = {
 {pos = {6, 8}, rot = 0, trackType = "town", setData = {progression = {
 		{good = "ore", count = 8}, {good = "ore", count = 8}}}},
 
+{pos = {10, 8}, rot = 0, trackType = "block"},
+{pos = {15, 4}, rot = 0, trackType = "block"},
+{pos = {3, 3}, rot = 0, trackType = "block"},
+{pos = {11, 1}, rot = 0, trackType = "block"},
+
 {pos = {14, 1}, rot = 0, trackType = "mine"},
 {pos = {2, 5}, rot = 0, trackType = "sawmill"},
 {pos = {13, 9}, rot = 0, trackType = "farm"},
@@ -215,6 +220,13 @@ local mapData = {
 {pos = {17.903231855752, 6.8201227602751}, doodadType = "grass"},
 {pos = {17.014429064764, 6.2134793046592}, doodadType = "grass"},
 {pos = {18.086636308311, 7.9628711645154}, doodadType = "grass"},
+
+{pos = {10.045081981714, 7.9064392974411}, doodadType = "forest"},
+{pos = {15.081634963768, 3.7727970731431}, doodadType = "mountain_large"},
+{pos = {3.0475180805593, 2.982749607252}, doodadType = "forest"},
+{pos = {11.01853345788, 0.90887495400249}, doodadType = "forest"},
+{pos = {10.08740588202, 8.0475189651268}, doodadType = "grass"},
+{pos = {7.9994232620018, 4.8591122834579}, doodadType = "grass"},
 	},
 }
 

@@ -7,6 +7,7 @@ local levels = {
 	"level_5",
 	"level_6",
 	"level_7",
+	"level_8",
 }
 
 return levels
