@@ -32,7 +32,7 @@ local mapData = {
 				arrowDest = {14.5, 7.08},
 			},
 			{
-				text = "- Maybe restart (key: 'Ctrl+R') if too many trains are stuck.",
+				text = "- Maybe restart (with 'ctrl+r') if too many trains are stuck.",
 				pos = {11.08, 0},
 				size = {2.4, 1.6},
 			},

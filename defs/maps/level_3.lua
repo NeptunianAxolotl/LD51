@@ -15,9 +15,9 @@ local mapData = {
 	rules = {
 		hints = {
 			{
-				text = "Additional hotkeys:\n- Numbers 1, 2, 3, 4 select  item.\n- 'E' to refresh the shop.\n- 'Ctrl+R' to retry.\n- 'Ctrl+N' for next level.\n- 'Ctrl+P' for previous level.",
-				pos = {0.2, 6.65},
-				size = {5, 2.7},
+				text = "Additional hotkeys:\n- 'p' to pause.\n- 'e' to refresh the shop.\n- Numbers 1, 2, 3, 4 select item.\n- 'ctrl+r' to retry the level.\n- 'ctrl+n' for next level.\n- 'ctrl+p' for previous level.",
+				pos = {0.2, 6.15},
+				size = {5, 3.12},
 			},
 		}
 	},

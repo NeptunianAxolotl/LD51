@@ -26,7 +26,7 @@ local mapData = {
 		trainLimit = 1,
 		hints = {
 			{
-				text = "- Use Left Click to grab a piece from the shop to complete the track.\n- Rotate selected track with Right Click, 'R' or 'Space'.",
+				text = "- Use Left Click to grab a piece from the shop to complete the track.\n- Rotate selected track with Right Click, 'r' or spacebar.",
 				pos = {0.4, 0.4},
 				size = {2.2, 1.55},
 				arrow = "right",

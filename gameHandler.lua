@@ -4,6 +4,7 @@ local Font = require("include/font")
 
 local EffectsHandler = require("effectsHandler")
 local Resources = require("resourceHandler")
+local MapDefs = util.LoadDefDirectory("defs/maps")
 MusicHandler = require("musicHandler")
 
 local self = {}
@@ -171,7 +172,7 @@ function api.DrawInterface()
 		
 		Font.SetSize(2)
 		love.graphics.printf("A blocked portal caused all the trains to explode.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "left")
-		love.graphics.printf("Press 'Ctrl+R' to retry the level", overX, overY + overHeight * 0.72, overWidth, "center")
+		love.graphics.printf("Press 'ctrl+r' to retry the level", overX, overY + overHeight * 0.72, overWidth, "center")
 	elseif gameWon then
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(4)
@@ -180,13 +181,23 @@ function api.DrawInterface()
 		love.graphics.setLineWidth(10)
 		love.graphics.rectangle("line", overX, overY, overWidth, overHeight, 8, 8, 16)
 		
-		Font.SetSize(0)
-		love.graphics.setColor(0, 0, 0, 0.8*self.levelAlpha)
-		love.graphics.printf("Success!", overX, overY + overHeight * 0.04, overWidth, "center")
-		
-		Font.SetSize(2)
-		love.graphics.printf("All deliveries were fulfilled.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
-		love.graphics.printf("Press 'Ctrl+N' for the next level", overX, overY + overHeight * 0.72, overWidth, "center")
+		if map.finalLevel then
+			Font.SetSize(0)
+			love.graphics.setColor(0, 0, 0, 0.8*self.levelAlpha)
+			love.graphics.printf("Success!", overX, overY + overHeight * 0.04, overWidth, "center")
+			
+			Font.SetSize(2)
+			love.graphics.printf("All deliveries were fulfilled, and this is the final level.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
+			love.graphics.printf("Press 'ctrl+p' for the previous level.\nThanks for playing!", overX, overY + overHeight * 0.68, overWidth, "center")
+		else
+			Font.SetSize(0)
+			love.graphics.setColor(0, 0, 0, 0.8*self.levelAlpha)
+			love.graphics.printf("Success!", overX, overY + overHeight * 0.04, overWidth, "center")
+			
+			Font.SetSize(2)
+			love.graphics.printf("All deliveries were fulfilled.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
+			love.graphics.printf("Press 'ctrl+r' for the next level.", overX, overY + overHeight * 0.68, overWidth, "center")
+		end
 	elseif self.world.GetPaused() then
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(4)
@@ -220,6 +231,7 @@ function api.Initialize(world)
 		deliveries = 0,
 		levelAlpha = 0,
 		gameTime = Global.GAME_TIME,
+		map = MapDefs[world.GetMapName()],
 		scoreSource = {
 			travelScore = 0,
 			deliverScore = 0,
