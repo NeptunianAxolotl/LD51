@@ -1,5 +1,7 @@
 
 local globals = {
+	BACK_COL = {130/255, 162/255, 58/255},
+	
 	MASTER_VOLUME = 0.75,
 	MUSIC_VOLUME = 0.4,
 	DEFAULT_MUSIC_DURATION = 174.69,

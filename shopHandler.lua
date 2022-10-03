@@ -170,7 +170,7 @@ function api.Draw(drawQueue)
 				self.hoveredItem = i
 			end
 			
-			love.graphics.setColor(110/255, 150/255, 40/255, 1)
+			love.graphics.setColor(Global.BACK_COL[1], Global.BACK_COL[2], Global.BACK_COL[3], 1)
 			love.graphics.setLineWidth(4)
 			love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2, 8, 8, 16)
 			
