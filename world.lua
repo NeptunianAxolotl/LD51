@@ -56,7 +56,7 @@ function api.Restart()
 	api.Initialize(self.levelIndex)
 end
 
-local function SwitchLevel(diff)
+function api.SwitchLevel(diff)
 	if LevelList.levels[self.levelIndex + diff] then
 		api.Initialize(self.levelIndex + diff)
 	end
@@ -107,10 +107,10 @@ function api.KeyPressed(key, scancode, isRepeat)
 		api.TakeScreenshot()
 	end
 	if key == "n" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-		SwitchLevel(1)
+		api.SwitchLevel(1)
 	end
 	if key == "p" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-		SwitchLevel(-1)
+		api.SwitchLevel(-1)
 	end
 	if api.GetGameOver() then
 		return -- No doing actions
@@ -129,6 +129,9 @@ function api.MousePressed(x, y, button)
 	end
 	local uiX, uiY = self.interfaceTransform:inverse():transformPoint(x, y)
 	
+	if GameHandler.MousePressed(x, y, button) then
+		return
+	end
 	if api.GetGameOver() then
 		return -- No doing actions
 	end

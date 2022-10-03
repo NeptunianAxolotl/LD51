@@ -63,8 +63,14 @@ function api.ToggleMenu()
 end
 
 function api.MousePressed(x, y)
-	local windowX, windowY = love.window.getMode()
-	local drawPos = world.ScreenToInterface({windowX, 0})
+	if self.levelAlpha >= 0.99 then
+		local gameOver, gameWon, gameLost = self.world.GetGameOver()
+		if gameWon then
+			self.world.SwitchLevel(1)
+		elseif gameLost then
+			self.world.Restart()
+		end
+	end
 end
 
 function api.GetViewRestriction()
@@ -145,7 +151,7 @@ end
 
 function api.Update(dt)
 	if self.world.GetGameOver() or self.world.GetPaused() then
-		self.levelAlpha = math.min(1, self.levelAlpha + dt*1.9)
+		self.levelAlpha = math.min(1, self.levelAlpha + dt*1.8)
 	else
 		self.levelAlpha = 0
 	end
@@ -173,7 +179,7 @@ function api.DrawInterface()
 		
 		Font.SetSize(2)
 		love.graphics.printf("A blocked portal caused all the trains to explode.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "left")
-		love.graphics.printf("Press 'ctrl+r' to retry the level", overX, overY + overHeight * 0.72, overWidth, "center")
+		love.graphics.printf("Click or press 'ctrl+r' to retry the level", overX, overY + overHeight * 0.72, overWidth, "center")
 	elseif gameWon then
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(4)
@@ -194,7 +200,7 @@ function api.DrawInterface()
 				love.graphics.printf("Did all the harder levels turn out to be possible?", overX, overY + overHeight * 0.52, overWidth, "center")
 			else
 				love.graphics.printf("This is the final level, but why not try levels with 50% more demand?", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
-				love.graphics.printf("Press 'ctrl+n' for harder levels.\nThanks for playing!", overX, overY + overHeight * 0.68, overWidth, "center")
+				love.graphics.printf("Click or press 'ctrl+n' for harder levels.\nThanks for playing!", overX, overY + overHeight * 0.68, overWidth, "center")
 			end
 		else
 			Font.SetSize(0)
@@ -203,7 +209,7 @@ function api.DrawInterface()
 			
 			Font.SetSize(2)
 			love.graphics.printf("All deliveries were fulfilled.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
-			love.graphics.printf("Press 'ctrl+n' for the next level.", overX, overY + overHeight * 0.68, overWidth, "center")
+			love.graphics.printf("Click or press 'ctrl+n' for the next level.", overX, overY + overHeight * 0.68, overWidth, "center")
 		end
 	elseif self.world.GetPaused() then
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
@@ -218,7 +224,7 @@ function api.DrawInterface()
 		love.graphics.printf("Paused", overX, overY + overHeight * 0.04, overWidth, "center")
 		
 		Font.SetSize(2)
-		love.graphics.printf("'p' to unpause\n'ctrl+m' to toggle music.\n'ctrl+r' to restart\n'ctrl+n' for next level.\n'ctrl+p.' for last level.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
+		love.graphics.printf("'p' to unpause\n'ctrl+m' to toggle music\n'ctrl+r' to reset the level\n'ctrl+n' for next level\n'ctrl+p' for previous level", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
 	end
 end
 
