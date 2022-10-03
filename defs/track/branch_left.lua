@@ -14,12 +14,6 @@ return {
 				[2] = true
 			}
 		},
-		signal = {
-			rot = {
-				[0] = true,
-				[2] = true
-			}
-		},
 		curve = {
 			rot = {
 				[0] = true

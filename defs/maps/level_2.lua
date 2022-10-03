@@ -1,6 +1,6 @@
 
 local mapData = {
-	humanName = "Wooda",
+	humanName = "Woody",
 	dimensions = {
 		width = 14,
 		height = 8,
@@ -99,6 +99,9 @@ local mapData = {
 		{pos = {1, 2}, rot = 0, trackType = "block"},
 		{pos = {0, 2}, rot = 0, trackType = "block"},
 		{pos = {0, 3}, rot = 0, trackType = "block"},
+		
+		{pos = {7, 4}, rot = 0, trackType = "block"},
+		{pos = {7, 3}, rot = 0, trackType = "block"},
 	},
 	doodads = {
 		{pos = {10.15060696072, -0.097099134657118}, doodadType = "forest"},

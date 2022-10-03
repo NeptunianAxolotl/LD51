@@ -15,7 +15,7 @@ local mapData = {
 	rules = {
 		hints = {
 			{
-				text = "- Junctions can be placed on matching basic track (unless a train is on it).",
+				text = "- Advanced track can upgrade matching basic track (unless a train is on it).",
 				pos = {1.2, 0.3},
 				size = {5, 1.5},
 			},

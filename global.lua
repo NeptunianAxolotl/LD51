@@ -38,8 +38,8 @@ local globals = {
 	ORDER_SIZE = 5,
 	ORDER_SIZE_INC = 5,
 	
-	DOODAD_MODE = false,
-	DEBUG_DRAW_BLOCK = false,
+	DOODAD_MODE = true,
+	DEBUG_DRAW_BLOCK = true,
 	INIT_LEVEL = 1,
 }
 
