@@ -242,13 +242,9 @@ function api.Draw(drawQueue)
 		drawQueue:push({y=1000; f=function()
 			local pos = TerrainHandler.GetValidPlacement(mousePos)
 			if pos then
-				local track = TerrainHandler.GetTrackAtPos(pos)
-				if (not track and not TrackDefs[self.heldTrack].isCrowbar) or (track and TrackDefs[self.heldTrack].isCrowbar) or 
-						(track and track.trackType and TrackDefs[self.heldTrack] and TrackDefs[self.heldTrack].overwrite and TrackDefs[self.heldTrack].overwrite[track.trackType]) then
-					love.graphics.setColor(1, 1, 1, 0.2)
-					love.graphics.setLineWidth(5)
-					love.graphics.rectangle("line", pos[1]*TerrainHandler.TileSize(), pos[2]*TerrainHandler.TileSize(), TerrainHandler.TileSize(), TerrainHandler.TileSize(), 4, 4, 8)
-				end
+				love.graphics.setColor(1, 1, 1, 0.2)
+				love.graphics.setLineWidth(5)
+				love.graphics.rectangle("line", pos[1]*TerrainHandler.TileSize(), pos[2]*TerrainHandler.TileSize(), TerrainHandler.TileSize(), TerrainHandler.TileSize(), 4, 4, 8)
 			end
 			if def.stateImage then
 				Resources.DrawImage(def.stateImage[1], mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8, TerrainHandler.TileScale())

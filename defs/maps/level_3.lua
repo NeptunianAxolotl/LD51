@@ -64,7 +64,6 @@ local mapData = {
 {pos = {2, 6}, rot = 0, trackType = "block"},
 {pos = {3, 6}, rot = 0, trackType = "block"},
 		
-		
 {pos = {0, 5}, rot = 0, trackType = "block"},
 {pos = {0, 1}, rot = 0, trackType = "block"},
 {pos = {0, 0}, rot = 0, trackType = "block"},
@@ -87,6 +86,8 @@ local mapData = {
 {pos = {7, 9}, rot = 0, trackType = "block"},
 {pos = {6, 9}, rot = 0, trackType = "block"},
 {pos = {6, 8}, rot = 0, trackType = "block"},
+
+{pos = {10, 5}, rot = 0, trackType = "block"},
 	},
 	doodads = {
 	
