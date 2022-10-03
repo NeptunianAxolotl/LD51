@@ -3,7 +3,7 @@ return {
 	stateImage = {"track_straight_half"},
 	topImage = "train_factory",
 	updateFunc = function (self, dt)
-		self.spawnTimer = (self.spawnTimer or 0) - dt
+		self.spawnTimer = (self.spawnTimer or Global.TRAIN_SPAWN_TIME) - dt
 		if self.spawnTimer <= 0 then
 			if self.IsInUse() then
 				GameHandler.SetGameOver(false, "factory_block")
@@ -16,7 +16,7 @@ return {
 	paths = {
 		{
 			posFunc = function (t)
-				return {0.6*t - 0.1, 0}
+				return {0.53*t - 0.03, 0}
 			end,
 			dirFunc = function (t)
 				return 0

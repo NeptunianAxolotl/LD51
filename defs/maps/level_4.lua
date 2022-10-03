@@ -12,6 +12,15 @@ local mapData = {
 		pos = {0.01, -1.55}
 	},
 	baseCarriages = 2,
+	rules = {
+		hints = {
+			{
+				text = "- Junctions can be placed on matching basic track (unless a train is on it).",
+				pos = {1.2, 0.3},
+				size = {5, 1.5},
+			},
+		}
+	},
 	track = {
 		--{pos = {8, 1}, rot = 0, trackType = "town", setData = {progression = {
 		--	{good = "wood", count = 3},
