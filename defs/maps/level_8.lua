@@ -18,7 +18,7 @@ local mapData = {
 {pos = {5, 5}, rot = 0, trackType = "town", setData = {progression = {
 			{good = "wood", count = 6}, {good = "food", count = 6}}}},
 {pos = {12, 10}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "wood", count = 6}}}},
+			{good = "food", count = 6}, {good = "wood", count = 6}}}},
 {pos = {14, 1}, rot = 0, trackType = "town", setData = {progression = {
 			{good = "ore", count = 6}, {good = "food", count = 6}}}},
 {pos = {16, 6}, rot = 0, trackType = "town", setData = {progression = {
