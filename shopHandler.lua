@@ -82,10 +82,10 @@ function api.UpdateShopIfEmpty()
 end
 
 local function ClickShopButton(item)
-	if self.shopBlockedTimer or not item then
-		return false
-	end
 	if item == Global.SHOP_SLOTS + 1 then
+		if self.shopBlockedTimer then
+			return
+		end
 		self.shopBlockedTimer = Global.REFRESH_TIMER
 		self.heldTrack = false
 		UpdateItems(true)
@@ -269,13 +269,7 @@ function api.Draw(drawQueue)
 				end
 			end
 			
-			if self.shopBlockedTimer then
-				love.graphics.setColor(0.5, 0.5, 0.5, 0.7)
-				love.graphics.setLineWidth(4)
-				love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2, 8, 8, 16)
-			end
-			
-			if self.hoveredItem == i and not self.shopBlockedTimer then
+			if self.hoveredItem == i then
 				love.graphics.setColor(0.35, 1, 0.35, 0.8)
 			else
 				love.graphics.setColor(0, 0, 0, 0.8)
@@ -292,12 +286,18 @@ function api.Draw(drawQueue)
 			self.hoveredItem = Global.SHOP_SLOTS + 1
 		end
 		if self.shopBlockedTimer then
-			love.graphics.setColor(0.5, 0.5, 0.5, 1)
+			love.graphics.setColor(0.45, 0.65, 0.72, 1)
 		else
 			love.graphics.setColor(0.5, 0.7, 0.8, 1)
 		end
 		love.graphics.setLineWidth(4)
 		love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE - buttonExtra, y - Global.GRID_SIZE, Global.GRID_SIZE * 2 + buttonExtra*2, Global.GRID_SIZE, 8, 8, 16)
+		
+		if self.shopBlockedTimer then
+			local prop = self.shopBlockedTimer / Global.REFRESH_TIMER
+			love.graphics.setColor(0.5, 0.5, 0.5, 1)
+			love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE - buttonExtra, y - Global.GRID_SIZE, prop * (Global.GRID_SIZE * 2 + buttonExtra*2), Global.GRID_SIZE, 8, 8, 16)
+		end
 		
 		if self.hoveredItem == Global.SHOP_SLOTS + 1 and not self.shopBlockedTimer then
 			love.graphics.setColor(0.35, 1, 0.35, 0.8)

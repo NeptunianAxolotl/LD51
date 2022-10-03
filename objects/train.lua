@@ -4,7 +4,7 @@ local Font = require("include/font")
 
 local TrainDefs = util.LoadDefDirectory("defs/trains")
 
-local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain, baseCarriages)
+local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriages)
 	self.def = TrainDefs[self.trainType]
 	
 	self.travel = 0
@@ -25,10 +25,6 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, firstTrain, 
 		self.destination = newDestination
 		self.currentTrack.SetUsedState(true, entry)
 		self.nextTrack = false
-		
-		if not isSpawn then
-			GameHandler.AddScore(Global.TRAVEL_SCORE, "travelScore")
-		end
 	end
 	EnterTrack(TerrainHandler.GetTrackAtPos(new_gridPos), new_entry, true)
 	

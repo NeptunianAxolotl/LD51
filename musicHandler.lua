@@ -12,13 +12,11 @@ local font = love.graphics.newFont(70)
 
 -- First eligible tracks are used as start music
 local trackList = {
-	'bgm',
+	'bgm_b',
 }
 
 local fallbackTrack = {
-	'bgm',
-	'bgm',
-	'bgm',
+	'bgm_b',
 }
 
 local currentTrack = {}
@@ -44,7 +42,7 @@ local function GetTracks()
 	end
 	util.Permute(trackList)
 	
-	return foundTrack
+	return {{sound = "bgm_b"}}
 end
 
 function api.StopCurrentTrack(delay)
@@ -78,7 +76,7 @@ function api.Update(dt)
 			trackParity = 3 - trackParity
 			currentTrack = GetTracks()
 			currentTrackRemaining = 0
-			for i = 1, 3 do
+			for i = 1, 1 do
 				currentTrackRemaining = math.max(currentTrackRemaining, soundFiles[currentTrack[i].sound].duration or Global.DEFAULT_MUSIC_DURATION)
 			end
 			currentTrackRemaining = currentTrackRemaining - Global.CROSSFADE_TIME
@@ -98,10 +96,9 @@ end
 function api.Initialize(newWorld)
 	world = newWorld
 	api.StopCurrentTrack()
-	initialDelay = 3
+	initialDelay = 0
 	for i = 1, #trackList do
 		SoundHandler.LoadSound(trackList[i], 1)
-		SoundHandler.LoadSound(trackList[i], 2)
 	end
 end
 

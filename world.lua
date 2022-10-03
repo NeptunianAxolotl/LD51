@@ -308,9 +308,9 @@ function api.Initialize(mapName)
 	self.interfaceTransform = love.math.newTransform()
 	self.emptyTransform = love.math.newTransform()
 	self.paused = false
-	self.musicEnabled = false
+	self.musicEnabled = true
 	self.lifetime = Global.DEBUG_START_LIFETIME or 0
-	self.mapName = mapName or LevelList[1]
+	self.mapName = mapName or LevelList[Global.INIT_LEVEL or 1]
 	
 	Delay.Initialise()
 	InterfaceUtil.Initialize()

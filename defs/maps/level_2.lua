@@ -11,18 +11,8 @@ local mapData = {
 		font = 0,
 		pos = {0.05, -1.42}
 	},
-	baseCarriages = 2,
+	baseCarriages = 1,
 	rules = {
-		shopState = {
-			"straight",
-			"straight",
-			"straight",
-			"straight",
-		},
-		refreshDisabled = true,
-		onlyPlaceRot = {[1] = true, [3] = true},
-		onlyPlaceType = "straight",
-		trainLimit = 1,
 		hints = {
 			{
 				text = "- Use Left Click to grab a piece from the shop to complete the track.\n- Rotate selected track with Right Click, 'R' or 'Space'.",
