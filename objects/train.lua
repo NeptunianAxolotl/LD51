@@ -8,7 +8,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 	self.def = TrainDefs[self.trainType]
 	
 	self.travel = 0
-	self.speed = 0
+	self.speed = 1.2
 	self.cartCount = baseCarriages + GameHandler.GetCartBonus()
 
 	local function EnterTrack(nextTrack, entry, isSpawn)
