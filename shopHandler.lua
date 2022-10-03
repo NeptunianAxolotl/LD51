@@ -9,9 +9,9 @@ local api = {}
 local self = {}
 
 local shopFrequency = {
-	straight = 14,
-	curve = 14,
-	crowbar = 3,
+	straight = 12,
+	curve = 10,
+	crowbar = 4,
 	signal = 3,
 	branch_right = 3,
 	branch_left = 3,
