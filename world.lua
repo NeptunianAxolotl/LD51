@@ -67,7 +67,7 @@ function api.GetLifetime()
 end
 
 function api.TakeScreenshot()
-	love.filesystem.setIdentity("LD51/screenshots")
+	love.filesystem.setIdentity("RegularRailway/screenshots")
 	love.graphics.captureScreenshot("screenshot_" .. math.floor(math.random()*100000) .. "_.png")
 end
 
