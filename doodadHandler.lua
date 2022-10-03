@@ -43,7 +43,7 @@ function api.Initialize(world)
 		world = world,
 	}
 	
-	SetupWorld("level_1")
+	SetupWorld(self.world.GetMapName())
 end
 
 return api

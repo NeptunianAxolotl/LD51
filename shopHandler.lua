@@ -339,6 +339,15 @@ function api.Draw(drawQueue)
 					if hint.arrow == "left" then
 						love.graphics.line(pos[1], pos[2] + size[2], arrowDest[1], arrowDest[2])
 					end
+					if hint.arrow == "topRight" then
+						love.graphics.line(pos[1] + size[1], pos[2], arrowDest[1], arrowDest[2])
+					end
+					if hint.arrow == "midRight" then
+						love.graphics.line(pos[1] + size[1], pos[2] + size[2]*0.5, arrowDest[1], arrowDest[2])
+					end
+					if hint.arrow == "mid" then
+						love.graphics.line(pos[1] + size[1]*0.5, pos[2] + size[2], arrowDest[1], arrowDest[2])
+					end
 				end
 				
 				Font.SetSize(1)

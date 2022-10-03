@@ -45,7 +45,7 @@ local mapData = {
 		{pos = {3, 4}, rot = 2, trackType = "curve"},
 		{pos = {3, 3}, rot = 3, trackType = "branch_left"},
 		{pos = {4, 3}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "food", count = 4},
+			{good = "food", count = 3},
 		}}},
 		{pos = {3, 1}, rot = 0, trackType = "curve"},
 		{pos = {5, 1}, rot = 1, trackType = "curve"},

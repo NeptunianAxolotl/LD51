@@ -112,13 +112,13 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 			self.speed = math.min(self.def.maxSpeed, self.speed + dt*self.def.accel*mult)
 		else
 			if (self.speed > -0.05 and wantStop) or (self.speed > 0.2 and not wantStop) then
-				if (self.travel > 0.4 or self.speed > 0.12) or self.travel > 0.55 then
+				if (self.travel > 0.4 or self.speed > 0.15) or self.travel > 0.55 then
 					self.speed = self.speed - dt*self.def.deccel*mult
 				end
 			end
 			if self.speed < 0 then
 				if self.travel < 0.52 then
-					self.speed = 0.12
+					self.speed = 0.15
 				elseif self.travel < 0.6 then
 					self.speed = 0
 				end

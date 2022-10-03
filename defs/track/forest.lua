@@ -1,6 +1,6 @@
 
 return {
-	stateImage = {"forest"},
+	stateImage = {"forest2"},
 	paths = {
 	},
 }
