@@ -6,7 +6,7 @@ local function GetWantedGood(self)
 	if not self.wantIndex then
 		self.wantIndex = 1
 	end
-	if not self.progression[self.wantIndex] then
+	if not (self.progression and self.progression[self.wantIndex]) then
 		return false
 	end
 	local prog = self.progression[self.wantIndex]

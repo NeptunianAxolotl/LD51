@@ -43,7 +43,7 @@ local function SetupWorld(mapName)
 	self.width  = map.dimensions.width
 	self.height = map.dimensions.height
 	self.tileSize = map.dimensions.tileSize
-	self.gridOffset = map.gridOffset or 0
+	self.vertOffset = map.dimensions.vertOffset or 0
 	
 	for i = 1, #map.track do
 		local track = map.track[i]
@@ -95,7 +95,7 @@ function api.GetValidGridPlacement(gridPos, alwaysReturn, addDirection)
 end
 
 function api.GetValidPlacement(pos, alwaysReturn, addDirection)
-	local gx, gy = math.floor(pos[1] / self.tileSize), math.floor(pos[2] / self.tileSize)
+	local gx, gy = math.floor(pos[1] / self.tileSize), math.floor(pos[2] / self.tileSize) 
 	return api.GetValidGridPlacement({gx, gy}, alwaysReturn, addDirection)
 end
 
@@ -135,6 +135,10 @@ end
 
 function api.TileScale()
 	return self.tileSize / Global.GRID_SIZE
+end
+
+function api.GetVertOffset()
+	return self.vertOffset
 end
 
 function api.Update(dt)

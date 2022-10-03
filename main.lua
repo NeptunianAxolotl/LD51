@@ -47,7 +47,7 @@ function love.update(dt)
 	frames = frames + 1
 	if dt > 0.05 then
 		longFrames = longFrames + 1
-		if not Global.DEBUG_PRINT_CLICK_POS then
+		if not Global.DEBUG_PRINT_CLICK_POS and not Global.DOODAD_MODE then
 			print(math.floor(frames *100 / longFrames), dt)
 		end
 	end
@@ -67,7 +67,7 @@ function love.load(arg)
 	print(string.format("Version %d.%d.%d - %s", major, minor, revision, codename))
 
 	love.window.setTitle("LD51")
-	--love.graphics.setDefaultFilter("nearest", "nearest") -- Removing this helps some things and really hurts others
+	love.graphics.setDefaultFilter("nearest", "nearest") -- Removing this helps some things and really hurts others
 
 	love.graphics.setBackgroundColor(Global.BACK_COL[1], Global.BACK_COL[2], Global.BACK_COL[3], 1)
 

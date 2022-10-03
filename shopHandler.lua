@@ -117,12 +117,41 @@ function api.KeyPressed(key, scancode, isRepeat)
 	if Global.DOODAD_MODE then
 		if key == "1" then
 			self.heldTrack = "forest"
+			self.holdingDoodad = true
 		elseif key == "2" then
 			self.heldTrack = "field"
+			self.holdingDoodad = true
 		elseif key == "3" then
 			self.heldTrack = "mountain_small"
+			self.holdingDoodad = true
 		elseif key == "4" then
 			self.heldTrack = "mountain_large"
+			self.holdingDoodad = true
+		end
+		if key == "q" then
+			self.heldTrack = "block"
+			self.holdingDoodad = false
+		elseif key == "w" then
+			self.heldTrack = "town"
+			self.holdingDoodad = false
+		elseif key == "a" then
+			self.heldTrack = "sawmill"
+			self.holdingDoodad = false
+		elseif key == "s" then
+			self.heldTrack = "mine"
+			self.holdingDoodad = false
+		elseif key == "d" then
+			self.heldTrack = "farm"
+			self.holdingDoodad = false
+		elseif key == "f" then
+			self.heldTrack = "factory"
+			self.holdingDoodad = false
+		elseif key == "t" then
+			self.heldTrack = "straight"
+			self.holdingDoodad = false
+		elseif key == "y" then
+			self.heldTrack = "curve"
+			self.holdingDoodad = false
 		end
 		return
 	end
@@ -138,11 +167,22 @@ end
 
 function api.MousePressed(x, y, button)
 	if Global.DOODAD_MODE then
-		if self.heldTrack then
+		if self.holdingDoodad then
+			self.trackRotation = 0
+		elseif button == 2 then
+			self.trackRotation = (self.trackRotation + 1)%4
+		end
+		if button == 1 and self.heldTrack then
 			local mousePos = self.world.GetMousePosition()
-			mousePos = util.Subtract(util.Mult(1 / TerrainHandler.TileSize() , mousePos), {0.5, 0.5})
-			DoodadHandler.AddDoodad(mousePos, self.heldTrack)
-			print([[		{pos = {]] .. mousePos[1] .. [[, ]] .. mousePos[2] .. [[}, doodadType = "]] .. self.heldTrack .. [["},]])
+			if self.holdingDoodad then
+				mousePos = util.Subtract(util.Mult(1 / TerrainHandler.TileSize() , mousePos), {0.5, 0.5})
+				DoodadHandler.AddDoodad(mousePos, self.heldTrack)
+				print([[{pos = {]] .. mousePos[1] .. [[, ]] .. mousePos[2] .. [[}, doodadType = "]] .. self.heldTrack .. [["},]])
+			else
+				mousePos = {math.floor(mousePos[1] / TerrainHandler.TileSize()), math.floor(mousePos[2] / TerrainHandler.TileSize())}
+				TerrainHandler.AddTrack(mousePos, self.heldTrack, self.trackRotation)
+				print([[{pos = {]] .. mousePos[1] .. [[, ]] .. mousePos[2] .. [[}, rot = ]] .. self.trackRotation .. [[, trackType = "]] .. self.heldTrack .. [["},]])
+			end
 		end
 		return
 	end
@@ -167,7 +207,9 @@ function api.Draw(drawQueue)
 				love.graphics.setLineWidth(5)
 				love.graphics.rectangle("line", pos[1]*TerrainHandler.TileSize(), pos[2]*TerrainHandler.TileSize(), TerrainHandler.TileSize(), TerrainHandler.TileSize(), 4, 4, 8)
 			end
-			Resources.DrawImage(def.stateImage[1], mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8, TerrainHandler.TileScale())
+			if def.stateImage then
+				Resources.DrawImage(def.stateImage[1], mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8, TerrainHandler.TileScale())
+			end
 			if def.topImage then
 				Resources.DrawImage(def.topImage, mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8, TerrainHandler.TileScale())
 			end
@@ -176,7 +218,7 @@ function api.Draw(drawQueue)
 	
 	drawQueue:push({y=800; f=function()
 		local shopItemsX = Global.VIEW_WIDTH -  Global.SHOP_WIDTH*0.5
-		local shopItemsY = 75
+		local shopItemsY = 75 - TerrainHandler.GetVertOffset()
 		
 		Font.SetSize(1)
 		love.graphics.setColor(1, 1, 1, 1)
@@ -195,7 +237,7 @@ function api.Draw(drawQueue)
 			love.graphics.setLineWidth(4)
 			love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2, 8, 8, 16)
 			
-			if self.items[i] then
+			if self.items[i] and def.stateImage then
 				Resources.DrawImage(def.stateImage[1], shopItemsX, y, self.trackRotation * math.pi/2, 1, 2)
 				if def.topImage then
 					Resources.DrawImage(def.topImage, shopItemsX, y, self.trackRotation * math.pi/2, 1, 2)
@@ -244,22 +286,8 @@ function api.Draw(drawQueue)
 	
 	drawQueue:push({y=1000; f=function()
 		love.graphics.setColor(0, 0, 0, 1)
-		
-		local offset = 10
-		GameHandler.DrawScoreSource("travelScore", offset)
-		offset = offset + 30
-		GameHandler.DrawScoreSource("deliverScore", offset)
-		offset = offset + 30
-		GameHandler.DrawScoreSource("deliverBonusScore", offset)
-		offset = offset + 30
-		GameHandler.DrawScoreSource("tickTrack", offset)
-		offset = offset + 30
-		GameHandler.DrawScoreSource("deliverTrack", offset)
-		offset = offset + 30
-		love.graphics.setColor(0, 0, 0, 1)
-		
-		love.graphics.rectangle("fill", -1000, Global.BLACK_BAR_LEEWAY + Global.VIEW_HEIGHT, 5000, 3000)
-		love.graphics.rectangle("fill", -1000, -3000 - Global.BLACK_BAR_LEEWAY, 5000, 3000)
+		love.graphics.rectangle("fill", -1000, Global.BLACK_BAR_LEEWAY + Global.VIEW_HEIGHT - TerrainHandler.GetVertOffset(), 5000, 3000)
+		love.graphics.rectangle("fill", -1000, -3000 - Global.BLACK_BAR_LEEWAY - TerrainHandler.GetVertOffset(), 5000, 3000)
 		love.graphics.rectangle("fill", Global.VIEW_WIDTH, -1000, 3000, 5000)
 		love.graphics.rectangle("fill", -3000 - Global.BLACK_BAR_LEEWAY, -1000, 3000, 5000)
 	end})

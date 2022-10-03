@@ -14,7 +14,7 @@ local globals = {
 	VIEW_WIDTH = 2996,
 	VIEW_HEIGHT = 1560,
 	
-	BLACK_BAR_LEEWAY = 100,
+	BLACK_BAR_LEEWAY = 150,
 	SHOP_WIDTH = 500,
 	RESOURCE_BONUS_HEIGHT = 120,
 	GRID_SIZE = 96,
@@ -37,7 +37,8 @@ local globals = {
 	ORDER_SIZE = 5,
 	ORDER_SIZE_INC = 5,
 	
-	DOODAD_MODE = true,
+	DOODAD_MODE = false,
+	DEBUG_DRAW_BLOCK = false,
 }
 
 return globals
