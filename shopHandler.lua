@@ -9,11 +9,11 @@ local self = {}
 local function InitializeDeck()
 	local deck = {}
 	local validItems = {}
-	for j = 1, #TrackDefList do
-		local def = TrackDefs[TrackDefList[j]]
+	for i = 1, #TrackDefList do
+		local def = TrackDefs[TrackDefList[i]]
 		if def.shopFrequency then
-			for k = 1, Global.DECK_SIZE_MULT * def.shopFrequency do
-				validItems[#validItems + 1] = TrackDefList[j]
+			for j = 1, Global.DECK_SIZE_MULT * def.shopFrequency do
+				validItems[#validItems + 1] = TrackDefList[i]
 			end
 		end
 	end
@@ -22,8 +22,14 @@ end
 
 local function UpdateItems(refreshAll)
 	self.emptySlot = false
+	local toAvoid = {}
+	for i = 1, Global.SHOP_SLOTS do
+		if self.items[i] then
+			toAvoid[self.items[i]] = true
+		end
+	end
 	if refreshAll then
-		local draws = DeckHandler.GetNextDraw(self.deck, 4)
+		local draws = DeckHandler.GetNextDraw(self.deck, 4, toAvoid)
 		for i = 1, Global.SHOP_SLOTS do
 			self.items[i] = draws[i]
 		end
@@ -32,7 +38,7 @@ local function UpdateItems(refreshAll)
 	
 	for i = 1, Global.SHOP_SLOTS do
 		if not self.items[i] then
-			self.items[i] = DeckHandler.GetNextDraw(self.deck, 1)[1]
+			self.items[i] = DeckHandler.GetNextDraw(self.deck, 1, toAvoid)[1]
 		end
 	end
 end
@@ -62,8 +68,14 @@ function api.UpdateShopIfEmpty()
 end
 
 local function ClickShopButton(item)
-	if not item then
+	if self.shopBlockedTimer or not item then
 		return false
+	end
+	if item == Global.SHOP_SLOTS + 1 then
+		self.shopBlockedTimer = Global.REFRESH_TIMER
+		self.heldTrack = false
+		UpdateItems(true)
+		return
 	end
 	if self.heldTrack then
 		if self.items[item] and self.emptySlot then
@@ -102,17 +114,13 @@ function api.KeyPressed(key, scancode, isRepeat)
 	if key == "r" or key == "space" then
 		self.trackRotation = (self.trackRotation + 1)%4
 	end
-	if key == "1" then
-		ClickShopButton(1)
+	for i = 1, Global.SHOP_SLOTS do
+		if key == tostring(i) then
+			ClickShopButton(i)
+		end
 	end
-	if key == "2" then
-		ClickShopButton(2)
-	end
-	if key == "3" then
-		ClickShopButton(3)
-	end
-	if key == "4" then
-		ClickShopButton(4)
+	if key == "e" then
+		ClickShopButton(Global.SHOP_SLOTS + 1)
 	end
 end
 
@@ -161,6 +169,11 @@ function api.Draw(drawQueue)
 			if util.PosInRectangle(mousePos, shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2) then
 				self.hoveredItem = i
 			end
+			
+			love.graphics.setColor(110/255, 150/255, 40/255, 1)
+			love.graphics.setLineWidth(4)
+			love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2, 8, 8, 16)
+			
 			if self.items[i] then
 				Resources.DrawImage(def.stateImage[1], shopItemsX, y, self.trackRotation * math.pi/2, 1, 2)
 				if def.topImage then
@@ -183,47 +196,29 @@ function api.Draw(drawQueue)
 			love.graphics.rectangle("line", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE * 2, 8, 8, 16)
 		end
 		
-		Font.SetSize(2)
+		local y = shopItemsY + shopItemsSpacing * (Global.SHOP_SLOTS + 1.1)
+		if util.PosInRectangle(mousePos, shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE) then
+			self.hoveredItem = Global.SHOP_SLOTS + 1
+		end
+		if self.shopBlockedTimer then
+			love.graphics.setColor(0.5, 0.5, 0.5, 1)
+		else
+			love.graphics.setColor(0.5, 0.7, 0.8, 1)
+		end
+		love.graphics.setLineWidth(4)
+		love.graphics.rectangle("fill", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE, 8, 8, 16)
+		
+		if self.hoveredItem == Global.SHOP_SLOTS + 1 and not self.shopBlockedTimer then
+			love.graphics.setColor(0.35, 1, 0.35, 0.8)
+		else
+			love.graphics.setColor(0, 0, 0, 0.8)
+		end
+		love.graphics.setLineWidth(8)
+		love.graphics.rectangle("line", shopItemsX - Global.GRID_SIZE, y - Global.GRID_SIZE, Global.GRID_SIZE * 2, Global.GRID_SIZE, 8, 8, 16)
+			
+		Font.SetSize(1)
 		love.graphics.setColor(0, 0, 0, 0.8)
-		love.graphics.print("- Every ten seconds an engine\n(or carriage) spawns and you\ngain a track.\n- Left click selects.\n- Right click rotates.\n- Score deliveries and travel\ndistance. Gain a bonus\ntrack every 1000 points.", shopItemsX - 200, shopItemsY + 120 + shopItemsSpacing * Global.SHOP_SLOTS)
-		
-		local barY = TerrainHandler.Height() * Global.GRID_SIZE + Global.RESOURCE_BONUS_HEIGHT*0.5 + 10
-		local barX = 100
-		local barWidth = TerrainHandler.Width() * Global.GRID_SIZE / 4
-		local barSpace = TerrainHandler.Width() * Global.GRID_SIZE / 12
-		
-		local showX, showY = GameHandler.GetShowOffset("food")
-		if showY then
-			InterfaceUtil.DrawSmoothNumberBar("food", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY + showY}, {barWidth, 40})
-			love.graphics.setColor(0, 0, 0, 0.8)
-			love.graphics.print("Food Delivered", barX, barY - 48 + showY)
-			if showX then
-				love.graphics.print("Order Size: " .. InterfaceUtil.Round(GameHandler.GetOrderSize()), barX + barWidth*0.5 + showX, barY - 48 + showY)
-			end
-		end
-		barX = barX + barWidth + barSpace
-		
-		showX, showY = GameHandler.GetShowOffset("wood")
-		if showY then
-			InterfaceUtil.DrawSmoothNumberBar("wood", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY + showY}, {barWidth, 40})
-			love.graphics.setColor(0, 0, 0, 0.8)
-			love.graphics.print("Wood Delivered", barX, barY - 48 + showY)
-			if showX then
-				love.graphics.print("Train Speed: +" .. InterfaceUtil.Round((GameHandler.GetSpeedMult() - 1)*100) .. "%", barX + barWidth*0.5 + showX, barY - 48 + showY)
-			end
-		end
-		barX = barX + barWidth + barSpace
-		
-		showX, showY = GameHandler.GetShowOffset("ore")
-		if showY then
-			InterfaceUtil.DrawSmoothNumberBar("ore", {0, 1, 0}, {0.1, 0.1, 0.1}, {barX, barY + showY}, {barWidth, 40})
-			love.graphics.setColor(0, 0, 0, 0.8)
-			love.graphics.print("Ore Delivered", barX, barY - 48 + showY)
-			if showX then
-				love.graphics.print("Carriages: " .. (1 + InterfaceUtil.Round(GameHandler.GetCartBonus())), barX + barWidth*0.5 + showX, barY - 48 + showY)
-			end
-		end
-		barX = barX + barWidth + barSpace
+		love.graphics.printf("Refresh", shopItemsX - Global.GRID_SIZE - 20, y - Global.GRID_SIZE + 14, Global.GRID_SIZE * 2 + 35, "center")
 	end})
 	
 	drawQueue:push({y=1000; f=function()

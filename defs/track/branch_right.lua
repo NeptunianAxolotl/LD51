@@ -5,8 +5,16 @@ return {
 		"track_branch_right_on",
 	},
 	toggleStates = 2,
-	shopFrequencty = 3,
+	shopFrequency = 3,
 	removable = true,
+	overwrite = {
+		straight = {
+			rot = {0, 2}
+		},
+		curve = {
+			rot = {1}
+		},
+	},
 	paths = {
 		{
 			posFunc = function (t)

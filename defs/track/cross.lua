@@ -2,13 +2,18 @@
 return {
 	stateImage = {"track_cross"},
 	topImage = "track_bridge",
-	shopFrequencty = 3,
+	shopFrequency = 3,
 	removable = true,
 	entryUseIndexMap = {
 		[0] = 1,
 		[1] = 2,
 		[2] = 1,
 		[3] = 2,
+	},
+	overwrite = {
+		straight = {
+			rot = {0, 1, 2, 3}
+		},
 	},
 	paths = {
 		{

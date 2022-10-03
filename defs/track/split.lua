@@ -7,6 +7,11 @@ return {
 	toggleStates = 2,
 	shopFrequency = 3,
 	removable = true,
+	overwrite = {
+		curve = {
+			rot = {0, 1}
+		},
+	},
 	paths = {
 		{
 			posFunc = function (t)

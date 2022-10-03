@@ -4,7 +4,12 @@ return {
 	toggleStates = 2,
 	offState = 1,
 	removable = true,
-	shopFrequencty = 3,
+	shopFrequency = 3,
+	overwrite = {
+		straight = {
+			rot = {0, 2}
+		},
+	},
 	paths = {
 		{
 			posFunc = function (t)

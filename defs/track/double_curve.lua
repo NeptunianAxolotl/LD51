@@ -1,13 +1,18 @@
 
 return {
 	stateImage = {"track_double_curved"},
-	shopFrequencty = 3,
+	shopFrequency = 3,
 	removable = true,
 	entryUseIndexMap = {
 		[0] = 1,
 		[1] = 1,
 		[2] = 2,
 		[3] = 2,
+	},
+	overwrite = {
+		curve = {
+			rot = {0, 2}
+		},
 	},
 	paths = {
 		{
