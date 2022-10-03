@@ -36,6 +36,8 @@ local globals = {
 	
 	ORDER_SIZE = 5,
 	ORDER_SIZE_INC = 5,
+	
+	DOODAD_MODE = true,
 }
 
 return globals

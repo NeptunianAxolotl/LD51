@@ -114,6 +114,18 @@ function api.KeyPressed(key, scancode, isRepeat)
 	if key == "r" or key == "space" then
 		self.trackRotation = (self.trackRotation + 1)%4
 	end
+	if Global.DOODAD_MODE then
+		if key == "1" then
+			self.heldTrack = "forest"
+		elseif key == "2" then
+			self.heldTrack = "field"
+		elseif key == "3" then
+			self.heldTrack = "mountain_small"
+		elseif key == "4" then
+			self.heldTrack = "mountain_large"
+		end
+		return
+	end
 	for i = 1, Global.SHOP_SLOTS do
 		if key == tostring(i) then
 			ClickShopButton(i)
@@ -125,6 +137,15 @@ function api.KeyPressed(key, scancode, isRepeat)
 end
 
 function api.MousePressed(x, y, button)
+	if Global.DOODAD_MODE then
+		if self.heldTrack then
+			local mousePos = self.world.GetMousePosition()
+			mousePos = util.Subtract(util.Mult(1 / TerrainHandler.TileSize() , mousePos), {0.5, 0.5})
+			DoodadHandler.AddDoodad(mousePos, self.heldTrack)
+			print([[		{pos = {]] .. mousePos[1] .. [[, ]] .. mousePos[2] .. [[}, doodadType = "]] .. self.heldTrack .. [["},]])
+		end
+		return
+	end
 	if button == 2 then
 		self.trackRotation = (self.trackRotation + 1)%4
 	end
@@ -146,9 +167,9 @@ function api.Draw(drawQueue)
 				love.graphics.setLineWidth(5)
 				love.graphics.rectangle("line", pos[1]*TerrainHandler.TileSize(), pos[2]*TerrainHandler.TileSize(), TerrainHandler.TileSize(), TerrainHandler.TileSize(), 4, 4, 8)
 			end
-			Resources.DrawImage(def.stateImage[1], mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8)
+			Resources.DrawImage(def.stateImage[1], mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8, TerrainHandler.TileScale())
 			if def.topImage then
-				Resources.DrawImage(def.topImage, mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8)
+				Resources.DrawImage(def.topImage, mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8, TerrainHandler.TileScale())
 			end
 		end})
 	end

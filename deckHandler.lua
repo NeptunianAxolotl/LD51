@@ -19,15 +19,12 @@ end
 --------------------------------------------------
 
 function api.GetNextDraw(deck, drawCount, toAvoid)
-	util.PrintTable(toAvoid)
-	util.PrintTable(deck)
 	drawCount = drawCount or 1
 	local toDraw = {}
 	local drawnType = toAvoid or {}
 	local tries = 200
 	while #toDraw < drawCount and tries > 0 do
 		local card = DrawCard(deck)
-		print(deck.drawIndex)
 		if not drawnType[card] then
 			toDraw[#toDraw + 1] = card
 			drawnType[card] = true

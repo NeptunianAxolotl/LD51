@@ -43,6 +43,7 @@ local function SetupWorld(mapName)
 	self.width  = map.dimensions.width
 	self.height = map.dimensions.height
 	self.tileSize = map.dimensions.tileSize
+	self.gridOffset = map.gridOffset or 0
 	
 	for i = 1, #map.track do
 		local track = map.track[i]
@@ -145,6 +146,9 @@ function api.Draw(drawQueue)
 end
 
 function api.MousePressed(x, y, button)
+	if Global.DOODAD_MODE then
+		return false
+	end
 	if button ~= 1 then
 		return false
 	end
@@ -174,7 +178,7 @@ function api.Initialize(world)
 		world = world,
 	}
 	
-	SetupWorld("map3")
+	SetupWorld("level_1")
 end
 
 return api

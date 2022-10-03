@@ -7,6 +7,7 @@ ComponentHandler = require("componentHandler")
 DialogueHandler = require("dialogueHandler")
 
 TerrainHandler = require("terrainHandler")
+DoodadHandler = require("doodadHandler")
 TrainHandler = require("trainHandler")
 ShopHandler = require("shopHandler")
 
@@ -186,9 +187,10 @@ end
 
 local function UpdateCamera()
 	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, 
-		{{pos = {0, 0}, radius = 20},
-		{pos = {Global.VIEW_WIDTH, Global.VIEW_HEIGHT},
-		radius = 20}}, 0, 0)
+		{
+			{pos = {0, 0}, radius = 50},
+			{pos = {Global.VIEW_WIDTH, Global.VIEW_HEIGHT}, radius = 10}
+		}, 0, 0)
 	Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
 end
 
@@ -226,6 +228,7 @@ function api.Draw()
 	-- Draw world
 	love.graphics.replaceTransform(self.cameraTransform)
 	TerrainHandler.Draw(drawQueue)
+	DoodadHandler.Draw(drawQueue)
 	TrainHandler.Draw(drawQueue)
 	ShopHandler.Draw(drawQueue)
 	--ModuleTest.Draw(drawQueue)
@@ -294,6 +297,7 @@ function api.Initialize()
 	--PhysicsHandler.Initialize(api)
 	
 	TerrainHandler.Initialize(api)
+	DoodadHandler.Initialize(api)
 	TrainHandler.Initialize(api)
 	ShopHandler.Initialize(api)
 	
