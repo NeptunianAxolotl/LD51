@@ -269,6 +269,13 @@ function api.Draw(drawQueue)
 		love.graphics.setColor(0, 0, 0, 1)
 		Font.SetSize(0)
 		love.graphics.printf(TerrainHandler.GetLevelHumanName(), shopItemsX - Global.SHOP_WIDTH*0.45, shopItemsY - 140, Global.SHOP_WIDTH*0.9, "center")
+		
+		if TerrainHandler.GetOrderMult() > 1 then
+			local mult = util.Round((TerrainHandler.GetOrderMult() - 1) * 100)
+			Font.SetSize(2)
+			love.graphics.printf("But " .. mult .. "% Harder", shopItemsX - Global.SHOP_WIDTH*0.45, shopItemsY - 68, Global.SHOP_WIDTH*0.9, "center")
+		end
+		
 		Font.SetSize(1)
 		love.graphics.printf("Track Shop" , shopItemsX - 200, shopItemsY + 30, 400, "center")
 		

@@ -173,7 +173,8 @@ function api.DrawInterface()
 		Font.SetSize(2)
 		love.graphics.printf("A blocked portal caused all the trains to explode.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "left")
 		love.graphics.printf("Press 'ctrl+r' to retry the level", overX, overY + overHeight * 0.72, overWidth, "center")
-	elseif gameWon then
+	elseif gameWon or true then
+	self.levelAlpha = 1
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(4)
 		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight, 8, 8, 16)
@@ -187,8 +188,14 @@ function api.DrawInterface()
 			love.graphics.printf("Success!", overX, overY + overHeight * 0.04, overWidth, "center")
 			
 			Font.SetSize(2)
-			love.graphics.printf("All deliveries were fulfilled, and this is the final level.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
-			love.graphics.printf("Press 'ctrl+p' for the previous level.\nThanks for playing!", overX, overY + overHeight * 0.68, overWidth, "center")
+			
+			if TerrainHandler.GetOrderMult() > 1 then
+				love.graphics.printf("This really is the final level.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
+				love.graphics.printf("Did all the harder levels turn out to be possible?", overX, overY + overHeight * 0.52, overWidth, "center")
+			else
+				love.graphics.printf("This is the final level, but why not try levels with 50% more demand?", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
+				love.graphics.printf("Press 'ctrl+n' for harder levels.\nThanks for playing!", overX, overY + overHeight * 0.68, overWidth, "center")
+			end
 		else
 			Font.SetSize(0)
 			love.graphics.setColor(0, 0, 0, 0.8*self.levelAlpha)
@@ -196,7 +203,7 @@ function api.DrawInterface()
 			
 			Font.SetSize(2)
 			love.graphics.printf("All deliveries were fulfilled.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
-			love.graphics.printf("Press 'ctrl+r' for the next level.", overX, overY + overHeight * 0.68, overWidth, "center")
+			love.graphics.printf("Press 'ctrl+n' for the next level.", overX, overY + overHeight * 0.68, overWidth, "center")
 		end
 	elseif self.world.GetPaused() then
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)

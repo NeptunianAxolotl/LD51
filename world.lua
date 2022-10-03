@@ -53,22 +53,12 @@ end
 
 function api.Restart()
 	--PhysicsHandler.Destroy()
-	api.Initialize(self.mapName)
+	api.Initialize(self.levelIndex)
 end
 
 local function SwitchLevel(diff)
-	local levelIndex = false
-	for i = 1, #LevelList do
-		if LevelList[i] == self.mapName then
-			levelIndex = i
-			break
-		end
-	end
-	if not levelIndex then
-		return
-	end
-	if LevelList[levelIndex + diff] then
-		api.Initialize(LevelList[levelIndex + diff])
+	if LevelList.levels[self.levelIndex + diff] then
+		api.Initialize(self.levelIndex + diff)
 	end
 end
 
@@ -202,6 +192,10 @@ function api.GetMapName()
 	return self.mapName
 end
 
+function api.GetOrderMult()
+	return self.orderMult
+end
+
 function api.GetCameraExtents(buffer)
 	local screenWidth, screenHeight = love.window.getMode()
 	local topLeftPos = api.ScreenToWorld({0, 0})
@@ -305,7 +299,7 @@ function api.ViewResize(width, height)
 	--ShadowHandler.ViewResize(width, height)
 end
 
-function api.Initialize(mapName)
+function api.Initialize(levelIndex)
 	self = {}
 	self.cameraTransform = love.math.newTransform()
 	self.interfaceTransform = love.math.newTransform()
@@ -313,7 +307,9 @@ function api.Initialize(mapName)
 	self.paused = false
 	self.musicEnabled = true
 	self.lifetime = Global.DEBUG_START_LIFETIME or 0
-	self.mapName = mapName or LevelList[Global.INIT_LEVEL or 1]
+	self.levelIndex = levelIndex or Global.INIT_LEVEL
+	self.mapName = LevelList.levels[self.levelIndex]
+	self.orderMult = LevelList.orderMult[self.levelIndex]
 	
 	Delay.Initialise()
 	InterfaceUtil.Initialize()

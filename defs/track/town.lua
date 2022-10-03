@@ -10,7 +10,8 @@ local function GetWantedGood(self)
 		return false
 	end
 	local prog = self.progression[self.wantIndex]
-	return prog.good, prog.count, prog.bonus
+	local wantedCount = math.ceil(prog.count * TerrainHandler.GetOrderMult())
+	return prog.good, wantedCount, prog.bonus
 end
 
 local function DeliverGoods(self, count)

@@ -149,6 +149,10 @@ function api.GetLevelHumanName()
 	return self.humanName
 end
 
+function api.GetOrderMult()
+	return self.world.GetOrderMult()
+end
+
 function api.DrawTownResourceText(pos, count, needed)
 	Font.SetSize(self.townDrawParams.font)
 	pos = util.Add(pos, util.Mult(self.tileSize, self.townDrawParams.pos))
