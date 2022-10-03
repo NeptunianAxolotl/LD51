@@ -25,15 +25,15 @@ local mapData = {
 				arrowDest = {1.5, 5}
 			},
 			{
-				text = "- Buy a crowbar to remove unwanted track.\n- The shop can be refreshed.",
+				text = "- Buy a crowbar to remove unwanted track.\n- The shop can refresh every 10 seconds.",
 				pos = {10, 6.4},
 				size = {3.3, 1.6},
 				arrow = "midRight",
 				arrowDest = {14.5, 7.08},
 			},
 			{
-				text = "- Fires in the wrong spot require a restart (Ctrl+R).",
-				pos = {10.9, 0},
+				text = "- Maybe restart (key: Ctrl+R) if too many trains are stuck.",
+				pos = {11.08, 0},
 				size = {2.4, 1.6},
 			},
 		}

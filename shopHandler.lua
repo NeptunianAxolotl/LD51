@@ -55,7 +55,7 @@ local function UpdateItems(refreshAll)
 		end
 	end
 	if refreshAll then
-		local draws = DeckHandler.GetNextDraw(self.deck, 4)
+		local draws = DeckHandler.GetNextDraw(self.deck, 4, toAvoid)
 		for i = 1, Global.SHOP_SLOTS do
 			self.items[i] = draws[i]
 		end
