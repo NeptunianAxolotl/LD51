@@ -102,13 +102,16 @@ end
 
 function api.KeyPressed(key, scancode, isRepeat)
 	if key == "escape" or key == "return" or key == "kpenter" then
-		GameHandler.ToggleMenu()
+		self.paused = not self.paused
 	end
 	if key == "r" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		api.Restart()
 	end
-	if key == "p" and not self.forcePaused then
+	if key == "p" then
 		self.paused = not self.paused
+	end
+	if key == "m" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+		api.ToggleMusic()
 	end
 	if key == "s" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		api.TakeScreenshot()
@@ -223,6 +226,7 @@ end
 function api.Update(dt, realDt)
 	MusicHandler.Update(realDt)
 	SoundHandler.Update(realDt)
+	GameHandler.Update(dt)
 	if api.GetPaused() then
 		UpdateCamera()
 		return
@@ -243,7 +247,6 @@ function api.Update(dt, realDt)
 
 	ChatHandler.Update(dt)
 	EffectsHandler.Update(dt)
-	GameHandler.Update(dt)
 	UpdateCamera()
 end
 
