@@ -7,7 +7,10 @@ return {
 	shopFrequency = 3,
 	overwrite = {
 		straight = {
-			rot = {0, 2}
+			rot = {
+				[0] = true,
+				[2] = true
+			}
 		},
 	},
 	paths = {

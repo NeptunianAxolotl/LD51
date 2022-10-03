@@ -12,7 +12,12 @@ return {
 	},
 	overwrite = {
 		straight = {
-			rot = {0, 1, 2, 3}
+			rot = {
+				[0] = true,
+				[1] = true,
+				[2] = true,
+				[3] = true
+			}
 		},
 	},
 	paths = {

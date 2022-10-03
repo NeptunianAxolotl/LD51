@@ -11,7 +11,10 @@ return {
 	},
 	overwrite = {
 		curve = {
-			rot = {0, 2}
+			rot = {
+				[0] = true,
+				[2] = true
+			}
 		},
 	},
 	paths = {

@@ -51,7 +51,7 @@ local function NewTrack(self, terrain)
 		return self.pos
 	end
 	
-	function self.IsInUse(entry)
+	function self.IsInUse(entry, ignoreOff)
 		if self.toDestroy then
 			return true
 		end
@@ -75,7 +75,7 @@ local function NewTrack(self, terrain)
 		elseif self.inUse or self.permanentlyBlocked then
 			return true
 		end
-		if self.def.offState then
+		if self.def.offState and not ignoreOff then
 			return (self.state == self.def.offState)
 		end
 		return false
@@ -106,10 +106,18 @@ local function NewTrack(self, terrain)
 	
 	function self.MousePressed()
 		local heldType, heldRotation = ShopHandler.GetHeldTrack()
-		if heldType and self.def.removable and not self.IsInUse() and TrackDefs[heldType].isCrowbar then
+		if heldType and self.def.removable and not self.IsInUse(false, true) and TrackDefs[heldType].isCrowbar then
 			ShopHandler.UseHeldTrack()
 			ShopHandler.UpdateShopIfEmpty()
 			TerrainHandler.DestroyTrack(self.pos)
+		elseif heldType and TrackDefs[heldType].overwrite and TrackDefs[heldType].overwrite[self.trackType] and not self.IsInUse(false, true) then
+			local overwriteRot = TrackDefs[heldType].overwrite[self.trackType].rot
+			local relativeRot = (heldRotation - self.rotation)%4
+			if overwriteRot[relativeRot] then
+				ShopHandler.UseHeldTrack()
+				ShopHandler.UpdateShopIfEmpty()
+				TerrainHandler.AddTrack(self.pos, heldType, heldRotation)
+			end
 		elseif self.def.toggleStates then
 			self.state = self.state%self.def.toggleStates + 1
 		end
