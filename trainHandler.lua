@@ -25,7 +25,7 @@ function api.AddTrain(trainType, gridPos, entry)
 end
 
 function api.DefaultSpawnTimer()
-	return (self.mapRules and self.mapRules.trainDelayOverride) or Global.TRAIN_SPAWN_TIME
+	return (self.mapRules and self.mapRules.trainDelayOverride) or (Global.TRAIN_SPAWN_TIME + Global.FIRST_TRAIN_SPAWN_EXTRA)
 end
 
 local function DetectRuleOne() -- Very messsy

@@ -5,6 +5,7 @@ local util = require("include/util")
 local SoundHandler = require("soundHandler")
 local soundFiles = util.LoadDefDirectory("sounds/defs")
 
+local self = {}
 local api = {}
 local world
 
@@ -58,12 +59,18 @@ function api.SetCurrentTrackFadeTime(fadeTime)
 end
 
 function api.Update(dt)
+	if self.needDtReset then
+		Global.ResetMissingDt()
+		self.needDtReset = false
+	end
 	if initialDelay then
 		initialDelay = initialDelay - dt
 		if initialDelay < 0 then
 			initialDelay = false
+			self.needDtReset = true
+		else
+			return
 		end
-		return
 	end
 	currentTrackRemaining = (currentTrackRemaining or 0) - dt
 	if currentTrackRemaining < 0 then
@@ -94,11 +101,13 @@ function api.Update(dt)
 end
 
 function api.Initialize(newWorld)
+	self = {}
 	world = newWorld
 	api.StopCurrentTrack()
 	initialDelay = 0
 	for i = 1, #trackList do
 		SoundHandler.LoadSound(trackList[i], 1)
+		SoundHandler.LoadSound(trackList[i], 2)
 	end
 end
 

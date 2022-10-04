@@ -117,7 +117,7 @@ function api.Initialize()
 	for _, soundData in IterableMap.Iterator(sounds) do
 		soundData.source:stop()
 	end
-	sounds = IterableMap.New()
+	sounds = sounds or IterableMap.New()
 end
 
 return api

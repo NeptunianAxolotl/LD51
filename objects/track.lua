@@ -58,6 +58,9 @@ local function NewTrack(self, terrain)
 	end
 	
 	function self.IsInUse(entry, ignoreOff)
+		if Global.BOSON_MODE then
+			return false
+		end
 		if self.toDestroy then
 			return true
 		end

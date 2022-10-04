@@ -21,6 +21,7 @@ local globals = {
 	GRID_SIZE = 96,
 	CORNER_SPEED_MULT = 1.15,
 	TRAIN_SPAWN_TIME = 10,
+	FIRST_TRAIN_SPAWN_EXTRA = 0.035, --Appropriately funky
 	SHOP_SLOTS = 4,
 	DECK_SIZE_MULT = 1,
 	
@@ -41,6 +42,8 @@ local globals = {
 	DOODAD_MODE = false,
 	DEBUG_DRAW_BLOCK = false,
 	INIT_LEVEL = 1,
+	
+	BOSON_MODE = false,
 }
 
 return globals

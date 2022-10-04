@@ -5,6 +5,8 @@ local World = require("world")
 Resources = require("resourceHandler")
 util = require("include/util")
 
+local api = {}
+
 --------------------------------------------------
 -- Draw
 --------------------------------------------------
@@ -42,6 +44,8 @@ end
 
 local longFrames = 0
 local frames = 0
+local missingDt = 0
+local MAX_DT = 0.1
 function love.update(dt)
 	local realDt = dt
 	frames = frames + 1
@@ -51,10 +55,23 @@ function love.update(dt)
 			print(math.floor(frames *100 / longFrames), dt)
 		end
 	end
-	if dt > 0.1 then
-		dt = 0.1
+	if dt > MAX_DT then
+		missingDt = (dt - MAX_DT)
+		dt = MAX_DT
+	elseif missingDt > 0 then
+		local returnProp = 0.02 + 0.06 * missingDt / (missingDt + 2)
+		local toReturn = returnProp * dt
+		if toReturn > missingDt then
+			toReturn = missingDt
+		end
+		dt = dt + toReturn
+		missingDt = missingDt - toReturn
 	end
 	World.Update(dt, realDt)
+end
+
+function Global.ResetMissingDt()
+	missingDt = 0
 end
 
 local util = require("include/util")
