@@ -101,7 +101,9 @@ local function ClickShopButton(item)
 		if self.shopBlockedTimer then
 			return
 		end
-		self.shopBlockedTimer = Global.REFRESH_TIMER
+		if not TerrainHandler.IsPreLevel() then
+			self.shopBlockedTimer = Global.REFRESH_TIMER
+		end
 		self.heldTrack = false
 		UpdateItems(true)
 		SoundHandler.PlaySound("switch")
