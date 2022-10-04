@@ -3,6 +3,9 @@ return {
 	stateImage = {"track_straight_half"},
 	topImage = "train_factory",
 	updateFunc = function (self, dt)
+		if TerrainHandler.IsPreLevel() then
+			return
+		end
 		self.spawnTimer = (self.spawnTimer or TrainHandler.DefaultSpawnTimer()) - dt
 		if self.spawnTimer <= 0 then
 			if self.IsInUse() then

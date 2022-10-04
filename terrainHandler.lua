@@ -26,6 +26,7 @@ function api.AddTrack(pos, trackType, rotation, setData)
 	trackData.pos = pos
 	trackData.trackType = trackType
 	trackData.rotation = rotation
+	self.isPreLevel = false
 	
 	if not def.removable then
 		api.SetUneditable(x, y)
@@ -53,6 +54,7 @@ local function SetupWorld()
 		local track = map.track[i]
 		api.AddTrack(track.pos, track.trackType, track.rot, track.setData)
 	end
+	self.isPreLevel = not (self.mapRules and self.mapRules.immediateMusic)
 end
 
 function api.GetTrackAtPos(gridPos, addDirection)
@@ -123,6 +125,7 @@ function api.DestroyTrack(gridPos)
 	local track = api.GetTrackAtPos(gridPos)
 	track.toDestroy = true -- Only terrainHandler should set this, as it has to remove from the map.
 	self.trackPos[gridPos[1]][gridPos[2]] = nil
+	self.isPreLevel = false
 end
 
 function api.Width()
@@ -151,6 +154,10 @@ end
 
 function api.GetOrderMult()
 	return self.world.GetOrderMult()
+end
+
+function api.IsPreLevel()
+	return self.isPreLevel
 end
 
 function api.DrawTownResourceText(pos, count, needed)
