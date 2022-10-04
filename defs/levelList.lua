@@ -11,6 +11,7 @@ local levels = {
 	"level_11",
 	"level_9",
 	"level_10",
+	"level_12",
 	"level_4",
 	"level_5",
 	"level_6",
@@ -19,6 +20,7 @@ local levels = {
 	"level_11",
 	"level_9",
 	"level_10",
+	"level_12",
 }
 
 local levelOrderMults = {
@@ -33,6 +35,8 @@ local levelOrderMults = {
 	1,
 	1,
 	1,
+	1,
+	1.5,
 	1.5,
 	1.5,
 	1.5,
