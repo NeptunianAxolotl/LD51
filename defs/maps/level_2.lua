@@ -18,11 +18,11 @@ local mapData = {
 		},
 		hints = {
 			{
-				text = "- A new train exits the portal every 10 seconds!\n- You lose if the portal is blocked.",
+				text = "- A new train exits the portal every 10 seconds! (After your first move)\n- You lose if the portal is blocked.",
 				pos = {0.4, 0.4},
-				size = {2.8, 2.05},
+				size = {3.45, 2.05},
 				arrow = "mid",
-				arrowDest = {1.5, 5}
+				arrowDest = {1.55, 5}
 			},
 			{
 				text = "- You can refresh the shop every 10 seconds.\n- A crowbar can remove unwanted track.",
@@ -34,7 +34,7 @@ local mapData = {
 			{
 				text = "- Maybe restart (with 'ctrl+r') if too many trains are stuck.",
 				pos = {11.08, 0},
-				size = {2.4, 1.6},
+				size = {2.4, 1.65},
 			},
 		}
 	},

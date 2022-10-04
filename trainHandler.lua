@@ -21,7 +21,6 @@ function api.AddTrain(trainType, gridPos, entry)
 	}
 	local train = NewTrain(trainData, api, gridPos, entry, self.baseCarriages)
 	IterableMap.Add(self.trainList, train)
-	return Global.TRAIN_SPAWN_TIME
 end
 
 function api.DefaultSpawnTimer()
