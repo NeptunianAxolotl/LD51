@@ -21,12 +21,16 @@ function api.AddTrack(pos, trackType, rotation, setData)
 		IterableMap.Remove(self.trackList, self.trackPos[x][y])
 	end
 	local def = TrackDefs[trackType]
+	if def.isCrowbar then
+		return
+	end
 	local trackData = (setData and util.CopyTable(setData)) or {}
 	trackData.pos = pos
 	trackData.trackType = trackType
 	trackData.rotation = rotation
-	self.isPreLevel = false
-	
+	if self.isPreLevel and not LevelHandler.InEditMode() then
+		self.isPreLevel = false
+	end
 	if not def.removable then
 		api.SetUneditable(x, y)
 		if def.nearbyBlocked then
@@ -116,7 +120,9 @@ function api.DestroyTrack(gridPos)
 	local track = api.GetTrackAtPos(gridPos)
 	track.toDestroy = true -- Only terrainHandler should set this, as it has to remove from the map.
 	self.trackPos[gridPos[1]][gridPos[2]] = nil
-	self.isPreLevel = false
+	if self.isPreLevel and not LevelHandler.InEditMode() then
+		self.isPreLevel = false
+	end
 end
 
 function api.IsPreLevel()
@@ -147,7 +153,7 @@ function api.Draw(drawQueue)
 end
 
 function api.MousePressed(x, y, button)
-	if Global.DOODAD_MODE then
+	if LevelHandler.InEditMode() then
 		return false
 	end
 	if button ~= 1 then

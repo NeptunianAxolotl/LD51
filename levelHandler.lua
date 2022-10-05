@@ -25,7 +25,8 @@ function api.LoadLevel(name)
 		EffectsHandler.SpawnEffect("error_popup", {200, 15}, {text = "Level format error.", velocity = {0, 3}})
 		return
 	end
-	EffectsHandler.SpawnEffect("error_popup", {200, 15}, {text = "Level loaded.", velocity = {0, 3}})
+	
+	self.world.LoadLevelByTable(levelData)
 end
 
 
@@ -65,9 +66,16 @@ function api.GetMapData()
 	return self.map
 end
 
+function api.InEditMode()
+	return self.editMode
+end
+
 function api.KeyPressed(key, scancode, isRepeat)
 	if key == "l" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		api.LoadLevel("testLevel")
+	end
+	if key == "m" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+		self.editMode = not self.editMode
 	end
 end
 

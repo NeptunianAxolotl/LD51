@@ -79,7 +79,7 @@ function api.TakeScreenshot()
 end
 
 function api.SetGameOver(hasWon, overType)
-	if self.gameWon or self.gameLost or Global.DOODAD_MODE then
+	if self.gameWon or self.gameLost or LevelHandler.InEditMode() then
 		return
 	end
 	
@@ -220,8 +220,8 @@ end
 local function UpdateCamera()
 	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, 
 		{
-			{pos = {0, -1 * LevelHandler.GetVertOffset()}, radius = 30 + (Global.DOODAD_MODE and 180 or 0)},
-			{pos = {Global.VIEW_WIDTH, Global.VIEW_HEIGHT - LevelHandler.GetVertOffset()}, radius = 30 + (Global.DOODAD_MODE and 180 or 0)}
+			{pos = {0, -1 * LevelHandler.GetVertOffset()}, radius = 30 + (LevelHandler.InEditMode() and 180 or 0)},
+			{pos = {Global.VIEW_WIDTH, Global.VIEW_HEIGHT - LevelHandler.GetVertOffset()}, radius = 30 + (LevelHandler.InEditMode() and 180 or 0)}
 		}, 0, 0)
 	Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
 end

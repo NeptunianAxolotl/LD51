@@ -1,0 +1,6 @@
+
+return {
+	image = "forest",
+	paths = {
+	},
+}

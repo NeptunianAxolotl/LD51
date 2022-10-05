@@ -145,52 +145,110 @@ function api.Update(dt)
 end
 
 function api.KeyPressed(key, scancode, isRepeat)
-	if key == "r" or key == "space" then
+	if (key == "r" or key == "space") and not self.blockRotate then
 		self.trackRotation = (self.trackRotation + 1)%4
 		--SoundHandler.PlaySound("spin")
 	end
-	if Global.DOODAD_MODE then
+	if LevelHandler.InEditMode() then
 		if key == "1" then
-			self.heldTrack = "forest"
-			self.holdingDoodad = true
-		elseif key == "2" then
-			self.heldTrack = "field"
-			self.holdingDoodad = true
-		elseif key == "3" then
-			self.heldTrack = "mountain_small"
-			self.holdingDoodad = true
-		elseif key == "4" then
-			self.heldTrack = "mountain_large"
-			self.holdingDoodad = true
-		elseif key == "5" then
 			self.heldTrack = "grass"
 			self.holdingDoodad = true
+			self.blockRotate = true
+			self.trackRotation = 0
+		elseif key == "2" then
+			self.heldTrack = "forest"
+			self.holdingDoodad = true
+			self.blockRotate = true
+			self.trackRotation = 0
+		elseif key == "3" then
+			self.heldTrack = "forest2"
+			self.holdingDoodad = true
+			self.blockRotate = true
+			self.trackRotation = 0
+		elseif key == "4" then
+			self.heldTrack = "forest3"
+			self.holdingDoodad = true
+			self.blockRotate = true
+			self.trackRotation = 0
+		elseif key == "5" then
+			self.heldTrack = "field"
+			self.holdingDoodad = true
+			self.blockRotate = true
+			self.trackRotation = 0
+		elseif key == "6" then
+			self.heldTrack = "mountain_small"
+			self.holdingDoodad = true
+			self.blockRotate = true
+			self.trackRotation = 0
+		elseif key == "7" then
+			self.heldTrack = "mountain_large"
+			self.holdingDoodad = true
+			self.blockRotate = true
+			self.trackRotation = 0
 		end
+		
 		if key == "q" then
-			self.heldTrack = "block"
-			self.holdingDoodad = false
-		elseif key == "w" then
-			self.heldTrack = "town"
-			self.holdingDoodad = false
-		elseif key == "a" then
-			self.heldTrack = "sawmill"
-			self.holdingDoodad = false
-		elseif key == "s" then
-			self.heldTrack = "mine"
-			self.holdingDoodad = false
-		elseif key == "d" then
-			self.heldTrack = "farm"
-			self.holdingDoodad = false
-		elseif key == "f" then
-			self.heldTrack = "factory"
-			self.holdingDoodad = false
-		elseif key == "t" then
-			self.heldTrack = "straight"
-			self.holdingDoodad = false
-		elseif key == "y" then
 			self.heldTrack = "curve"
 			self.holdingDoodad = false
+			self.blockRotate = false
+		elseif key == "w" then
+			self.heldTrack = "straight"
+			self.holdingDoodad = false
+			self.blockRotate = false
+		elseif key == "e" then
+			self.heldTrack = "crowbar"
+			self.holdingDoodad = false
+			self.blockRotate = false
 		end
+		-- Space for r rotation
+		if key == "t" then
+			self.heldTrack = "branch_left"
+			self.holdingDoodad = false
+			self.blockRotate = false
+		elseif key == "y" then
+			self.heldTrack = "branch_right"
+			self.holdingDoodad = false
+			self.blockRotate = false
+		elseif key == "u" then
+			self.heldTrack = "split"
+			self.holdingDoodad = false
+			self.blockRotate = false
+		elseif key == "i" then
+			self.heldTrack = "signal"
+			self.holdingDoodad = false
+			self.blockRotate = false
+		elseif key == "j" then
+			self.heldTrack = "cross"
+			self.holdingDoodad = false
+			self.blockRotate = false
+		elseif key == "k" then
+			self.heldTrack = "double_curve"
+			self.holdingDoodad = false
+			self.blockRotate = false
+		end
+		
+		if key == "a" then
+			self.heldTrack = "block"
+			self.holdingDoodad = false
+		elseif key == "s" then
+			self.heldTrack = "town"
+			self.holdingDoodad = false
+			self.blockRotate = true
+			self.trackRotation = 0
+		elseif key == "d" then
+			self.heldTrack = "factory"
+			self.holdingDoodad = false
+		elseif key == "f" then
+			self.heldTrack = "farm"
+			self.holdingDoodad = false
+		elseif key == "g" then
+			self.heldTrack = "sawmill"
+			self.holdingDoodad = false
+		elseif key == "h" then
+			self.heldTrack = "mine"
+			self.holdingDoodad = false
+		end
+		
 		return
 	end
 	for i = 1, Global.SHOP_SLOTS do
@@ -204,8 +262,8 @@ function api.KeyPressed(key, scancode, isRepeat)
 end
 
 function api.MousePressed(x, y, button)
-	if Global.DOODAD_MODE then
-		if self.holdingDoodad then
+	if LevelHandler.InEditMode() then
+		if self.blockRotate then
 			self.trackRotation = 0
 		elseif button == 2 then
 			self.trackRotation = (self.trackRotation + 1)%4
@@ -275,6 +333,25 @@ function api.Draw(drawQueue)
 			local mult = util.Round((LevelHandler.GetOrderMult() - 1) * 100)
 			Font.SetSize(2)
 			love.graphics.printf("But " .. mult .. "% Harder", shopItemsX - Global.SHOP_WIDTH*0.45, shopItemsY - 68, Global.SHOP_WIDTH*0.9, "center")
+		end
+		
+		if LevelHandler.InEditMode() then
+			Font.SetSize(1)
+			love.graphics.printf("Level Editing" , shopItemsX - 200, shopItemsY + 30, 400, "center")
+			
+			love.graphics.printf([[
+- Numbers 1-7:
+     Place doodads
+- QWTYUIJK:
+     Place normal track
+- SDFGH:
+     Place special track
+- E: Remove track
+- A: Place blocker
+
+Blockers are required as doodads do not block on their own.
+]], shopItemsX - Global.SHOP_WIDTH*0.42, shopItemsY + 105, Global.SHOP_WIDTH*1.2, "left")
+			return
 		end
 		
 		Font.SetSize(1)

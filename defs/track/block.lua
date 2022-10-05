@@ -1,6 +1,7 @@
 
 return {
-	topImage = Global.DEBUG_DRAW_BLOCK and "blocker",
+	topImage = "blocker",
+	onlyDrawInEditMode = true,
 	paths = {
 	},
 }

@@ -150,6 +150,11 @@ local function NewTrack(self, terrain)
 			end})
 		end
 		if self.def.topImage then
+			if self.def.onlyDrawInEditMode then
+				if not LevelHandler.InEditMode() then
+					return
+				end
+			end
 			drawQueue:push({y=100 + self.pos[2]*0.01; f=function()
 				Resources.DrawImage(self.def.topImage, self.worldPos[1], self.worldPos[2], self.worldRot + drawRot, false, LevelHandler.TileScale())
 				if self.def.extraDrawFunc then
