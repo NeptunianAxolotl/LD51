@@ -6,6 +6,7 @@ local levels = {
 	"level_4",
 	"level_5",
 	"level_6",
+	"aBendOre",
 	"level_11",
 	"trainsaction",
 	"level_8",
