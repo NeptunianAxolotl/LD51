@@ -54,17 +54,17 @@ end
 
 function api.Restart()
 	--PhysicsHandler.Destroy()
-	api.Initialize(self.levelIndex, self.levelTableOverride)
+	api.Initialize(self.levelIndex, self.levelTableOverride, self.musicEnabled)
 end
 
 function api.SwitchLevel(diff)
 	if LevelList.levels[self.levelIndex + diff] then
-		api.Initialize(self.levelIndex + diff)
+		api.Initialize(self.levelIndex + diff, false, self.musicEnabled)
 	end
 end
 
 function api.LoadLevelByTable(levelTable)
-	api.Initialize(self.levelIndex, levelTable)
+	api.Initialize(self.levelIndex, levelTable, self.musicEnabled)
 end
 
 function api.GetLifetime()
@@ -316,13 +316,13 @@ function api.ViewResize(width, height)
 	--ShadowHandler.ViewResize(width, height)
 end
 
-function api.Initialize(levelIndex, levelTableOverride)
+function api.Initialize(levelIndex, levelTableOverride, musicEnabled)
 	self = {}
 	self.cameraTransform = love.math.newTransform()
 	self.interfaceTransform = love.math.newTransform()
 	self.emptyTransform = love.math.newTransform()
 	self.paused = false
-	self.musicEnabled = true
+	self.musicEnabled = (musicEnabled == nil and true) or musicEnabled
 	self.lifetime = Global.DEBUG_START_LIFETIME or 0
 	self.levelIndex = levelIndex or Global.INIT_LEVEL
 	self.levelTableOverride = levelTableOverride

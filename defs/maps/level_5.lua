@@ -21,11 +21,6 @@ local mapData = {
 				arrow = "mid",
 				arrowDest = {13.6, 4.7},
 			},
-			{
-				text = "- Open the level editor with 'ctrl+j'\n- Load a level with 'ctrl+l'",
-				pos = {1.4, 0.1},
-				size = {3.95, 1.5},
-			},
 		}
 	},
 	track = {

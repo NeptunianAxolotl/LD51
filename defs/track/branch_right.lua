@@ -5,6 +5,10 @@ return {
 		"track_branch_right_on",
 	},
 	toggleStates = 2,
+	canPathSwitch = { -- Beware: Index in paths of other paths, indexed by current path destination.
+		[2] = 3,
+		[3] = 1,
+	},
 	inShop = true,
 	removable = true,
 	overwrite = {
@@ -31,6 +35,8 @@ return {
 			entry = 0,
 			destination = 2,
 			requiredState = 1,
+			trainStopOffset = Global.SWITCH_STOP_OFFSET,
+			deccelMult = 2,
 		},
 		{
 			posFunc = function (t)
@@ -54,6 +60,8 @@ return {
 			destination = 3,
 			requiredState = 2,
 			speedMult = Global.CORNER_SPEED_MULT,
+			trainStopOffset = Global.SWITCH_STOP_OFFSET,
+			deccelMult = 2,
 		},
 		{
 			posFunc = function (t)

@@ -133,6 +133,28 @@ function api.IsExitPermanentlyBlocked(pos, destination)
 	return true
 end
 
+function api.AllExitsPermanentlyBlocked(pos, track, entry)
+	if not track.def.paths then
+		return true
+	end
+	local allBlocked, someBlocked = true, false
+	local paths = track.def.paths
+	for i = 1, #paths do
+		local path = paths[i]
+		if entry == path.entry then
+			local dest = (path.destination + track.rotation)%4
+			if api.IsExitPermanentlyBlocked(pos, dest) then
+				someBlocked = someBlocked or {}
+				print(dest)
+				someBlocked[dest] = true
+			else
+				allBlocked = false
+			end
+		end
+	end
+	return allBlocked, someBlocked
+end
+
 function api.DestroyTrack(gridPos)
 	local track = api.GetTrackAtPos(gridPos)
 	track.toDestroy = true -- Only terrainHandler should set this, as it has to remove from the map.

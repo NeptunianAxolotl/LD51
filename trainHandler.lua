@@ -65,7 +65,7 @@ end
 
 function api.Update(dt)
 	IterableMap.ApplySelfRandomOrder(self.trainList, "Update", dt)
-	if math.random() < 0.01 then
+	if math.random() < 0.03 then
 		DetectRuleOne()
 	end
 end

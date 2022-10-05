@@ -15,9 +15,9 @@ local mapData = {
 	rules = {
 		hints = {
 			{
-				text = "- Advanced track can upgrade matching basic track (unless a train is on it).",
-				pos = {1.2, 0.3},
-				size = {5, 1.5},
+				text = "- Open the level editor with 'ctrl+j'\n- Load a level with 'ctrl+l'",
+				pos = {1.4, 0.1},
+				size = {3.95, 1.5},
 			},
 		}
 	},
@@ -27,10 +27,10 @@ local mapData = {
 		--}}},
 		
 {pos = {12, 2}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "food", count = 20},
+			{good = "food", count = 12},
 		}}},
 {pos = {2, 7}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "wood", count = 20},
+			{good = "wood", count = 12},
 		}}},
 
 {pos = {7, 0}, rot = 1, trackType = "factory"},

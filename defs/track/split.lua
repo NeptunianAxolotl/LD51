@@ -5,6 +5,10 @@ return {
 		"track_splay_on",
 	},
 	toggleStates = 2,
+	canPathSwitch = { -- Beware: Index in paths of other paths, indexed by current path destination.
+		[1] = 1,
+		[3] = 3,
+	},
 	inShop = true,
 	removable = true,
 	overwrite = {
@@ -28,6 +32,8 @@ return {
 			destination = 3,
 			requiredState = 1,
 			speedMult = Global.CORNER_SPEED_MULT,
+			trainStopOffset = Global.SWITCH_STOP_OFFSET,
+			deccelMult = 2,
 		},
 		{
 			posFunc = function (t)
@@ -52,6 +58,8 @@ return {
 			destination = 1,
 			requiredState = 2,
 			speedMult = Global.CORNER_SPEED_MULT,
+			trainStopOffset = Global.SWITCH_STOP_OFFSET,
+			deccelMult = 2,
 		},
 		{
 			posFunc = function (t)

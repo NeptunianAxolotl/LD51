@@ -103,24 +103,45 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 			if nextTrack and not nextTrack.IsInUse(nextEntry) and nextTrack.GetPathAndNextTrack(nextEntry) then
 				self.nextTrack = nextTrack
 				self.nextTrack.SetUsedState(true, nextEntry)
+			elseif self.currentTrack.def.canPathSwitch and self.travel < Global.PATH_SWITCH_DIST then
+				local trackDef = self.currentTrack.def
+				local switchMap = trackDef.canPathSwitch[(self.destination - self.currentTrack.rotation)%4]
+				print((self.destination - self.currentTrack.rotation)%4)
+				if switchMap then
+					local altPath = trackDef.paths[switchMap]
+					if altPath and altPath.requiredState == self.currentTrack.state then
+						local altDestination = (altPath.destination + self.currentTrack.rotation)%4
+						local altTrack = TerrainHandler.GetTrackAtPos(self.currentTrack.GetPos(), altDestination)
+						local altEntry = (altDestination + 2)%4
+						if altTrack and not altTrack.IsInUse(nextEntry) and altTrack.GetPathAndNextTrack(altEntry) then
+							self.currentPath = altPath
+							self.destination = altDestination
+							self.nextTrack = altTrack
+							self.nextTrack.SetUsedState(true, altEntry)
+						end
+					end
+				end
 			end
 		end
 		local mult = GameHandler.GetSpeedMult()*(self.currentPath.speedMult or 1)
+		local allBlocked, someBlocked = TerrainHandler.AllExitsPermanentlyBlocked(self.currentTrack.GetPos(), self.currentTrack, self.currentPath.entry)
+		local stopOffset = ((not (someBlocked and not someBlocked[self.destination]) and self.currentPath.trainStopOffset) or 0)
+		local deccelMult = (self.currentPath.deccelMult or 1)
 		local travelFullSpeed = self.nextTrack and not self.currentTrack.ShouldTrainSlow(self)
 		local wantStop = (not self.nextTrack)
 		if travelFullSpeed then
 			self.speed = math.min(self.def.maxSpeed, self.speed + dt*self.def.accel*mult)
 		else
 			if (self.speed > -0.05 and wantStop) or (self.speed > 0.5 and not wantStop) then
-				if (self.travel > 0.4 or self.speed > 0.15) or self.travel > 0.55 then
-					self.speed = self.speed - dt*self.def.deccel*mult
+				if (self.travel > 0.4 + stopOffset or self.speed > 0.15) or self.travel > 0.55 + stopOffset then
+					self.speed = self.speed - dt*self.def.deccel*mult*deccelMult
 				end
 			end
 			
 			if self.speed < 0 then
-				if self.travel < 0.52 then
+				if self.travel < 0.52 + stopOffset then
 					self.speed = 0.15
-				elseif self.travel < 0.6 then
+				elseif self.travel < 0.6 + stopOffset then
 					self.speed = 0
 				end
 			end
@@ -131,17 +152,17 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 		local travelChange = dt*self.speed*mult
 		self.travel = self.travel + travelChange
 		if not travelFullSpeed then
-			if self.travel >= 0.92 then
+			if self.travel >= 0.92 + stopOffset then
 				self.speed = -0.2
-				if self.travel >= 0.99 then
-					self.travel = 0.99
+				if self.travel >= 0.99 + stopOffset then
+					self.travel = 0.99 + stopOffset
 				end
 			end
 		end
 		if oldTravel < 0.5 and self.travel >= 0.5 and self.currentTrack.def.trainMidFunc then
 			self.currentTrack.def.trainMidFunc(self.currentTrack, self)
 		end
-		if math.random() < 0.2 and self.travel > 0.52 and TerrainHandler.IsExitPermanentlyBlocked(self.currentTrack.GetPos(), self.destination) then
+		if math.random() < 0.2 and self.travel > 0.52 and allBlocked then
 			self.SetPermanentBlocked()
 		end
 		if self.travel >= 1 then

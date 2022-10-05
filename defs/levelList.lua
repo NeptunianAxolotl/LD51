@@ -3,6 +3,7 @@ local levels = {
 	"level_1",
 	"level_2",
 	"level_3",
+	"exchange",
 	"level_4",
 	"level_5",
 	"level_6",
@@ -24,7 +25,7 @@ for i = 1, #levels do
 end
 
 local baseLevelCount = #levels
-for i = 4, baseLevelCount do
+for i = 6, baseLevelCount do
 	levels[#levels + 1] = levels[i]
 	levelOrderMults[#levelOrderMults + 1] = 1.5
 end
