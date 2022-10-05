@@ -125,7 +125,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 		end
 		local mult = GameHandler.GetSpeedMult()*(self.currentPath.speedMult or 1)
 		local allBlocked, someBlocked = TerrainHandler.AllExitsPermanentlyBlocked(self.currentTrack.GetPos(), self.currentTrack, self.currentPath.entry)
-		local stopOffset = ((not (someBlocked and not someBlocked[self.destination]) and self.currentPath.trainStopOffset) or 0)
+		local stopOffset = ((not (allBlocked or (someBlocked and not someBlocked[self.destination])) and self.currentPath.trainStopOffset) or 0)
 		local deccelMult = (self.currentPath.deccelMult or 1)
 		local travelFullSpeed = self.nextTrack and not self.currentTrack.ShouldTrainSlow(self)
 		local wantStop = (not self.nextTrack)

@@ -145,7 +145,6 @@ function api.AllExitsPermanentlyBlocked(pos, track, entry)
 			local dest = (path.destination + track.rotation)%4
 			if api.IsExitPermanentlyBlocked(pos, dest) then
 				someBlocked = someBlocked or {}
-				print(dest)
 				someBlocked[dest] = true
 			else
 				allBlocked = false
