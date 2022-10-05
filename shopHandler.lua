@@ -142,6 +142,9 @@ function api.Update(dt)
 	if not self.heldTrack then
 		api.UpdateShopIfEmpty()
 	end
+	if LevelHandler.InEditMode() then
+		self.mapRules = false -- Remove hints etc
+	end
 end
 
 function api.KeyPressed(key, scancode, isRepeat)

@@ -156,6 +156,9 @@ function api.Update(dt)
 	if not self.anyTownMissingGood then
 		self.world.SetGameOver(true, "delivery")
 	end
+	if LevelHandler.InEditMode() then
+		self.mapRules = false -- Remove hints etc
+	end
 end
 
 function api.Draw(drawQueue)
