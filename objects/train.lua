@@ -79,16 +79,16 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 				self.fireSpawnTimer = 0.12 + 0.15 * math.random()
 				local drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
 				if math.random() < 0.46 then
-					EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 45 * TerrainHandler.TileScale(), 12 * TerrainHandler.TileScale(), drawRotation), {
-						scale = (0.7 + 0.3*math.random()) * TerrainHandler.TileScale(),
+					EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 45 * LevelHandler.TileScale(), 12 * LevelHandler.TileScale(), drawRotation), {
+						scale = (0.7 + 0.3*math.random()) * LevelHandler.TileScale(),
 						inFront = self.currentPath.setEffect
 					})
 				end
 				for i = 1, #self.carts do
 					if math.random() < 0.38 then
 						drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
-						EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 30 * TerrainHandler.TileScale(), 12 * TerrainHandler.TileScale(), drawRotation), {
-							scale = (0.7 + 0.3*math.random()) * TerrainHandler.TileScale(),
+						EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(drawPos, 30 * LevelHandler.TileScale(), 12 * LevelHandler.TileScale(), drawRotation), {
+							scale = (0.7 + 0.3*math.random()) * LevelHandler.TileScale(),
 							inFront = self.carts[i].currentPath.setEffect
 						})
 					end
@@ -175,15 +175,15 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 		if hasBridge then
 			drawQueue:push({y=(self.currentPath.raiseTrain or 10); f=function()
 				local drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
-				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
+				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation, false, LevelHandler.TileScale())
 			end})
 			for i = #self.carts, 1, -1 do
 				local drawY = (self.carts[i].currentPath.raiseTrain or 10) - i*0.01
 				drawQueue:push({y=drawY; f=function()
 					local drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
-					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
+					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation, false, LevelHandler.TileScale())
 					if self.cargo then
-						Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
+						Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation, false, LevelHandler.TileScale())
 					end
 				end})
 			end
@@ -192,13 +192,13 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 				local drawPos, drawRotation
 				for i = #self.carts, 1, -1 do
 					drawPos, drawRotation = self.carts[i].currentTrack.GetPathDraw(self.carts[i].currentPath, self.carts[i].travel)
-					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
+					Resources.DrawImage(self.def.cartImage, drawPos[1], drawPos[2], drawRotation, false, LevelHandler.TileScale())
 					if self.cargo then
-						Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
+						Resources.DrawImage(self.cargo, drawPos[1], drawPos[2], drawRotation, false, LevelHandler.TileScale())
 					end
 				end
 				drawPos, drawRotation = self.currentTrack.GetPathDraw(self.currentPath, self.travel)
-				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation, false, TerrainHandler.TileScale())
+				Resources.DrawImage(self.def.image, drawPos[1], drawPos[2], drawRotation, false, LevelHandler.TileScale())
 			end})
 		end
 		if DRAW_DEBUG then

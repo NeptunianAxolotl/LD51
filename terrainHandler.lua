@@ -4,7 +4,6 @@ local util = require("include/util")
 local Font = require("include/font")
 
 local TrackDefs = util.LoadDefDirectory("defs/track")
-local MapDefs = util.LoadDefDirectory("defs/maps")
 local NewTrack = require("objects/track")
 
 local self = {}
@@ -40,15 +39,7 @@ function api.AddTrack(pos, trackType, rotation, setData)
 end
 
 local function SetupWorld()
-	local map = MapDefs[self.world.GetMapName()]
-	
-	self.mapRules = map.rules
-	self.humanName = map.humanName
-	self.townDrawParams = map.townDrawParams
-	self.width  = map.dimensions.width
-	self.height = map.dimensions.height
-	self.tileSize = map.dimensions.tileSize
-	self.vertOffset = map.dimensions.vertOffset or 0
+	local map = LevelHandler.GetMapData()
 	
 	for i = 1, #map.track do
 		local track = map.track[i]
@@ -85,7 +76,7 @@ function api.GetValidGridPlacement(gridPos, alwaysReturn, addDirection)
 	elseif addDirection == 3 then
 		gy = gy - 1
 	end
-	if (gx < 0 or gy < 0 or gx >= self.width or gy >= self.height) then
+	if (gx < 0 or gy < 0 or gx >= LevelHandler.Width() or gy >= LevelHandler.Height()) then
 		if alwaysReturn then
 			return {gx, gy}, true
 		end
@@ -101,7 +92,7 @@ function api.GetValidGridPlacement(gridPos, alwaysReturn, addDirection)
 end
 
 function api.GetValidPlacement(pos, alwaysReturn, addDirection)
-	local gx, gy = math.floor(pos[1] / self.tileSize), math.floor(pos[2] / self.tileSize) 
+	local gx, gy = math.floor(pos[1] / LevelHandler.TileSize()), math.floor(pos[2] / LevelHandler.TileSize()) 
 	return api.GetValidGridPlacement({gx, gy}, alwaysReturn, addDirection)
 end
 
@@ -128,41 +119,13 @@ function api.DestroyTrack(gridPos)
 	self.isPreLevel = false
 end
 
-function api.Width()
-	return self.width
-end
-
-function api.Height()
-	return self.height
-end
-
-function api.TileSize()
-	return self.tileSize
-end
-
-function api.TileScale()
-	return self.tileSize / Global.GRID_SIZE
-end
-
-function api.GetVertOffset()
-	return self.vertOffset
-end
-
-function api.GetLevelHumanName()
-	return self.humanName
-end
-
-function api.GetOrderMult()
-	return self.world.GetOrderMult()
-end
-
 function api.IsPreLevel()
 	return self.isPreLevel
 end
 
 function api.DrawTownResourceText(pos, count, needed)
-	Font.SetSize(self.townDrawParams.font)
-	pos = util.Add(pos, util.Mult(self.tileSize, self.townDrawParams.pos))
+	Font.SetSize(LevelHandler.TownDrawParams().font)
+	pos = util.Add(pos, util.Mult(LevelHandler.TileSize(), LevelHandler.TownDrawParams().pos))
 	love.graphics.setColor(0, 0, 0, 1)
 	love.graphics.print(count .. "/" .. needed, pos[1], pos[2])
 end

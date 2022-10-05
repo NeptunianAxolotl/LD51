@@ -6,6 +6,7 @@ EffectsHandler = require("effectsHandler")
 ComponentHandler = require("componentHandler")
 DialogueHandler = require("dialogueHandler")
 
+LevelHandler = require("levelHandler")
 TerrainHandler = require("terrainHandler")
 DoodadHandler = require("doodadHandler")
 TrainHandler = require("trainHandler")
@@ -62,13 +63,19 @@ function api.SwitchLevel(diff)
 	end
 end
 
+function api.LoadLevelByTable(levelTable)
+	api.Initialize(self.levelIndex, levelTable)
+end
+
 function api.GetLifetime()
 	return self.lifetime
 end
 
 function api.TakeScreenshot()
-	love.filesystem.setIdentity("RegularRailway/screenshots")
-	love.graphics.captureScreenshot("screenshot_" .. math.floor(math.random()*100000) .. "_.png")
+	love.filesystem.createDirectory("screenshots")
+	print("working", love.filesystem.getWorkingDirectory( ))
+	print("save", love.filesystem.getSaveDirectory())
+	love.graphics.captureScreenshot("screenshots/screenshot_" .. math.floor(math.random()*100000) .. "_.png")
 end
 
 function api.SetGameOver(hasWon, overType)
@@ -111,6 +118,9 @@ function api.KeyPressed(key, scancode, isRepeat)
 	end
 	if key == "p" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		api.SwitchLevel(-1)
+	end
+	if LevelHandler.KeyPressed(key, scancode, isRepeat) then
+		return
 	end
 	if api.GetGameOver() then
 		return -- No doing actions
@@ -191,10 +201,6 @@ function api.WorldScaleToScreenScale()
 	return m11
 end
 
-function api.GetMapName()
-	return self.mapName
-end
-
 function api.GetOrderMult()
 	return self.orderMult
 end
@@ -214,8 +220,8 @@ end
 local function UpdateCamera()
 	local cameraX, cameraY, cameraScale = Camera.UpdateCameraToViewPoints(dt, 
 		{
-			{pos = {0, -1 * TerrainHandler.GetVertOffset()}, radius = 30 + (Global.DOODAD_MODE and 180 or 0)},
-			{pos = {Global.VIEW_WIDTH, Global.VIEW_HEIGHT - TerrainHandler.GetVertOffset()}, radius = 30 + (Global.DOODAD_MODE and 180 or 0)}
+			{pos = {0, -1 * LevelHandler.GetVertOffset()}, radius = 30 + (Global.DOODAD_MODE and 180 or 0)},
+			{pos = {Global.VIEW_WIDTH, Global.VIEW_HEIGHT - LevelHandler.GetVertOffset()}, radius = 30 + (Global.DOODAD_MODE and 180 or 0)}
 		}, 0, 0)
 	Camera.UpdateTransform(self.cameraTransform, cameraX, cameraY, cameraScale)
 end
@@ -302,7 +308,7 @@ function api.ViewResize(width, height)
 	--ShadowHandler.ViewResize(width, height)
 end
 
-function api.Initialize(levelIndex)
+function api.Initialize(levelIndex, levelTableOverride)
 	self = {}
 	self.cameraTransform = love.math.newTransform()
 	self.interfaceTransform = love.math.newTransform()
@@ -311,8 +317,12 @@ function api.Initialize(levelIndex)
 	self.musicEnabled = true
 	self.lifetime = Global.DEBUG_START_LIFETIME or 0
 	self.levelIndex = levelIndex or Global.INIT_LEVEL
-	self.mapName = LevelList.levels[self.levelIndex]
-	self.orderMult = LevelList.orderMult[self.levelIndex]
+	
+	if levelTableOverride then
+		self.orderMult = 1
+	else
+		self.orderMult = LevelList.orderMult[self.levelIndex]
+	end
 	
 	Delay.Initialise()
 	InterfaceUtil.Initialize()
@@ -325,6 +335,7 @@ function api.Initialize(levelIndex)
 	DialogueHandler.Initialize(api)
 	--PhysicsHandler.Initialize(api)
 	
+	LevelHandler.Initialize(api, self.levelIndex, levelTableOverride)
 	TerrainHandler.Initialize(api)
 	DoodadHandler.Initialize(api)
 	TrainHandler.Initialize(api)

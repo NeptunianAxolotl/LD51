@@ -3,7 +3,6 @@ local IterableMap = require("include/IterableMap")
 local util = require("include/util")
 
 local DoodadDefs = util.LoadDefDirectory("defs/doodads")
-local MapDefs = util.LoadDefDirectory("defs/maps")
 local NewDoodad = require("objects/doodad")
 
 local self = {}
@@ -17,13 +16,8 @@ function api.AddDoodad(pos, doodadType)
 	IterableMap.Add(self.doodadList, NewDoodad(doodadData, api))
 end
 
-local function SetupWorld(mapName)
-	map = MapDefs[mapName]
-	
-	self.width  = map.dimensions.width
-	self.height = map.dimensions.height
-	self.tileSize = map.dimensions.tileSize
-	self.gridOffset = map.gridOffset or 0
+local function SetupWorld()
+	local map = LevelHandler.GetMapData()
 	
 	if map.doodads then
 		for i = 1, #map.doodads do
@@ -43,7 +37,7 @@ function api.Initialize(world)
 		world = world,
 	}
 	
-	SetupWorld(self.world.GetMapName())
+	SetupWorld()
 end
 
 return api

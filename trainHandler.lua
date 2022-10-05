@@ -3,7 +3,6 @@ local IterableMap = require("include/IterableMap")
 local util = require("include/util")
 
 local NewTrain = require("objects/train")
-local MapDefs = util.LoadDefDirectory("defs/maps")
 
 local self = {}
 local api = {}
@@ -53,11 +52,11 @@ local function DetectRuleOne() -- Very messsy
 end
 
 local function SetupMapRules()
-	local mapRules = MapDefs[self.world.GetMapName()].rules
-	if mapRules then
-		self.mapRules = mapRules
+	local map = LevelHandler.GetMapData()
+	if map.rules then
+		self.mapRules = map.rules
 	end
-	self.baseCarriages = MapDefs[self.world.GetMapName()].baseCarriages or 1
+	self.baseCarriages = map.baseCarriages or 1
 end
 
 function api.NotifyGameLoss()

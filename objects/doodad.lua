@@ -6,15 +6,15 @@ local DoodadDefs = util.LoadDefDirectory("defs/doodads")
 
 local function NewTrack(self, terrain)
 	self.def = DoodadDefs[self.doodadType]
-	self.worldPos = {(self.pos[1] + 0.5)* TerrainHandler.TileSize(), (self.pos[2] + 0.5) * TerrainHandler.TileSize()}
+	self.worldPos = {(self.pos[1] + 0.5)* LevelHandler.TileSize(), (self.pos[2] + 0.5) * LevelHandler.TileSize()}
 	
 	function self.Draw(drawQueue)
 		drawQueue:push({y=0 + self.pos[2]*0.01 - 0.001; f=function()
-			Resources.DrawImage(self.def.image, self.worldPos[1], self.worldPos[2], 0, false, TerrainHandler.TileScale())
+			Resources.DrawImage(self.def.image, self.worldPos[1], self.worldPos[2], 0, false, LevelHandler.TileScale())
 		end})
 		if self.def.topImage then
 			drawQueue:push({y=200 + self.pos[2]*0.01 - 0.001; f=function()
-				Resources.DrawImage(self.def.topImage, self.worldPos[1], self.worldPos[2], 0, false, TerrainHandler.TileScale())
+				Resources.DrawImage(self.def.topImage, self.worldPos[1], self.worldPos[2], 0, false, LevelHandler.TileScale())
 				if self.def.extraDrawFunc then
 					self.def.extraDrawFunc(self, self.worldPos, self.worldRot)
 				end

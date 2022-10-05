@@ -10,7 +10,7 @@ local function GetWantedGood(self)
 		return false
 	end
 	local prog = self.progression[self.wantIndex]
-	local wantedCount = math.ceil(prog.count * TerrainHandler.GetOrderMult())
+	local wantedCount = math.ceil(prog.count * LevelHandler.GetOrderMult())
 	return prog.good, wantedCount, prog.bonus
 end
 
@@ -92,13 +92,13 @@ return {
 			for i = self.wantIndex, #self.progression do
 				if goodOffsets[spotIndex] then
 					local scale = (first and 1.5) or 0.65
-					local gPos = util.Add(pos, util.Mult(TerrainHandler.TileSize(), goodOffsets[spotIndex]))
-					Resources.DrawImage(self.progression[i].good .. "_icon", gPos[1], gPos[2], 0, false, goodScales[spotIndex]*TerrainHandler.TileScale())
+					local gPos = util.Add(pos, util.Mult(LevelHandler.TileSize(), goodOffsets[spotIndex]))
+					Resources.DrawImage(self.progression[i].good .. "_icon", gPos[1], gPos[2], 0, false, goodScales[spotIndex]*LevelHandler.TileScale())
 					spotIndex = spotIndex + 1
 				end
 			end
 		else
-			Resources.DrawImage("tick_icon", pos[1], pos[2] - 1.1*TerrainHandler.TileSize(), 0, false, TerrainHandler.TileScale()*0.9)
+			Resources.DrawImage("tick_icon", pos[1], pos[2] - 1.1*LevelHandler.TileSize(), 0, false, LevelHandler.TileScale()*0.9)
 			
 		end
 	end,

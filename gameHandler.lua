@@ -4,7 +4,6 @@ local Font = require("include/font")
 
 local EffectsHandler = require("effectsHandler")
 local Resources = require("resourceHandler")
-local MapDefs = util.LoadDefDirectory("defs/maps")
 MusicHandler = require("musicHandler")
 
 local self = {}
@@ -195,7 +194,7 @@ function api.DrawInterface()
 			
 			Font.SetSize(2)
 			
-			if TerrainHandler.GetOrderMult() > 1 then
+			if LevelHandler.GetOrderMult() > 1 then
 				love.graphics.printf("This really is the final level.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
 				love.graphics.printf("Did all the harder levels turn out to be possible?", overX, overY + overHeight * 0.52, overWidth, "center")
 			else
@@ -244,7 +243,6 @@ function api.Initialize(world)
 		deliveries = 0,
 		levelAlpha = 0,
 		gameTime = Global.GAME_TIME,
-		map = MapDefs[world.GetMapName()],
 		scoreSource = {
 			travelScore = 0,
 			deliverScore = 0,
@@ -253,6 +251,7 @@ function api.Initialize(world)
 			deliverTrack = 0,
 		}
 	}
+	self.map = LevelHandler.GetMapData()
 	InterfaceUtil.RegisterSmoothNumber("score", 0, 2)
 	InterfaceUtil.RegisterSmoothNumber("food", 0, 1.4, Global.BONUS_REQ)
 	InterfaceUtil.RegisterSmoothNumber("wood", 0, 1.4, Global.BONUS_REQ)

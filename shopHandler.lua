@@ -3,7 +3,6 @@ local Font = require("include/font")
 local util = require("include/util")
 
 local TrackDefs, TrackDefList = util.LoadDefDirectory("defs/track")
-local MapDefs = util.LoadDefDirectory("defs/maps")
 
 local api = {}
 local self = {}
@@ -35,7 +34,7 @@ local function InitializeDeck()
 end
 
 local function SetupWorldRules()
-	local map = MapDefs[self.world.GetMapName()]
+	local map = LevelHandler.GetMapData()
 	if map.rules then
 		self.mapRules = map.rules
 		if self.mapRules.shopState then
@@ -215,11 +214,11 @@ function api.MousePressed(x, y, button)
 		if button == 1 and self.heldTrack then
 			local mousePos = self.world.GetMousePosition()
 			if self.holdingDoodad then
-				mousePos = util.Subtract(util.Mult(1 / TerrainHandler.TileSize() , mousePos), {0.5, 0.5})
+				mousePos = util.Subtract(util.Mult(1 / LevelHandler.TileSize() , mousePos), {0.5, 0.5})
 				DoodadHandler.AddDoodad(mousePos, self.heldTrack)
 				print([[{pos = {]] .. mousePos[1] .. [[, ]] .. mousePos[2] .. [[}, doodadType = "]] .. self.heldTrack .. [["},]])
 			else
-				mousePos = {math.floor(mousePos[1] / TerrainHandler.TileSize()), math.floor(mousePos[2] / TerrainHandler.TileSize())}
+				mousePos = {math.floor(mousePos[1] / LevelHandler.TileSize()), math.floor(mousePos[2] / LevelHandler.TileSize())}
 				TerrainHandler.AddTrack(mousePos, self.heldTrack, self.trackRotation)
 				print([[{pos = {]] .. mousePos[1] .. [[, ]] .. mousePos[2] .. [[}, rot = ]] .. self.trackRotation .. [[, trackType = "]] .. self.heldTrack .. [["},]])
 			end
@@ -246,20 +245,20 @@ function api.Draw(drawQueue)
 			if pos then
 				love.graphics.setColor(1, 1, 1, 0.2)
 				love.graphics.setLineWidth(5)
-				love.graphics.rectangle("line", pos[1]*TerrainHandler.TileSize(), pos[2]*TerrainHandler.TileSize(), TerrainHandler.TileSize(), TerrainHandler.TileSize(), 4, 4, 8)
+				love.graphics.rectangle("line", pos[1]*LevelHandler.TileSize(), pos[2]*LevelHandler.TileSize(), LevelHandler.TileSize(), LevelHandler.TileSize(), 4, 4, 8)
 			end
 			if def.stateImage then
-				Resources.DrawImage(def.stateImage[1], mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8, TerrainHandler.TileScale())
+				Resources.DrawImage(def.stateImage[1], mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8, LevelHandler.TileScale())
 			end
 			if def.topImage then
-				Resources.DrawImage(def.topImage, mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8, TerrainHandler.TileScale())
+				Resources.DrawImage(def.topImage, mousePos[1], mousePos[2], self.trackRotation * math.pi/2, 0.8, LevelHandler.TileScale())
 			end
 		end})
 	end
 	
 	drawQueue:push({y=800; f=function()
 		local shopItemsX = Global.VIEW_WIDTH -  Global.SHOP_WIDTH*0.5
-		local shopItemsY = 160 - TerrainHandler.GetVertOffset()
+		local shopItemsY = 160 - LevelHandler.GetVertOffset()
 		local buttonExtra = 20
 		
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.98)
@@ -270,10 +269,10 @@ function api.Draw(drawQueue)
 		
 		love.graphics.setColor(0, 0, 0, 1)
 		Font.SetSize(0)
-		love.graphics.printf(TerrainHandler.GetLevelHumanName(), shopItemsX - Global.SHOP_WIDTH*0.45, shopItemsY - 140, Global.SHOP_WIDTH*0.9, "center")
+		love.graphics.printf(LevelHandler.GetLevelHumanName(), shopItemsX - Global.SHOP_WIDTH*0.45, shopItemsY - 140, Global.SHOP_WIDTH*0.9, "center")
 		
-		if TerrainHandler.GetOrderMult() > 1 then
-			local mult = util.Round((TerrainHandler.GetOrderMult() - 1) * 100)
+		if LevelHandler.GetOrderMult() > 1 then
+			local mult = util.Round((LevelHandler.GetOrderMult() - 1) * 100)
 			Font.SetSize(2)
 			love.graphics.printf("But " .. mult .. "% Harder", shopItemsX - Global.SHOP_WIDTH*0.45, shopItemsY - 68, Global.SHOP_WIDTH*0.9, "center")
 		end
@@ -344,14 +343,14 @@ function api.Draw(drawQueue)
 	end})
 	
 	drawQueue:push({y=1000; f=function()
-		if (self.mapRules and self.mapRules.hints) and TerrainHandler.GetOrderMult() <= 1 then
+		if (self.mapRules and self.mapRules.hints) and LevelHandler.GetOrderMult() <= 1 then
 			for i = 1, #self.mapRules.hints do
 				local hint = self.mapRules.hints[i]
-				local pos = util.Mult(TerrainHandler.TileSize(), hint.pos)
-				local size = util.Mult(TerrainHandler.TileSize(), hint.size)
+				local pos = util.Mult(LevelHandler.TileSize(), hint.pos)
+				local size = util.Mult(LevelHandler.TileSize(), hint.size)
 				
 				if hint.arrowDest then
-					local arrowDest = util.Mult(TerrainHandler.TileSize(), hint.arrowDest)
+					local arrowDest = util.Mult(LevelHandler.TileSize(), hint.arrowDest)
 					love.graphics.setColor(0, 0, 0, 1)
 					love.graphics.setLineWidth(12)
 					if hint.arrow == "right" then
@@ -382,8 +381,8 @@ function api.Draw(drawQueue)
 			end
 		end
 		love.graphics.setColor(0, 0, 0, 1)
-		love.graphics.rectangle("fill", -1000, Global.BLACK_BAR_LEEWAY + Global.VIEW_HEIGHT - TerrainHandler.GetVertOffset(), 5000, 3000)
-		love.graphics.rectangle("fill", -1000, -3000 - Global.BLACK_BAR_LEEWAY - TerrainHandler.GetVertOffset(), 5000, 3000)
+		love.graphics.rectangle("fill", -1000, Global.BLACK_BAR_LEEWAY + Global.VIEW_HEIGHT - LevelHandler.GetVertOffset(), 5000, 3000)
+		love.graphics.rectangle("fill", -1000, -3000 - Global.BLACK_BAR_LEEWAY - LevelHandler.GetVertOffset(), 5000, 3000)
 		love.graphics.rectangle("fill", Global.VIEW_WIDTH + Global.BLACK_BAR_LEEWAY, -1000, 3000, 5000)
 		love.graphics.rectangle("fill", -3000 - Global.BLACK_BAR_LEEWAY, -1000, 3000, 5000)
 	end})
