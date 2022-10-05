@@ -54,7 +54,7 @@ end
 
 function api.Restart()
 	--PhysicsHandler.Destroy()
-	api.Initialize(self.levelIndex)
+	api.Initialize(self.levelIndex, self.levelTableOverride)
 end
 
 function api.SwitchLevel(diff)
@@ -325,8 +325,9 @@ function api.Initialize(levelIndex, levelTableOverride)
 	self.musicEnabled = true
 	self.lifetime = Global.DEBUG_START_LIFETIME or 0
 	self.levelIndex = levelIndex or Global.INIT_LEVEL
+	self.levelTableOverride = levelTableOverride
 	
-	if levelTableOverride then
+	if self.levelTableOverride then
 		self.orderMult = 1
 	else
 		self.orderMult = LevelList.orderMult[self.levelIndex]
@@ -343,7 +344,7 @@ function api.Initialize(levelIndex, levelTableOverride)
 	DialogueHandler.Initialize(api)
 	--PhysicsHandler.Initialize(api)
 	
-	LevelHandler.Initialize(api, self.levelIndex, levelTableOverride)
+	LevelHandler.Initialize(api, self.levelIndex, self.levelTableOverride)
 	TerrainHandler.Initialize(api)
 	DoodadHandler.Initialize(api)
 	TrainHandler.Initialize(api)

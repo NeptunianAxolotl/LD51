@@ -271,7 +271,6 @@ function api.MouseMoved(x, y)
 			local mousePos = self.world.GetMousePosition()
 			mousePos = {math.floor(mousePos[1] / LevelHandler.TileSize()), math.floor(mousePos[2] / LevelHandler.TileSize())}
 			TerrainHandler.AddTrack(mousePos, self.heldTrack, self.trackRotation)
-			DoodadHandler.RemoveDoodads(mousePos)
 			if TrackDefs[self.heldTrack].isCrowbar then
 				DoodadHandler.RemoveDoodads(mousePos)
 			end
@@ -327,7 +326,30 @@ function api.Draw(drawQueue)
 		drawQueue:push({y=1000; f=function()
 			local pos = TerrainHandler.GetValidPlacement(mousePos)
 			if pos then
-				love.graphics.setColor(1, 1, 1, 0.2)
+				local track = TerrainHandler.GetTrackAtPos(pos)
+				if track then
+					if track.IsInUse() then
+						love.graphics.setColor(0.7, 0.7, 0.7, 0.2)
+					elseif TrackDefs[self.heldTrack].isCrowbar then
+						love.graphics.setColor(1, 1, 1, 0.2)
+					elseif TrackDefs[self.heldTrack].overwrite and TrackDefs[self.heldTrack].overwrite[track.trackType] then
+						local overwriteRot = TrackDefs[self.heldTrack].overwrite[track.trackType].rot
+						local relativeRot = (self.trackRotation - track.rotation)%4
+						if overwriteRot[relativeRot] then
+							love.graphics.setColor(1, 1, 1, 0.2)
+						else
+							love.graphics.setColor(0.7, 0.7, 0.7, 0.2)
+						end
+					else
+						love.graphics.setColor(0.7, 0.7, 0.7, 0.2)
+					end
+				else
+					if (not TrackDefs[self.heldTrack].isCrowbar) then
+						love.graphics.setColor(1, 1, 1, 0.2)
+					else
+						love.graphics.setColor(0.7, 0.7, 0.7, 0.2)
+					end
+				end
 				love.graphics.setLineWidth(5)
 				love.graphics.rectangle("line", pos[1]*LevelHandler.TileSize(), pos[2]*LevelHandler.TileSize(), LevelHandler.TileSize(), LevelHandler.TileSize(), 4, 4, 8)
 			end
