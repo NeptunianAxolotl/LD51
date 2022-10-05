@@ -49,7 +49,7 @@ local function SetupWorld()
 		local track = map.track[i]
 		api.AddTrack(track.pos, track.trackType, track.rot, track.setData)
 	end
-	self.isPreLevel = not (self.mapRules and self.mapRules.immediateMusic)
+	self.isPreLevel = not (map.rules and map.rules.immediateTrain)
 end
 
 function api.GetTrackAtPos(gridPos, addDirection)

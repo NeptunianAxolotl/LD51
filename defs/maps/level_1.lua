@@ -13,7 +13,7 @@ local mapData = {
 	},
 	baseCarriages = 2,
 	rules = {
-		immediateMusic = true,
+		immediateTrain = true,
 		trainDelayOverride = 0,
 		shopState = {
 			"straight",

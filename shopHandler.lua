@@ -337,20 +337,29 @@ function api.Draw(drawQueue)
 		
 		if LevelHandler.InEditMode() then
 			Font.SetSize(1)
-			love.graphics.printf("Level Editing" , shopItemsX - 200, shopItemsY + 30, 400, "center")
 			
 			love.graphics.printf([[
 - Numbers 1-7:
      Place doodads
-- QWTYUIJK:
+- Keys QWTYUIJK:
      Place normal track
-- SDFGH:
+- Keys SDFGH:
      Place special track
 - E: Remove track
 - A: Place blocker
 
 Blockers are required as doodads do not block on their own.
-]], shopItemsX - Global.SHOP_WIDTH*0.42, shopItemsY + 105, Global.SHOP_WIDTH*1.2, "left")
+
+- Ctrl+J: Toggle editing
+- Ctrl+K: Save level
+- Ctrl+L: Load level
+- Z/X: +/- tile size
+- C/V: +/- map width
+- B/N: +/- map height
+- K/L: tweak vertical offset
+- O/P: tweak initial carriages
+
+]], shopItemsX - Global.SHOP_WIDTH*0.42, shopItemsY + 10, Global.SHOP_WIDTH*1.22, "left")
 			return
 		end
 		

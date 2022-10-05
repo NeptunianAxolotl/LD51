@@ -18,7 +18,7 @@ function api.AddTrain(trainType, gridPos, entry)
 	trainData = {
 		trainType = trainType,
 	}
-	local train = NewTrain(trainData, api, gridPos, entry, self.baseCarriages)
+	local train = NewTrain(trainData, api, gridPos, entry, LevelHandler.GetBaseCarts())
 	IterableMap.Add(self.trainList, train)
 end
 
@@ -56,7 +56,6 @@ local function SetupMapRules()
 	if map.rules then
 		self.mapRules = map.rules
 	end
-	self.baseCarriages = map.baseCarriages or 1
 end
 
 function api.NotifyGameLoss()

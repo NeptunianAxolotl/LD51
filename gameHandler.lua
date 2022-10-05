@@ -191,7 +191,7 @@ function api.DrawInterface()
 		love.graphics.setLineWidth(10)
 		love.graphics.rectangle("line", overX, overY, overWidth, overHeight, 8, 8, 16)
 		
-		if map.finalLevel then
+		if LevelHandler.IsFinalMap() then
 			Font.SetSize(0)
 			love.graphics.setColor(0, 0, 0, 0.8*self.levelAlpha)
 			love.graphics.printf("Success!", overX, overY + overHeight * 0.04, overWidth, "center")
@@ -233,7 +233,7 @@ function api.DrawInterface()
 'ctrl+r' to reset the level
 'ctrl+n' for next level
 'ctrl+p' for previous level
-'ctrl+m' for map editor
+'ctrl+j' to toggle level editor
 'ctrl+l' to load custom level]], overX + overWidth*0.02, overY + overHeight * 0.3 , overWidth*0.96, "center")
 	end
 end

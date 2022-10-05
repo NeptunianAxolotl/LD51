@@ -8,6 +8,49 @@ local MapDefs = util.LoadDefDirectory("defs/maps")
 local self = {}
 local api = {}
 
+function api.Width()
+	return self.width
+end
+
+function api.Height()
+	return self.height
+end
+
+function api.TileSize()
+	return self.tileSize
+end
+
+function api.TileScale()
+	return self.tileSize / Global.GRID_SIZE
+end
+
+function api.GetVertOffset()
+	return self.vertOffset
+end
+
+function api.GetBaseCarts()
+	return self.baseCarriages
+end
+
+function api.GetLevelHumanName()
+	return self.humanName
+end
+
+function api.IsFinalMap()
+	return self.finalLevel
+end
+
+function api.TownDrawParams()
+	return self.townDrawParams
+end
+
+function api.GetOrderMult()
+	return self.world.GetOrderMult()
+end
+
+function api.GetMapData()
+	return self.map
+end
 
 function api.LoadLevel(name)
 	print("load level")
@@ -33,44 +76,21 @@ end
 
 function api.SaveLevel(name)
 	love.filesystem.createDirectory("levels")
+	self.humanName = name
+	
+	local save = {
+		humanName = self.humanName,
+		dimensions = {
+			width = self.width,
+			height = self.height,
+			tileSize = self.tileSize,
+			vertOffset = self.vertOffset,
+		},
+		baseCarriages = self.baseCarriages,
+	}
+	
 	EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level saved to " .. name .. ".", velocity = {0, 3}})
 	return true
-end
-
-function api.Width()
-	return self.width
-end
-
-function api.Height()
-	return self.height
-end
-
-function api.TileSize()
-	return self.tileSize
-end
-
-function api.TileScale()
-	return self.tileSize / Global.GRID_SIZE
-end
-
-function api.GetVertOffset()
-	return self.vertOffset
-end
-
-function api.GetLevelHumanName()
-	return self.humanName
-end
-
-function api.TownDrawParams()
-	return self.townDrawParams
-end
-
-function api.GetOrderMult()
-	return self.world.GetOrderMult()
-end
-
-function api.GetMapData()
-	return self.map
 end
 
 function api.InEditMode()
@@ -119,7 +139,7 @@ function api.KeyPressed(key, scancode, isRepeat)
 	if key == "k" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		self.saveLevelGetName = true
 	end
-	if key == "m" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+	if key == "j" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		self.editMode = not self.editMode
 	end
 end
@@ -145,6 +165,8 @@ local function SetupWorld(levelIndex, mapDataOverride)
 	self.height = map.dimensions.height
 	self.tileSize = map.dimensions.tileSize
 	self.vertOffset = map.dimensions.vertOffset or 0
+	self.baseCarriages = map.baseCarriages or 1
+	self.finalLevel = map.finalLevel
 end
 
 function api.DrawInterface()
