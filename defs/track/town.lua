@@ -83,6 +83,9 @@ return {
 	updateFunc = function (self, dt)
 		if GetWantedGood(self) then
 			TerrainHandler.NotifyTownMissingGood()
+			if self.permanentlyBlocked then
+				GameHandler.SetGameOver(false, "town_block")
+			end
 		end
 	end,
 	extraDrawFunc = function (self, pos, rotation)

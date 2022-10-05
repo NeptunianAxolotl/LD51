@@ -157,7 +157,7 @@ function api.Update(dt)
 end
 
 function api.DrawInterface()
-	local gameOver, gameWon, gameLost = self.world.GetGameOver()
+	local gameOver, gameWon, gameLost, overType = self.world.GetGameOver()
 	local windowX, windowY = love.window.getMode()
 	local overX = windowX*0.32
 	local overWidth = windowX*0.36
@@ -181,7 +181,11 @@ function api.DrawInterface()
 		love.graphics.printf("Blockage!", overX, overY + overHeight * 0.04, overWidth, "center")
 		
 		Font.SetSize(2)
-		love.graphics.printf("A blocked portal caused all the trains to explode.", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "left")
+		if overType == "factory_block" then
+			love.graphics.printf("A blocked portal caused all the trains to explode.", overX + overWidth*0.14, overY + overHeight * 0.3 , overWidth*0.72, "left")
+		elseif overType == "town_block" then
+			love.graphics.printf("A town caught fire before its needs were satisfied.", overX + overWidth*0.14, overY + overHeight * 0.3 , overWidth*0.72, "left")
+		end
 		love.graphics.printf("Click or press 'ctrl+r' to retry the level", overX, overY + overHeight * 0.72, overWidth, "center")
 	elseif gameWon then
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
