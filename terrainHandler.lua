@@ -14,10 +14,27 @@ function api.SetUneditable(x, y)
 	self.uneditable[x][y] = true
 end
 
+function api.RemoveUneditable(x, y)
+	if self.uneditable[x] then
+		self.uneditable[x][y] = nil
+	end
+end
+
 function api.AddTrack(pos, trackType, rotation, setData)
 	local x, y = pos[1], pos[2]
 	self.trackPos[x] = self.trackPos[x] or {}
 	if self.trackPos[x][y] then
+		local oldTrack = IterableMap.Get(self.trackList, self.trackPos[x][y])
+		-- For editor
+		api.RemoveUneditable(x, y)
+		if oldTrack and oldTrack.def.nearbyBlocked then
+			for i = 1, #oldTrack.def.nearbyBlocked do
+				local otherTrack = api.GetTrackAtPos(pos)
+				if (not otherTrack) or (otherTrack.def.removable) then
+					api.RemoveUneditable(x + oldTrack.def.nearbyBlocked[i][1], y + oldTrack.def.nearbyBlocked[i][2])
+				end
+			end
+		end
 		IterableMap.Remove(self.trackList, self.trackPos[x][y])
 	end
 	local def = TrackDefs[trackType]
