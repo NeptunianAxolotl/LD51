@@ -140,6 +140,10 @@ function api.NotifyTownMissingGood()
 	self.anyTownMissingGood = true
 end
 
+function api.UpdateTileSize()
+	IterableMap.ApplySelf(self.trackList, "UpdateWorldPos")
+end
+
 function api.Update(dt)
 	self.anyTownMissingGood = false
 	IterableMap.ApplySelf(self.trackList, "Update", dt)
@@ -150,6 +154,17 @@ end
 
 function api.Draw(drawQueue)
 	IterableMap.ApplySelf(self.trackList, "Draw", drawQueue)
+	if LevelHandler.InEditMode() then
+		drawQueue:push({y=-100; f=function()
+			for x = 0, LevelHandler.Width() - 1 do
+				for y = 0, LevelHandler.Height() - 1 do
+					love.graphics.setColor(0.5, 0.5, 0.5, 0.3)
+					love.graphics.setLineWidth(5)
+					love.graphics.rectangle("line", x*LevelHandler.TileSize(), y*LevelHandler.TileSize(), LevelHandler.TileSize(), LevelHandler.TileSize(), 4, 4, 8)
+				end
+			end
+		end})
+	end
 end
 
 function api.MousePressed(x, y, button)

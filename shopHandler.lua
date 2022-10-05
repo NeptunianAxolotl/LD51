@@ -356,8 +356,9 @@ Blockers are required as doodads do not block on their own.
 - Z/X: +/- tile size
 - C/V: +/- map width
 - B/N: +/- map height
-- K/L: tweak vertical offset
-- O/P: tweak initial carriages
+- M/,: tweak carriages
+- l/.: tweak vertical offset
+Hold shift for faster rates.
 
 ]], shopItemsX - Global.SHOP_WIDTH*0.42, shopItemsY + 10, Global.SHOP_WIDTH*1.22, "left")
 			return

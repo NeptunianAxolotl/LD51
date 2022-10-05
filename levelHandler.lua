@@ -56,17 +56,17 @@ function api.LoadLevel(name)
 	print("load level")
 	local contents = love.filesystem.read("levels/" .. name)
 	if not contents then
-		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level file not found.", velocity = {0, 3}})
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level file not found.", velocity = {0, 4}})
 		return
 	end
 	local levelFunc = loadstring("return "..contents)
 	if not levelFunc then
-		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Error loading level.", velocity = {0, 3}})
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Error loading level.", velocity = {0, 4}})
 		return
 	end
 	local success, levelData = pcall(levelFunc)
 	if not success then
-		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level format error.", velocity = {0, 3}})
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level format error.", velocity = {0, 4}})
 		return
 	end
 	
@@ -87,9 +87,11 @@ function api.SaveLevel(name)
 			vertOffset = self.vertOffset,
 		},
 		baseCarriages = self.baseCarriages,
+		track = TerrainHandler.ExportObjects(),
+		doodads = DoodadHandler.ExportObjects(),
 	}
 	
-	EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level saved to " .. name .. ".", velocity = {0, 3}})
+	EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level saved to " .. name .. ".", velocity = {0, 4}})
 	return true
 end
 
@@ -99,6 +101,12 @@ end
 
 function api.IsMenuOpen()
 	return self.loadingLevelGetName or self.saveLevelGetName
+end
+
+function api.MousePressed()
+	if self.loadingLevelGetName or self.saveLevelGetName then
+		return true
+	end
 end
 
 function api.KeyPressed(key, scancode, isRepeat)
@@ -142,11 +150,41 @@ function api.KeyPressed(key, scancode, isRepeat)
 	if key == "j" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		self.editMode = not self.editMode
 	end
-end
-
-function api.MousePressed()
-	if self.loadingLevelGetName or self.saveLevelGetName then
-		return true
+	
+	if not self.editMode then
+		return
+	end
+	local varyRate = ((love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) and 5) or 1
+	if key == "z" then
+		self.tileSize = math.max(2, self.tileSize - varyRate)
+		TerrainHandler.UpdateTileSize()
+		DoodadHandler.UpdateTileSize()
+	elseif key == "x" then
+		self.tileSize = self.tileSize + varyRate
+		TerrainHandler.UpdateTileSize()
+		DoodadHandler.UpdateTileSize()
+	elseif key == "c" then
+		self.width = math.max(1, self.width - varyRate)
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Width: " .. self.width, velocity = {0, 4}})
+	elseif key == "v" then
+		self.width = self.width + 1
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Width: " .. self.width, velocity = {0, 4}})
+	elseif key == "b" then
+		self.height = math.max(1, self.height - varyRate)
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Height: " .. self.height, velocity = {0, 4}})
+	elseif key == "n" then
+		self.height = self.height + varyRate
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Height: " .. self.height, velocity = {0, 4}})
+	elseif key == "l" then
+		self.vertOffset = self.vertOffset - varyRate
+	elseif key == "." then
+		self.vertOffset = self.vertOffset + varyRate
+	elseif key == "m" then
+		self.baseCarriages = math.max(1, self.baseCarriages - varyRate)
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Initial carriages: " .. self.baseCarriages, velocity = {0, 4}})
+	elseif key == "," then
+		self.baseCarriages = self.baseCarriages + varyRate
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Initial carriages: " .. self.baseCarriages, velocity = {0, 4}})
 	end
 end
 

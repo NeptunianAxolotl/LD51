@@ -8,6 +8,10 @@ local function NewTrack(self, terrain)
 	self.def = DoodadDefs[self.doodadType]
 	self.worldPos = {(self.pos[1] + 0.5)* LevelHandler.TileSize(), (self.pos[2] + 0.5) * LevelHandler.TileSize()}
 	
+	function self.UpdateWorldPos()
+		self.worldPos = {(self.pos[1] + 0.5) * LevelHandler.TileSize(), (self.pos[2] + 0.5) * LevelHandler.TileSize()}
+	end
+	
 	function self.Draw(drawQueue)
 		drawQueue:push({y=0 + self.pos[2]*0.01 - 0.001; f=function()
 			Resources.DrawImage(self.def.image, self.worldPos[1], self.worldPos[2], 0, false, LevelHandler.TileScale())

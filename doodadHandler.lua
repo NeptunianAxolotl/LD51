@@ -27,6 +27,10 @@ local function SetupWorld()
 	end
 end
 
+function api.UpdateTileSize()
+	IterableMap.ApplySelf(self.doodadList, "UpdateWorldPos")
+end
+
 function api.Draw(drawQueue)
 	IterableMap.ApplySelf(self.doodadList, "Draw", drawQueue)
 end

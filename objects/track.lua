@@ -113,6 +113,10 @@ local function NewTrack(self, terrain)
 		return false
 	end
 	
+	function self.UpdateWorldPos()
+		self.worldPos = {(self.pos[1] + 0.5) * LevelHandler.TileSize(), (self.pos[2] + 0.5) * LevelHandler.TileSize()}
+	end
+	
 	function self.MousePressed()
 		local heldType, heldRotation = ShopHandler.GetHeldTrack()
 		if heldType and self.def.removable and not self.IsInUse(false, true) and TrackDefs[heldType].isCrowbar then

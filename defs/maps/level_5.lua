@@ -16,10 +16,15 @@ local mapData = {
 		hints = {
 			{
 				text = "- Some towns want a series of deliveries.",
-				pos = {13.38, 0.12},
-				size = {2.4, 1.6},
+				pos = {13.38, 0.1},
+				size = {2.4, 1.5},
 				arrow = "mid",
 				arrowDest = {13.6, 4.7},
+			},
+			{
+				text = "- Open the level editor with 'ctrl+j'\n- Load a level with 'ctrl+l'",
+				pos = {1.4, 0.1},
+				size = {3.95, 1.5},
 			},
 		}
 	},
