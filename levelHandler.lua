@@ -170,7 +170,7 @@ function api.KeyPressed(key, scancode, isRepeat)
 				self.townWantConf[#self.townWantConf] = nil
 			end
 		elseif key == "n" then
-			self.townWantConf[#self.townWantConf].count = max.max(1, self.townWantConf[#self.townWantConf].count - varyRate)
+			self.townWantConf[#self.townWantConf].count = math.max(1, self.townWantConf[#self.townWantConf].count - varyRate)
 		elseif key == "m" then
 			self.townWantConf[#self.townWantConf].count = self.townWantConf[#self.townWantConf].count + varyRate
 		elseif key == "return" or key == "escape" then
