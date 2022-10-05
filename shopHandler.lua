@@ -217,11 +217,11 @@ function api.KeyPressed(key, scancode, isRepeat)
 			self.heldTrack = "signal"
 			self.holdingDoodad = false
 			self.blockRotate = false
-		elseif key == "j" then
+		elseif key == "8" then
 			self.heldTrack = "cross"
 			self.holdingDoodad = false
 			self.blockRotate = false
-		elseif key == "k" then
+		elseif key == "9" then
 			self.heldTrack = "double_curve"
 			self.holdingDoodad = false
 			self.blockRotate = false
@@ -279,6 +279,9 @@ function api.MousePressed(x, y, button)
 				mousePos = {math.floor(mousePos[1] / LevelHandler.TileSize()), math.floor(mousePos[2] / LevelHandler.TileSize())}
 				TerrainHandler.AddTrack(mousePos, self.heldTrack, self.trackRotation)
 				print([[{pos = {]] .. mousePos[1] .. [[, ]] .. mousePos[2] .. [[}, rot = ]] .. self.trackRotation .. [[, trackType = "]] .. self.heldTrack .. [["},]])
+				if TrackDefs[self.heldTrack].isCrowbar then
+					DoodadHandler.RemoveDoodads(mousePos)
+				end
 			end
 		end
 		return
@@ -341,18 +344,17 @@ function api.Draw(drawQueue)
 			love.graphics.printf([[
 - Numbers 1-7:
      Place doodads
-- Keys QWTYUIJK:
+- Keys QWTYUI89:
      Place normal track
 - Keys SDFGH:
      Place special track
-- E: Remove track
-- A: Place blocker
-
-Blockers are required as doodads do not block on their own.
+- E: Delete tile
+- A: Blocker (doodads do not stop placement)
 
 - Ctrl+J: Toggle editing
 - Ctrl+K: Save level
 - Ctrl+L: Load level
+
 - Z/X: +/- tile size
 - C/V: +/- map width
 - B/N: +/- map height
@@ -360,7 +362,7 @@ Blockers are required as doodads do not block on their own.
 - l/.: tweak vertical offset
 Hold shift for faster rates.
 
-]], shopItemsX - Global.SHOP_WIDTH*0.42, shopItemsY + 10, Global.SHOP_WIDTH*1.22, "left")
+]], shopItemsX - Global.SHOP_WIDTH*0.42, shopItemsY, Global.SHOP_WIDTH*1.22, "left")
 			return
 		end
 		

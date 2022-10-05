@@ -16,6 +16,10 @@ function api.AddDoodad(pos, doodadType)
 	IterableMap.Add(self.doodadList, NewDoodad(doodadData, api))
 end
 
+function api.RemoveDoodads(pos)
+	IterableMap.ApplySelf(self.doodadList, "RemoveAtPos", pos)
+end
+
 local function SetupWorld()
 	local map = LevelHandler.GetMapData()
 	

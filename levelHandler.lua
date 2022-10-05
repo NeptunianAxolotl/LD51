@@ -161,6 +161,7 @@ function api.KeyPressed(key, scancode, isRepeat)
 	if not self.editMode then
 		return
 	end
+	
 	local varyRate = ((love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) and 5) or 1
 	if key == "z" then
 		self.tileSize = math.max(2, self.tileSize - varyRate)
