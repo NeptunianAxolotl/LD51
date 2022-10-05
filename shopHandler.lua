@@ -225,11 +225,11 @@ function api.KeyPressed(key, scancode, isRepeat)
 			self.heldTrack = "signal"
 			self.holdingDoodad = false
 			self.blockRotate = false
-		elseif key == "8" then
+		elseif key == "9" then
 			self.heldTrack = "cross"
 			self.holdingDoodad = false
 			self.blockRotate = false
-		elseif key == "9" then
+		elseif key == "0" then
 			self.heldTrack = "double_curve"
 			self.holdingDoodad = false
 			self.blockRotate = false
