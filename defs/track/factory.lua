@@ -7,11 +7,12 @@ return {
 		if self.spawnTimer <= 0 then
 			if self.IsInUse() then
 				GameHandler.SetGameOver(false, "factory_block")
+			else
+				if not (GameHandler.GetGameOver() or TerrainHandler.IsPreLevel()) then
+					TrainHandler.AddTrain("basic", self.pos, (self.rotation + 2)%4)
+				end
+				self.spawnTimer = self.spawnTimer + Global.TRAIN_SPAWN_TIME
 			end
-			if not (GameHandler.GetGameOver() or TerrainHandler.IsPreLevel()) then
-				TrainHandler.AddTrain("basic", self.pos, (self.rotation + 2)%4)
-			end
-			self.spawnTimer = self.spawnTimer + Global.TRAIN_SPAWN_TIME
 		end
 	end,
 	paths = {

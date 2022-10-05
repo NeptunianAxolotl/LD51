@@ -230,6 +230,7 @@ function api.KeyPressed(key, scancode, isRepeat)
 		if key == "a" then
 			self.heldTrack = "block"
 			self.holdingDoodad = false
+			self.blockRotate = false
 		elseif key == "s" then
 			self.heldTrack = "town"
 			self.holdingDoodad = false
@@ -238,15 +239,19 @@ function api.KeyPressed(key, scancode, isRepeat)
 		elseif key == "d" then
 			self.heldTrack = "factory"
 			self.holdingDoodad = false
+			self.blockRotate = false
 		elseif key == "f" then
 			self.heldTrack = "farm"
 			self.holdingDoodad = false
+			self.blockRotate = false
 		elseif key == "g" then
 			self.heldTrack = "sawmill"
 			self.holdingDoodad = false
+			self.blockRotate = false
 		elseif key == "h" then
 			self.heldTrack = "mine"
 			self.holdingDoodad = false
+			self.blockRotate = false
 		end
 		
 		return
@@ -270,7 +275,10 @@ function api.MouseMoved(x, y)
 			end
 			local mousePos = self.world.GetMousePosition()
 			mousePos = {math.floor(mousePos[1] / LevelHandler.TileSize()), math.floor(mousePos[2] / LevelHandler.TileSize())}
-			TerrainHandler.AddTrack(mousePos, self.heldTrack, self.trackRotation)
+			local track = TerrainHandler.GetTrackAtPos(mousePos)
+			if (not track) or (not track.IsInUse()) then
+				TerrainHandler.AddTrack(mousePos, self.heldTrack, self.trackRotation)
+			end
 			if TrackDefs[self.heldTrack].isCrowbar then
 				DoodadHandler.RemoveDoodads(mousePos)
 			end
@@ -294,7 +302,10 @@ function api.MousePressed(x, y, button)
 				print([[{pos = {]] .. mousePos[1] .. [[, ]] .. mousePos[2] .. [[}, doodadType = "]] .. self.heldTrack .. [["},]])
 			else
 				mousePos = {math.floor(mousePos[1] / LevelHandler.TileSize()), math.floor(mousePos[2] / LevelHandler.TileSize())}
-				TerrainHandler.AddTrack(mousePos, self.heldTrack, self.trackRotation)
+				local track = TerrainHandler.GetTrackAtPos(mousePos)
+				if (not track) or (not track.IsInUse()) then
+					TerrainHandler.AddTrack(mousePos, self.heldTrack, self.trackRotation)
+				end
 				print([[{pos = {]] .. mousePos[1] .. [[, ]] .. mousePos[2] .. [[}, rot = ]] .. self.trackRotation .. [[, trackType = "]] .. self.heldTrack .. [["},]])
 				if TrackDefs[self.heldTrack].isCrowbar then
 					DoodadHandler.RemoveDoodads(mousePos)
