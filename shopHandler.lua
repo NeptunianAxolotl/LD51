@@ -159,31 +159,36 @@ function api.KeyPressed(key, scancode, isRepeat)
 			self.blockRotate = true
 			self.trackRotation = 0
 		elseif key == "2" then
-			self.heldTrack = "forest"
+			self.heldTrack = "grass_small"
 			self.holdingDoodad = true
 			self.blockRotate = true
 			self.trackRotation = 0
 		elseif key == "3" then
-			self.heldTrack = "forest2"
+			self.heldTrack = "forest"
 			self.holdingDoodad = true
 			self.blockRotate = true
 			self.trackRotation = 0
 		elseif key == "4" then
-			self.heldTrack = "forest3"
+			self.heldTrack = "forest2"
 			self.holdingDoodad = true
 			self.blockRotate = true
 			self.trackRotation = 0
 		elseif key == "5" then
-			self.heldTrack = "field"
+			self.heldTrack = "forest3"
 			self.holdingDoodad = true
 			self.blockRotate = true
 			self.trackRotation = 0
 		elseif key == "6" then
-			self.heldTrack = "mountain_small"
+			self.heldTrack = "field"
 			self.holdingDoodad = true
 			self.blockRotate = true
 			self.trackRotation = 0
 		elseif key == "7" then
+			self.heldTrack = "mountain_small"
+			self.holdingDoodad = true
+			self.blockRotate = true
+			self.trackRotation = 0
+		elseif key == "8" then
 			self.heldTrack = "mountain_large"
 			self.holdingDoodad = true
 			self.blockRotate = true
@@ -401,9 +406,9 @@ function api.Draw(drawQueue)
 			Font.SetSize(1)
 			
 			love.graphics.printf([[
-- Numbers 1-7:
+- Numbers 1-8:
      Place doodads
-- Keys QWTYUI89:
+- Keys QWTYUI90:
      Place normal track
 - Keys SDFGH:
      Place special track

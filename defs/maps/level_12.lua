@@ -5,7 +5,7 @@ local mapData = {
 		width = 17,
 		height = 11,
 		tileSize = 138,
-		vertOffset = 30,
+		vertOffset = 25,
 	},
 	townDrawParams = {
 		font = 0,
