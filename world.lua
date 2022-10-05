@@ -73,7 +73,7 @@ end
 
 function api.TakeScreenshot()
 	love.filesystem.createDirectory("screenshots")
-	print("working", love.filesystem.getWorkingDirectory( ))
+	print("working", love.filesystem.getWorkingDirectory())
 	print("save", love.filesystem.getSaveDirectory())
 	love.graphics.captureScreenshot("screenshots/screenshot_" .. math.floor(math.random()*100000) .. "_.png")
 end
@@ -98,6 +98,9 @@ function api.SetPaused(newPause, force)
 end
 
 function api.KeyPressed(key, scancode, isRepeat)
+	if LevelHandler.KeyPressed(key, scancode, isRepeat) then
+		return
+	end
 	if key == "escape" or key == "return" or key == "kpenter" then
 		self.paused = not self.paused
 	end
@@ -119,9 +122,6 @@ function api.KeyPressed(key, scancode, isRepeat)
 	if key == "p" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		api.SwitchLevel(-1)
 	end
-	if LevelHandler.KeyPressed(key, scancode, isRepeat) then
-		return
-	end
 	if api.GetGameOver() then
 		return -- No doing actions
 	end
@@ -139,6 +139,9 @@ function api.MousePressed(x, y, button)
 	end
 	local uiX, uiY = self.interfaceTransform:inverse():transformPoint(x, y)
 	
+	if LevelHandler.MousePressed(x, y, button) then
+		return
+	end
 	if GameHandler.MousePressed(x, y, button) then
 		return
 	end
@@ -296,6 +299,7 @@ function api.Draw()
 	love.graphics.replaceTransform(self.emptyTransform)
 	
 	-- Draw interface
+	LevelHandler.DrawInterface()
 	GameHandler.DrawInterface()
 	EffectsHandler.DrawInterface()
 	DialogueHandler.DrawInterface()

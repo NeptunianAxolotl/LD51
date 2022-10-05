@@ -9,4 +9,5 @@ return {
 	textHeight = 10,
 	color = {1, 0.2, 0.2},
 	inFront = 1200,
+	center = "left",
 }

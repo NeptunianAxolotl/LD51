@@ -1,6 +1,7 @@
 
 local IterableMap = require("include/IterableMap")
 local util = require("include/util")
+local Font = require("include/font")
 
 local MapDefs = util.LoadDefDirectory("defs/maps")
 
@@ -12,23 +13,28 @@ function api.LoadLevel(name)
 	print("load level")
 	local contents = love.filesystem.read("levels/" .. name)
 	if not contents then
-		EffectsHandler.SpawnEffect("error_popup", {200, 15}, {text = "Level file not found.", velocity = {0, 3}})
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level file not found.", velocity = {0, 3}})
 		return
 	end
 	local levelFunc = loadstring("return "..contents)
 	if not levelFunc then
-		EffectsHandler.SpawnEffect("error_popup", {200, 15}, {text = "Error loading level.", velocity = {0, 3}})
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Error loading level.", velocity = {0, 3}})
 		return
 	end
 	local success, levelData = pcall(levelFunc)
 	if not success then
-		EffectsHandler.SpawnEffect("error_popup", {200, 15}, {text = "Level format error.", velocity = {0, 3}})
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level format error.", velocity = {0, 3}})
 		return
 	end
 	
 	self.world.LoadLevelByTable(levelData)
+	return true
 end
 
+function api.SaveLevel(name)
+	love.filesystem.createDirectory("levels")
+	return true
+end
 
 function api.Width()
 	return self.width
@@ -71,11 +77,51 @@ function api.InEditMode()
 end
 
 function api.KeyPressed(key, scancode, isRepeat)
+	if self.loadingLevelGetName or self.saveLevelGetName then
+		if key and string.len(key) == 1 then
+			if (love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) then
+				key = string.upper(key)
+			end
+			self.enteredText = (self.enteredText or "") .. key
+		end
+		if key == "meta" or key == "space" then
+			self.enteredText = (self.enteredText or "") .. " "
+		end
+		if (key == "delete" or key == "backspace") and self.enteredText and string.len(self.enteredText) > 0 then
+			self.enteredText = string.sub(self.enteredText, 0, string.len(self.enteredText) - 1)
+		end
+		if key == "escape" then
+			self.loadingLevelGetName = false
+			self.saveLevelGetName = false
+		end
+		if key == "return" and self.enteredText then
+			if self.loadingLevelGetName then
+				if api.LoadLevel(self.enteredText) then
+					self.loadingLevelGetName = false
+				end
+			elseif self.saveLevelGetName then
+				if api.SaveLevel(self.enteredText) then
+					self.saveLevelGetName = false
+				end
+			end
+		end
+		return true
+	end
+	
 	if key == "l" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
-		api.LoadLevel("testLevel")
+		self.loadingLevelGetName = true
+	end
+	if key == "k" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
+		self.saveLevelGetName = true
 	end
 	if key == "m" and (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		self.editMode = not self.editMode
+	end
+end
+
+function api.MousePressed()
+	if self.loadingLevelGetName or self.saveLevelGetName then
+		return true
 	end
 end
 
@@ -94,6 +140,50 @@ local function SetupWorld(levelIndex, mapDataOverride)
 	self.height = map.dimensions.height
 	self.tileSize = map.dimensions.tileSize
 	self.vertOffset = map.dimensions.vertOffset or 0
+end
+
+function api.DrawInterface()
+	local gameOver, gameWon, gameLost = self.world.GetGameOver()
+	local windowX, windowY = love.window.getMode()
+	local overX = windowX*0.32
+	local overWidth = windowX*0.36
+	local overY = windowY*0.3
+	local overHeight = windowY*0.4
+	
+	local drawWindow = self.loadingLevelGetName or self.saveLevelGetName
+	if drawWindow then
+		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8)
+		love.graphics.setLineWidth(4)
+		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight, 8, 8, 16)
+		love.graphics.setColor(0, 0, 0, 0.8)
+		love.graphics.setLineWidth(10)
+		love.graphics.rectangle("line", overX, overY, overWidth, overHeight, 8, 8, 16)
+		
+	end
+	
+	if self.loadingLevelGetName then
+		Font.SetSize(0)
+		love.graphics.setColor(0, 0, 0, 0.8)
+		love.graphics.printf("Loading Level", overX, overY + overHeight * 0.04, overWidth, "center")
+		
+		Font.SetSize(3)
+		love.graphics.printf("Type level name (Enter accept, ESC cancel)\n" .. (self.enteredText or ""), overX + overWidth*0.05, overY + overHeight * 0.32 , overWidth*0.9, "center")
+		
+		Font.SetSize(3)
+		love.graphics.printf("Loading from " .. (love.filesystem.getSaveDirectory() or "DIR_ERROR") .. "/levels", overX + overWidth*0.05, overY + overHeight * 0.65, overWidth*0.9, "center")
+
+	elseif self.saveLevelGetName then
+		Font.SetSize(0)
+		love.graphics.setColor(0, 0, 0, 0.8)
+		love.graphics.printf("Saving Level", overX, overY + overHeight * 0.04, overWidth, "center")
+		
+		Font.SetSize(3)
+		love.graphics.printf("Type level name (Enter accept, ESC cancel)\n" .. (self.enteredText or ""), overX + overWidth*0.05, overY + overHeight * 0.32 , overWidth*0.9, "center")
+		
+		Font.SetSize(3)
+		love.graphics.printf("Saving to " .. (love.filesystem.getSaveDirectory() or "DIR_ERROR") .. "/levels", overX + overWidth*0.05, overY + overHeight * 0.65, overWidth*0.9, "center")
+	end
+	return drawWindow
 end
 
 function api.Initialize(world, levelIndex, mapDataOverride)

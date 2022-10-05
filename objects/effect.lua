@@ -49,7 +49,7 @@ local function NewEffect(self, def)
 				local col = def.color
 				Font.SetSize(def.fontSize)
 				love.graphics.setColor((col and col[1]) or 1, (col and col[2]) or 1, (col and col[3]) or 1, GetAlpha())
-				love.graphics.printf(self.text, self.pos[1] - def.textWidth/2, self.pos[2] - def.textHeight, def.textWidth, "center")
+				love.graphics.printf(self.text, self.pos[1] - def.textWidth/2, self.pos[2] - def.textHeight, def.textWidth, def.center or "center")
 				love.graphics.setColor(1, 1, 1, 1)
 			elseif self.actualImageOverride or def.actual_image then
 				Resources.DrawImage(self.actualImageOverride or def.actual_image, self.pos[1], self.pos[2], self.direction, GetAlpha(),
