@@ -382,7 +382,7 @@ function api.Draw(drawQueue)
 - C/V: +/- map width
 - B/N: +/- map height
 - M/,: tweak carriages
-- l/.: tweak vertical offset
+- L/.: tweak vertical offset
 Hold shift for +5/-5
 
 ]], shopItemsX - Global.SHOP_WIDTH*0.42, shopItemsY, Global.SHOP_WIDTH*1.22, "left")

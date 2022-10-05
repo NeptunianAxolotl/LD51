@@ -212,7 +212,7 @@ function api.KeyPressed(key, scancode, isRepeat)
 		self.width = math.max(1, self.width - varyRate)
 		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Width: " .. self.width, velocity = {0, 4}})
 	elseif key == "v" then
-		self.width = self.width + 1
+		self.width = self.width + varyRate
 		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Width: " .. self.width, velocity = {0, 4}})
 	elseif key == "b" then
 		self.height = math.max(1, self.height - varyRate)
