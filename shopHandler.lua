@@ -261,6 +261,24 @@ function api.KeyPressed(key, scancode, isRepeat)
 	end
 end
 
+function api.MouseMoved(x, y)
+	if LevelHandler.InEditMode() then
+		if self.placeTrackHeld then
+			if not (love.mouse.isDown(1) and self.heldTrack) then
+				self.placeTrackHeld = false
+				return
+			end
+			local mousePos = self.world.GetMousePosition()
+			mousePos = {math.floor(mousePos[1] / LevelHandler.TileSize()), math.floor(mousePos[2] / LevelHandler.TileSize())}
+			TerrainHandler.AddTrack(mousePos, self.heldTrack, self.trackRotation)
+			DoodadHandler.RemoveDoodads(mousePos)
+			if TrackDefs[self.heldTrack].isCrowbar then
+				DoodadHandler.RemoveDoodads(mousePos)
+			end
+		end
+	end
+end
+
 function api.MousePressed(x, y, button)
 	if LevelHandler.InEditMode() then
 		if self.blockRotate then
@@ -284,6 +302,8 @@ function api.MousePressed(x, y, button)
 				end
 				if TrackDefs[self.heldTrack].editorWantGoods then
 					LevelHandler.TownWantPopup(mousePos)
+				else
+					self.placeTrackHeld = true
 				end
 			end
 		end

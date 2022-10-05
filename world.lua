@@ -174,6 +174,10 @@ function api.MouseReleased(x, y, button)
 	-- Send event to game components
 end
 
+function api.MouseMoved(x, y, dx, dy)
+	ShopHandler.MouseMoved(x, y, dx, dy)
+end
+
 function api.WorldToScreen(pos)
 	local x, y = self.cameraTransform:transformPoint(pos[1], pos[2])
 	return {x, y}

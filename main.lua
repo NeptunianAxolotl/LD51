@@ -23,7 +23,8 @@ end
 -- Input
 --------------------------------------------------
 
-function love.mousemoved(x, y, dx, dy, istouch )
+function love.mousemoved(x, y, dx, dy, istouch)
+	World.MouseMoved(x, y, dx, dy)
 end
 
 function love.mousereleased(x, y, button, istouch, presses)
