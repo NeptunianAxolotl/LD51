@@ -91,8 +91,15 @@ function api.SaveLevel(name)
 		doodads = DoodadHandler.ExportObjects(),
 	}
 	
-	EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level saved to " .. name .. ".", velocity = {0, 4}})
-	return true
+	local saveTable = util.TableToString(save)
+	
+	local success, message = love.filesystem.write("levels/" .. name, saveTable)
+	if success then
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level saved to " .. name .. ".", velocity = {0, 4}})
+	else
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Save error: " .. (message or "NO MESSAGE"), velocity = {0, 4}})
+	end
+	return success
 end
 
 function api.InEditMode()
@@ -129,12 +136,12 @@ function api.KeyPressed(key, scancode, isRepeat)
 		end
 		if key == "return" and self.enteredText then
 			if self.loadingLevelGetName then
-				if api.LoadLevel(self.enteredText) then
-					self.loadingLevelGetName = false
-				end
+				api.LoadLevel(self.enteredText)
+				-- Loading causes immediate reinitialisation from world.
 			elseif self.saveLevelGetName then
 				if api.SaveLevel(self.enteredText) then
 					self.saveLevelGetName = false
+					self.enteredText = ""
 				end
 			end
 		end

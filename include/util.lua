@@ -558,32 +558,51 @@ function util.TableKeysToList(keyTable, indexToKey)
 	return list
 end
 
-function util.PrintTable(data, name, indent, tableChecked)
-	name = name or "PrintTable"
+local function TableToStringHelper(data, indent, tableChecked, lineFunc)
 	indent = indent or ""
-	if (not tableChecked) and type(data) ~= "table" then
-		print(indent .. name, data)
-		return
-	end
-	print(indent .. name .. " = {")
 	local newIndent = indent .. "	"
 	for nameRaw, v in pairs(data) do
 		local name = tostring(nameRaw)
+		if type(nameRaw) == "number" then
+			name = "[" .. name .. "]"
+		end
 		local ty = type(v)
 		if ty == "userdata" then
-			print("warning, userdata")
+			lineFunc("warning, userdata")
 		end
 		if ty == "table" then
-			util.PrintTable(v, name, newIndent, true)
+			lineFunc(newIndent .. name .. " = {")
+			TableToStringHelper(v, newIndent, true, lineFunc)
+			lineFunc(newIndent .. "},")
 		elseif ty == "boolean" then
-			print(newIndent .. name .. " = " .. (v and "true" or "false"))
-		elseif ty == "string" or ty == "number" then
-			print(newIndent .. name .. " = " .. v)
+			lineFunc(newIndent .. name .. " = " .. (v and "true," or "false,"))
+		elseif ty == "string" then
+			lineFunc(newIndent .. name .. [[ = "]] .. v .. [[",]])
+		elseif ty == "number" then
+			lineFunc(newIndent .. name .. " = " .. v .. ",")
 		else
-			print(newIndent .. name .. " = ", v)
+			lineFunc(newIndent .. name .. " = ", v)
 		end
 	end
-	print(indent .. "},")
+end
+
+function util.TableToString(data)
+	local str = ""
+	local function Append(newLine)
+		str = str .. newLine .. "\n"
+	end
+	Append("{")
+	TableToStringHelper(data, indent, tableChecked, Append)
+	Append("}")
+	return str
+end
+
+function util.PrintTable(data, indent, tableChecked)
+	if (not tableChecked) and type(data) ~= "table" then
+		print(data)
+		return
+	end
+	TableToStringHelper(data, indent, tableChecked, print)
 end
 
 function util.CopyTable(tableToCopy, deep, appendTo)

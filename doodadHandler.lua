@@ -27,6 +27,12 @@ local function SetupWorld()
 	end
 end
 
+function api.ExportObjects()
+	local objList = {}
+	IterableMap.ApplySelf(self.doodadList, "Export", objList)
+	return objList
+end
+
 function api.UpdateTileSize()
 	IterableMap.ApplySelf(self.doodadList, "UpdateWorldPos")
 end

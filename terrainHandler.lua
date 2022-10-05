@@ -140,6 +140,12 @@ function api.NotifyTownMissingGood()
 	self.anyTownMissingGood = true
 end
 
+function api.ExportObjects()
+	local objList = {}
+	IterableMap.ApplySelf(self.trackList, "Export", objList)
+	return objList
+end
+
 function api.UpdateTileSize()
 	IterableMap.ApplySelf(self.trackList, "UpdateWorldPos")
 end

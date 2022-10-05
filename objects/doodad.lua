@@ -8,6 +8,10 @@ local function NewTrack(self, terrain)
 	self.def = DoodadDefs[self.doodadType]
 	self.worldPos = {(self.pos[1] + 0.5)* LevelHandler.TileSize(), (self.pos[2] + 0.5) * LevelHandler.TileSize()}
 	
+	function self.Export(objList)
+		objList[#objList + 1] = {pos = self.pos, doodadType = self.doodadType}
+	end
+	
 	function self.UpdateWorldPos()
 		self.worldPos = {(self.pos[1] + 0.5) * LevelHandler.TileSize(), (self.pos[2] + 0.5) * LevelHandler.TileSize()}
 	end
