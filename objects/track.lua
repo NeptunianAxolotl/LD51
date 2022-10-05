@@ -114,7 +114,11 @@ local function NewTrack(self, terrain)
 	end
 	
 	function self.Export(objList)
-		objList[#objList + 1] = {pos = self.pos, rot = self.rotation, trackType = self.trackType}
+		local exportData = {pos = self.pos, rot = self.rotation, trackType = self.trackType}
+		if self.def.editorWantGoods then
+			exportData.setData = {progression = self.progression}
+		end
+		objList[#objList + 1] = exportData
 	end
 	
 	function self.UpdateWorldPos()

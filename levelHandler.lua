@@ -89,10 +89,13 @@ function api.SaveLevel(name)
 		baseCarriages = self.baseCarriages,
 		track = TerrainHandler.ExportObjects(),
 		doodads = DoodadHandler.ExportObjects(),
+		townDrawParams = {
+			font = (self.tileSize > 125 and 0) or 1,
+			pos = (self.tileSize > 145 and {-0.01, -1.55}) and (self.tileSize > 125 and {0.01, -1.58}) or {0.03, -1.55},
+		}
 	}
 	
 	local saveTable = util.TableToString(save)
-	
 	local success, message = love.filesystem.write("levels/" .. name, saveTable)
 	if success then
 		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level saved to " .. name .. ".", velocity = {0, 4}})
@@ -114,6 +117,11 @@ function api.MousePressed()
 	if self.loadingLevelGetName or self.saveLevelGetName then
 		return true
 	end
+end
+
+function api.TownWantPopup(pos)
+	self.townWantPos = pos
+	self.townWantConf = {{good = "food", count = 5}}
 end
 
 function api.KeyPressed(key, scancode, isRepeat)
@@ -141,9 +149,36 @@ function api.KeyPressed(key, scancode, isRepeat)
 			elseif self.saveLevelGetName then
 				if api.SaveLevel(self.enteredText) then
 					self.saveLevelGetName = false
-					self.enteredText = ""
 				end
 			end
+		end
+		return true
+	end
+	
+	if self.townWantConf then
+		local varyRate = ((love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")) and 5) or 1
+		if key == "q" then
+			self.townWantConf[#self.townWantConf].good = "food"
+		elseif key == "w" then
+			self.townWantConf[#self.townWantConf].good = "wood"
+		elseif key == "e" then
+			self.townWantConf[#self.townWantConf].good = "ore"
+		elseif key == "a" then
+			self.townWantConf[#self.townWantConf + 1] = {good = "food", count = 5}
+		elseif key == "d" then
+			if #self.townWantConf > 1 then
+				self.townWantConf[#self.townWantConf] = nil
+			end
+		elseif key == "n" then
+			self.townWantConf[#self.townWantConf].count = max.max(1, self.townWantConf[#self.townWantConf].count - varyRate)
+		elseif key == "m" then
+			self.townWantConf[#self.townWantConf].count = self.townWantConf[#self.townWantConf].count + varyRate
+		elseif key == "return" or key == "escape" then
+			local track = TerrainHandler.GetTrackAtPos(self.townWantPos)
+			if track then
+				track.progression = self.townWantConf
+			end
+			self.townWantConf = false
 		end
 		return true
 	end
@@ -167,10 +202,12 @@ function api.KeyPressed(key, scancode, isRepeat)
 		self.tileSize = math.max(2, self.tileSize - varyRate)
 		TerrainHandler.UpdateTileSize()
 		DoodadHandler.UpdateTileSize()
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Tile size: " .. self.tileSize, velocity = {0, 4}})
 	elseif key == "x" then
 		self.tileSize = self.tileSize + varyRate
 		TerrainHandler.UpdateTileSize()
 		DoodadHandler.UpdateTileSize()
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Tile size: " .. self.tileSize, velocity = {0, 4}})
 	elseif key == "c" then
 		self.width = math.max(1, self.width - varyRate)
 		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Width: " .. self.width, velocity = {0, 4}})
@@ -185,8 +222,10 @@ function api.KeyPressed(key, scancode, isRepeat)
 		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Height: " .. self.height, velocity = {0, 4}})
 	elseif key == "l" then
 		self.vertOffset = self.vertOffset - varyRate
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Offset: " .. self.vertOffset, velocity = {0, 4}})
 	elseif key == "." then
 		self.vertOffset = self.vertOffset + varyRate
+		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Offset: " .. self.vertOffset, velocity = {0, 4}})
 	elseif key == "m" then
 		self.baseCarriages = math.max(1, self.baseCarriages - varyRate)
 		EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Initial carriages: " .. self.baseCarriages, velocity = {0, 4}})
@@ -223,9 +262,9 @@ function api.DrawInterface()
 	local overY = windowY*0.3
 	local overHeight = windowY*0.4
 	
-	local drawWindow = self.loadingLevelGetName or self.saveLevelGetName
+	local drawWindow = self.loadingLevelGetName or self.saveLevelGetName or self.townWantConf
 	if drawWindow then
-		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8)
+		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.97)
 		love.graphics.setLineWidth(4)
 		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight, 8, 8, 16)
 		love.graphics.setColor(0, 0, 0, 0.8)
@@ -234,7 +273,28 @@ function api.DrawInterface()
 		
 	end
 	
-	if self.loadingLevelGetName then
+	if self.townWantConf then
+		Font.SetSize(2)
+		love.graphics.setColor(0, 0, 0, 0.8)
+		love.graphics.printf("Configure Town", overX, overY + overHeight * 0.04, overWidth, "center")
+	
+		Font.SetSize(3)
+		love.graphics.printf([[
+- QWE: Set resource
+- N/M: Tweak count
+- A: Add line
+- D: Delete line
+- Enter: Done
+Hold shift for +5/-5
+]], overX + overWidth*0.5, overY + overHeight * 0.2, overWidth*0.8, "left")
+		local needStr = "Town needs:"
+		util.PrintTable(self.townWantConf)
+		for i = 1, #self.townWantConf do
+			local line = self.townWantConf[i]
+			needStr = needStr .. "\n" .. line.good .. ": " .. line.count
+		end
+		love.graphics.printf(needStr, overX + overWidth*0.15, overY + overHeight * 0.2, overWidth*0.4, "left")
+	elseif self.loadingLevelGetName then
 		Font.SetSize(0)
 		love.graphics.setColor(0, 0, 0, 0.8)
 		love.graphics.printf("Loading Level", overX, overY + overHeight * 0.04, overWidth, "center")

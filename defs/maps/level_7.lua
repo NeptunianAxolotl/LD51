@@ -9,7 +9,7 @@ local mapData = {
 	},
 	townDrawParams = {
 		font = 0,
-		pos = {0, -1.6}
+		pos = {0.01, -1.58}
 	},
 	baseCarriages = 2,
 	track = {

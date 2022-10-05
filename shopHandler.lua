@@ -282,6 +282,9 @@ function api.MousePressed(x, y, button)
 				if TrackDefs[self.heldTrack].isCrowbar then
 					DoodadHandler.RemoveDoodads(mousePos)
 				end
+				if TrackDefs[self.heldTrack].editorWantGoods then
+					LevelHandler.TownWantPopup(mousePos)
+				end
 			end
 		end
 		return
@@ -360,7 +363,7 @@ function api.Draw(drawQueue)
 - B/N: +/- map height
 - M/,: tweak carriages
 - l/.: tweak vertical offset
-Hold shift for faster rates.
+Hold shift for +5/-5
 
 ]], shopItemsX - Global.SHOP_WIDTH*0.42, shopItemsY, Global.SHOP_WIDTH*1.22, "left")
 			return
