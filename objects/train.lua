@@ -106,7 +106,6 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 			elseif self.currentTrack.def.canPathSwitch and self.travel < Global.PATH_SWITCH_DIST then
 				local trackDef = self.currentTrack.def
 				local switchMap = trackDef.canPathSwitch[(self.destination - self.currentTrack.rotation)%4]
-				print((self.destination - self.currentTrack.rotation)%4)
 				if switchMap then
 					local altPath = trackDef.paths[switchMap]
 					if altPath and altPath.requiredState == self.currentTrack.state then
@@ -138,7 +137,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 				end
 			end
 			
-			if self.speed < 0 then
+			if self.speed < 0.05 then
 				if self.travel < 0.52 + stopOffset then
 					self.speed = 0.15
 				elseif self.travel < 0.6 + stopOffset then
