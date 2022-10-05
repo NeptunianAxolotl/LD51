@@ -1,7 +1,6 @@
 
 local mapData = {
 	humanName = "Destiny",
-	finalLevel = true,
 	dimensions = {
 		width = 17,
 		height = 11,
