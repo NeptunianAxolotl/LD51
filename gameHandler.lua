@@ -164,6 +164,10 @@ function api.DrawInterface()
 	local overY = windowY*0.3
 	local overHeight = windowY*0.4
 	
+	if LevelHandler.IsMenuOpen() then
+		return
+	end
+	
 	if gameLost then
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(4)
@@ -213,17 +217,24 @@ function api.DrawInterface()
 	elseif self.world.GetPaused() then
 		love.graphics.setColor(Global.PANEL_COL[1], Global.PANEL_COL[2], Global.PANEL_COL[3], 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(4)
-		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight, 8, 8, 16)
+		love.graphics.rectangle("fill", overX, overY, overWidth, overHeight*1.12, 8, 8, 16)
 		love.graphics.setColor(0, 0, 0, 0.8*self.levelAlpha)
 		love.graphics.setLineWidth(10)
-		love.graphics.rectangle("line", overX, overY, overWidth, overHeight, 8, 8, 16)
+		love.graphics.rectangle("line", overX, overY, overWidth, overHeight*1.12, 8, 8, 16)
 		
 		Font.SetSize(0)
 		love.graphics.setColor(0, 0, 0, 0.8*self.levelAlpha)
 		love.graphics.printf("Paused", overX, overY + overHeight * 0.04, overWidth, "center")
 		
 		Font.SetSize(2)
-		love.graphics.printf("'p' to unpause\n'ctrl+m' to toggle music\n'ctrl+r' to reset the level\n'ctrl+n' for next level\n'ctrl+p' for previous level", overX + overWidth*0.12, overY + overHeight * 0.3 , overWidth*0.76, "center")
+		love.graphics.printf([[
+'p' to unpause
+'ctrl+m' to toggle music
+'ctrl+r' to reset the level
+'ctrl+n' for next level
+'ctrl+p' for previous level
+'ctrl+m' for map editor
+'ctrl+l' to load custom level]], overX + overWidth*0.02, overY + overHeight * 0.3 , overWidth*0.96, "center")
 	end
 end
 

@@ -33,6 +33,7 @@ end
 
 function api.SaveLevel(name)
 	love.filesystem.createDirectory("levels")
+	EffectsHandler.SpawnEffect("error_popup", {480, 15}, {text = "Level saved to " .. name .. ".", velocity = {0, 3}})
 	return true
 end
 
@@ -74,6 +75,10 @@ end
 
 function api.InEditMode()
 	return self.editMode
+end
+
+function api.IsMenuOpen()
+	return self.loadingLevelGetName or self.saveLevelGetName
 end
 
 function api.KeyPressed(key, scancode, isRepeat)

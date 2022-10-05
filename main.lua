@@ -94,5 +94,5 @@ function love.load(arg)
 	World.Initialize()
 	
 	love.filesystem.setIdentity("RegularRailway", true)
-	--love.window.maximize() -- Do not fullscreen since we lack an exit button.
+	love.window.maximize() -- Do not fullscreen since we lack an exit button.
 end
