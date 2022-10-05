@@ -87,6 +87,22 @@ return {
 				GameHandler.SetGameOver(false, "town_block")
 			end
 		end
+		if self.permanentlyBlocked then
+			self.fireSpawnTimer = (self.fireSpawnTimer or 0) - dt
+			if self.fireSpawnTimer <= 0 then
+				self.fireSpawnTimer = 0.02 + 0.12 * math.random()
+				for i = 1, math.floor(math.random()*3.5) do
+					EffectsHandler.SpawnEffect("fire", util.RandomPointInRectangle(
+						util.Add(self.worldPos, {0, -0.35* LevelHandler.TileSize()}), LevelHandler.TileSize(), LevelHandler.TileSize()*1.32), 
+						{
+							scale = (0.7 + 0.3*math.random()) * LevelHandler.TileScale(),
+							inFront = 800
+						}
+					)
+				end
+			end
+		
+		end
 	end,
 	extraDrawFunc = function (self, pos, rotation)
 		local wantedGood, totalWanted = GetWantedGood(self)
