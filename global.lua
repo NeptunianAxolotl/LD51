@@ -1,7 +1,7 @@
 
 local globals = {
 	BACK_COL = {130/255, 162/255, 58/255},
-	PANEL_COL = {0.45, 0.51, 0.55},
+	PANEL_COL = {0.53, 0.53, 0.55},
 	
 	MASTER_VOLUME = 0.7,
 	MUSIC_VOLUME = 0.108,
