@@ -113,7 +113,7 @@ local function NewTrain(self, trainHandler, new_gridPos, new_entry, baseCarriage
 						local altDestination = (altPath.destination + self.currentTrack.rotation)%4
 						local altTrack = TerrainHandler.GetTrackAtPos(self.currentTrack.GetPos(), altDestination)
 						local altEntry = (altDestination + 2)%4
-						if altTrack and not altTrack.IsInUse(nextEntry) and altTrack.GetPathAndNextTrack(altEntry) then
+						if altTrack and not altTrack.IsInUse(altEntry) and altTrack.GetPathAndNextTrack(altEntry) then
 							self.currentPath = altPath
 							self.destination = altDestination
 							self.nextTrack = altTrack
