@@ -1,4 +1,6 @@
 
+local SNAKE_SIZE = 6
+
 local mapData = {
 	humanName = "Snake",
 	dimensions = {
@@ -11,18 +13,18 @@ local mapData = {
 		font = 1,
 		pos = {0.03, -1.55}
 	},
-	baseCarriages = 5,
+	baseCarriages = SNAKE_SIZE,
 	track = {
 		--{pos = {8, 1}, rot = 0, trackType = "town", setData = {progression = {
 		--	{good = "wood", count = 3}}}},
 {pos = {5, 5}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "wood", count = 5}, {good = "food", count = 5}}}},
+			{good = "wood", count = SNAKE_SIZE}, {good = "food", count = SNAKE_SIZE}}}},
 {pos = {12, 10}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "food", count = 5}, {good = "wood", count = 5}}}},
+			{good = "food", count = SNAKE_SIZE}, {good = "wood", count = SNAKE_SIZE}}}},
 {pos = {14, 1}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "ore", count = 5}, {good = "food", count = 5}}}},
+			{good = "ore", count = SNAKE_SIZE}, {good = "food", count = SNAKE_SIZE}}}},
 {pos = {16, 6}, rot = 0, trackType = "town", setData = {progression = {
-			{good = "food", count = 5}}}},
+			{good = "food", count = SNAKE_SIZE}}}},
 			
 {pos = {16, 11}, rot = 0, trackType = "farm"},
 {pos = {10, 4}, rot = 0, trackType = "farm"},
